@@ -663,48 +663,48 @@ class SampleSAT:
             return self.cc
     
 
-class FuzzyMCSAT(Inference):
-    '''
-    MC-SAT version supporting fuzzy evidence atoms.
-    '''
-    
-    def __init__(self, mrf, queries=ALL, **params):
-        Inference.__init__(self, mrf, queries, **params)
-        
-        
-    def _run(self):
-        # create the transformed MLN without fuzzy evidence
-        mln_ = self.mrf.mln.copy()
-#         mln.domains = {}
-        mln_._rmformulas()
-        # remove fuzzy preds
-        grounder = FastConjunctionGrounding(self.mrf, self.mrf.formulas, unsatfailure=True, multicore=self.multicore)
-        for gf in grounder.itergroundings():
-            if gf.ishard: mln_.formula(gf, weight=HARD)
-            cnf = gf.cnf()
-#             out(cnf.weight, cnf)
-            if isinstance(cnf, Logic.TrueFalse) or not hasattr(cnf, 'children'): continue
-            mintruth = cnf.mintruth(self.mrf.evidence)
-            maxtruth = cnf.maxtruth(self.mrf.evidence)
-#             out(mintruth, maxtruth)
-            # the result of following list comprehension is a list of clauses of literals of the
-            # CNF, where all truth constants have been removed. If there are conjuncts consisting
-            # of single literals (e.g. such as A in A ^ (B v C)), those will be wrapped in a list
-            # with only one element
-            clauses = [([mln_.logic.lit(l.negated, l.predname, l.args, mln_) for l in d.children if not isinstance(l, Logic.TrueFalse)] if hasattr(d, 'children') else [mln_.logic.lit(d.negated, d.predname, d.args, mln_)]) for d in cnf.children if not isinstance(d, Logic.TrueFalse)]
-#             out(clauses)
-            weight = gf.weight * maxtruth
-            formula = mln_.logic.conjugate([mln_.logic.disjugate(clause) for clause in clauses])
-            mln_.formula(formula, weight)
-#             stop('=>', formula, weight)
-#             formula.print_structure()
-#             stop()
-#         mln_.write()
-#         stop()
-        mln_.tofile('fuzzyconv.mln')
-        mln__ = mln_.materialize(self.mrf.db)
-        mrf = mln__.ground(self.mrf.db)
-        self.mrf = mrf
-        mcsat = MCSAT(mrf, queries=self.queries, **self._params)
-        return mcsat._run()
+# class FuzzyMCSAT(Inference):
+#     '''
+#     MC-SAT version supporting fuzzy evidence atoms.
+#     '''
+#     
+#     def __init__(self, mrf, queries=ALL, **params):
+#         Inference.__init__(self, mrf, queries, **params)
+#         
+#         
+#     def _run(self):
+#         # create the transformed MLN without fuzzy evidence
+#         mln_ = self.mrf.mln.copy()
+# #         mln.domains = {}
+#         mln_._rmformulas()
+#         # remove fuzzy preds
+#         grounder = FastConjunctionGrounding(self.mrf, self.mrf.formulas, unsatfailure=True, multicore=self.multicore)
+#         for gf in grounder.itergroundings():
+#             if gf.ishard: mln_.formula(gf, weight=HARD)
+#             cnf = gf.cnf()
+# #             out(cnf.weight, cnf)
+#             if isinstance(cnf, Logic.TrueFalse) or not hasattr(cnf, 'children'): continue
+#             mintruth = cnf.mintruth(self.mrf.evidence)
+#             maxtruth = cnf.maxtruth(self.mrf.evidence)
+# #             out(mintruth, maxtruth)
+#             # the result of following list comprehension is a list of clauses of literals of the
+#             # CNF, where all truth constants have been removed. If there are conjuncts consisting
+#             # of single literals (e.g. such as A in A ^ (B v C)), those will be wrapped in a list
+#             # with only one element
+#             clauses = [([mln_.logic.lit(l.negated, l.predname, l.args, mln_) for l in d.children if not isinstance(l, Logic.TrueFalse)] if hasattr(d, 'children') else [mln_.logic.lit(d.negated, d.predname, d.args, mln_)]) for d in cnf.children if not isinstance(d, Logic.TrueFalse)]
+# #             out(clauses)
+#             weight = gf.weight * maxtruth
+#             formula = mln_.logic.conjugate([mln_.logic.disjugate(clause) for clause in clauses])
+#             mln_.formula(formula, weight)
+# #             stop('=>', formula, weight)
+# #             formula.print_structure()
+# #             stop()
+# #         mln_.write()
+# #         stop()
+#         mln_.tofile('fuzzyconv.mln')
+#         mln__ = mln_.materialize(self.mrf.db)
+#         mrf = mln__.ground(self.mrf.db)
+#         self.mrf = mrf
+#         mcsat = MCSAT(mrf, queries=self.queries, **self._params)
+#         return mcsat._run()
 
