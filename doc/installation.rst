@@ -17,7 +17,11 @@ Prerequisites
       On Windows, Tkinter is usually shipped with Python. 
       On Linux, the following packages should be installed (tested for Ubuntu)::
       
-        sudo apt-get install python-tk python-scipy python-pyparsing
+        sudo apt-get install python-tk python-scipy
+        
+  You will also need the following python packages: `pyparsing`, `tabulate` and `psutil`. You can install them via ::
+  
+    $ sudo pip install pyparsing tabulate psutil==0.4.1
 
 * `pracmln` is shipped with the open source WCSP solver `toulbar2` for Linux and Windows 64-bit versions. 
   For other architectures, it can be obtained from::
