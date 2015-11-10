@@ -7,12 +7,38 @@ import platform
 import shutil
 import imp
 
-sys.path.append(os.path.join(os.getcwd(), 'pracmln'))
 sys.path.append(os.path.join(os.getcwd(), '3rdparty', 'logutils-0.3.3'))
 
-from pracmln.mln.util import colorize
+from logutils.colorize import ColorizingStreamHandler
 
-packages = [('numpy', 'numpy', False), ('tabulate', 'tabulate', False), ('pyparsing', 'pyparsing', False), ('psutil', 'psutil', False)]
+def colorize(message, format, color=False):
+    '''
+    Returns the given message in a colorized format
+    string with ANSI escape codes for colorized console outputs:
+    - message:   the message to be formatted.
+    - format:    triple containing format information:
+                 (bg-color, fg-color, bf-boolean) supported colors are
+                 'black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'
+    - color:     boolean determining whether or not the colorization
+                 is to be actually performed.
+    '''
+    colorize.colorHandler = ColorizingStreamHandler(sys.stdout)
+    if color is False: return message
+    params = []
+    (bg, fg, bold) = format
+    if bg in colorize.colorHandler.color_map:
+        params.append(str(colorize.colorHandler.color_map[bg] + 40))
+    if fg in colorize.colorHandler.color_map:
+        params.append(str(colorize.colorHandler.color_map[fg] + 30))
+    if bold:
+        params.append('1')
+    if params:
+        message = ''.join((colorize.colorHandler.csi, ';'.join(params),
+                           'm', message, colorize.colorHandler.reset))
+    return message
+
+
+packages = [('numpy', 'numpy', False), ('scipy', 'scipy', False), ('tabulate', 'tabulate', False), ('pyparsing', 'pyparsing', False), ('psutil', 'psutil', False)]
 
 def check_package(pkg):
     try:
@@ -22,13 +48,18 @@ def check_package(pkg):
         print
     except ImportError: 
         print
-        print colorize('%s was not found. Please install by "sudo pip install %s" %s' % (pkg[0], pkg[1], '(optional)' if pkg[2] else ''), (None, 'yellow', True), True)
+        print colorize('The package %s was not found. Please install by "sudo pip install %s" %s' % (pkg[0], pkg[1], '(optional)' if pkg[2] else ''), (None, 'red', True), True)
+        return False
+    return True
 
     
 # check the package dependecies
 def check_dependencies():
+    allok = True
     for pkg in packages:
-        check_package(pkg)
+        allok &= check_package(pkg)
+    if not allok:
+        exit(-1)
     
 python_apps = [
     {"name": "mlnquery", "script": "$PRACMLN_HOME/pracmln/mlnquery.py"},
