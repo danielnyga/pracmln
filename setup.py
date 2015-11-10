@@ -12,7 +12,7 @@ sys.path.append(os.path.join(os.getcwd(), '3rdparty', 'logutils-0.3.3'))
 
 from pracmln.mln.util import colorize
 
-packages = [('numpy', 'numpy'), ('tabulate', 'tabulate'), ('pyparsing', 'pyparsing'), ('scipy', 'scipy')]
+packages = [('numpy', 'numpy', False), ('tabulate', 'tabulate', False), ('pyparsing', 'pyparsing', False), ('psutil', 'psutil', False), ('matplotlib', 'matplotlib', False)]
 
 def check_package(pkg):
     try:
@@ -22,7 +22,8 @@ def check_package(pkg):
         print
     except ImportError: 
         print
-        print colorize('%s was not found. Please install by "pip install %s"' % (pkg[0], pkg[1]), (None, 'yellow', True), True)
+        print colorize('%s was not found. Please install by "sudo pip install %s" %s' % (pkg[0], pkg[1], '(optional)' if pkg[2] else ''), (None, 'yellow', True), True)
+
     
 # check the package dependecies
 def check_dependencies():
