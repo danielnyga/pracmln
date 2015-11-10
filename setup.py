@@ -12,7 +12,7 @@ sys.path.append(os.path.join(os.getcwd(), '3rdparty', 'logutils-0.3.3'))
 
 from pracmln.mln.util import colorize
 
-packages = [('numpy', 'numpy', False), ('tabulate', 'tabulate', False), ('pyparsing', 'pyparsing', False), ('psutil', 'psutil', False), ('matplotlib', 'matplotlib', False)]
+packages = [('numpy', 'numpy', False), ('tabulate', 'tabulate', False), ('pyparsing', 'pyparsing', False), ('psutil', 'psutil', False)]
 
 def check_package(pkg):
     try:
