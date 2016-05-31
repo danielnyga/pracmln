@@ -371,13 +371,11 @@ bool MLN::infer(std::vector<std::string> &results, std::vector<double> &probabil
     settings["cw_preds"] = internal->settings[NAME_CW_PREDS];
     settings["queries"] = internal->query;
 
-    internal->mlnQueryObj = internal->dict_query["MLNQuery"](*boost::python::tuple(arguments),**settings);
-    python::object newDB = internal->mlnQueryObj.attr("run")();
-    newDB.attr("write")();
-
-    python::dict evidence = python::extract<python::dict>(newDB.attr("_results"));
-
-    python::list keys = evidence.keys();
+    internal->mlnQueryObj = internal->dict_query["MLNQuery"](*boost::python::tuple(arguments), **settings);
+    python::object resObj = internal->mlnQueryObj.attr("run")();
+    resObj.attr("write")();
+    python::dict resObjDict = python::extract<python::dict>(resObj.attr("results"));
+    python::list keys = resObjDict.keys();
     results.resize(python::len(keys));
     probabilities.resize(results.size());
 
@@ -389,7 +387,7 @@ bool MLN::infer(std::vector<std::string> &results, std::vector<double> &probabil
 
     for(size_t i = 0; i < results.size(); ++i)
     {
-      probabilities[i] = python::extract<double>(evidence[results[i]]);
+      probabilities[i] = python::extract<double>(resObjDict[results[i]]);
     }
   }
   catch(python::error_already_set)
