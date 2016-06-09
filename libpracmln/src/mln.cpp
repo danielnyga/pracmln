@@ -11,6 +11,7 @@
 #define MODULE_MLN      "pracmln.mln"
 #define MODULE_METHODS  "pracmln.mln.methods"
 #define MODULE_DATABASE "pracmln.mln.database"
+#define MODULE_QUERY    "pracmln.mlnquery"
 
 #define NAME_CW_PREDS   "cw_preds"
 #define NAME_MAX_STEPS  "maxsteps"
@@ -71,7 +72,14 @@ struct MLN::Internal
   python::object module_database;
   python::dict dict_database;
 
+  python::object module_query;
+  python::dict dict_query;
+
+  python::object mlnObj;
   python::object mln;
+  python::object mlnQueryObj;
+  python::object mlnQuery;
+
   python::object db;
   python::object method;
 
@@ -121,6 +129,9 @@ bool MLN::initialize()
 
     internal->module_database = python::import(MODULE_DATABASE);
     internal->dict_database = python::extract<python::dict>(internal->module_database.attr("__dict__"));
+
+    internal->module_query = python::import(MODULE_QUERY);
+    internal->dict_query = python::extract<python::dict>(internal->module_query.attr("__dict__"));
 
     this->methods = listToVector<std::string>(python::extract<python::list>(internal->dict_methods["InferenceMethods"].attr("ids")()));
 
@@ -349,16 +360,22 @@ bool MLN::infer(std::vector<std::string> &results, std::vector<double> &probabil
     {
       return false;
     }
-
+    //the empty config file
     boost::python::list arguments;
-    arguments.append(internal->method);
-    arguments.append(internal->query);
-    arguments.append(internal->db);
 
-    python::object newDB = internal->mln.attr("infer")(*boost::python::tuple(arguments), **internal->settings);
-    python::dict evidence = python::extract<python::dict>(newDB.attr("evidence"));
+    //the actual config -> for now here, but consider making this a class member
+    boost::python::dict settings;
+    settings["mln"] = internal->mln;
+    settings["db"] = internal->db;
+    settings["method"] = internal->method;
+    settings["cw_preds"] = internal->settings[NAME_CW_PREDS];
+    settings["queries"] = internal->query;
 
-    python::list keys = evidence.keys();
+    internal->mlnQueryObj = internal->dict_query["MLNQuery"](*boost::python::tuple(arguments), **settings);
+    python::object resObj = internal->mlnQueryObj.attr("run")();
+    resObj.attr("write")();
+    python::dict resObjDict = python::extract<python::dict>(resObj.attr("results"));
+    python::list keys = resObjDict.keys();
     results.resize(python::len(keys));
     probabilities.resize(results.size());
 
@@ -370,7 +387,7 @@ bool MLN::infer(std::vector<std::string> &results, std::vector<double> &probabil
 
     for(size_t i = 0; i < results.size(); ++i)
     {
-      probabilities[i] = python::extract<double>(evidence[results[i]]);
+      probabilities[i] = python::extract<double>(resObjDict[results[i]]);
     }
   }
   catch(python::error_already_set)
@@ -391,7 +408,8 @@ bool MLN::init()
   {
     if(updateMLN)
     {
-      internal->mln = internal->dict_mln["MLN.load"](mln, logics[logic], grammars[grammar]);
+      internal->mlnObj = internal->dict_mln["MLN"];
+      internal->mln = internal->mlnObj.attr("load")(mln, logics[logic], grammars[grammar]);
     }
 
     if(updateDB)
