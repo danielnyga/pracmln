@@ -641,7 +641,6 @@ class temporary_evidence():
     
     def __exit__(self, exception_type, exception_value, tb):
         if exception_type is not None:
-            traceback.print_exception(exception_type, exception_value, tb)
             raise exception_type(exception_value)
         self.mrf.evidence = self.evidence_backup
         return True

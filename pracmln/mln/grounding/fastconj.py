@@ -26,23 +26,19 @@ import logging
 from pracmln.logic.common import Logic
 import types
 from multiprocessing.pool import Pool
-from pracmln.utils.multicore import with_tracing, make_memsafe
+from pracmln.utils.multicore import with_tracing
 from itertools import imap
-from pracmln.mln.mlnpreds import FunctionalPredicate, SoftFunctionalPredicate,\
+from pracmln.mln.mlnpreds import FunctionalPredicate, SoftFunctionalPredicate, \
     FuzzyPredicate
-from pracmln.mln.util import fstr, dict_union, stop, out, ProgressBar,\
-    rndbatches, cumsum
+from pracmln.mln.util import dict_union, ProgressBar, rndbatches, cumsum
 from pracmln.mln.errors import SatisfiabilityException
-from pracmln.mln.constants import HARD, auto
+from pracmln.mln.constants import HARD
 from collections import defaultdict
-import multiprocessing
-import time
-import numpy
 from pracmln.logic.fuzzy import FuzzyLogic
-import traceback
+
 
 logger = logging.getLogger(__name__)
-    
+
 # this readonly global is for multiprocessing to exploit copy-on-write
 # on linux systems
 global_fastConjGrounding = None
@@ -58,19 +54,24 @@ def create_formula_groundings(formulas):
             for gf in formula.itergroundings(global_fastConjGrounding.mrf, simplify=True):
                 gfs.append(gf)
     return gfs
-    
+
 
 class FastConjunctionGrounding(DefaultGroundingFactory):
-    '''
-    Fairly fast grounding of conjunctions pruning the grounding tree if a formula
-    is rendered false by the evidence. Performs some heuristic sorting such that
-    equality constraints are evaluated first.
-    '''
-    
-    def __init__(self, mrf, simplify=False, unsatfailure=False, formulas=None, cache=None, **params):
-        DefaultGroundingFactory.__init__(self, mrf, simplify=simplify, unsatfailure=unsatfailure, formulas=formulas, cache=cache, **params)
-            
-    
+    """
+    Fairly fast grounding of conjunctions pruning the grounding tree if a
+    formula is rendered false by the evidence. Performs some heuristic
+    sorting such that equality constraints are evaluated first.
+    """
+
+
+    def __init__(self, mrf, simplify=False, unsatfailure=False, formulas=None,
+                 cache=None, **params):
+        DefaultGroundingFactory.__init__(self, mrf, simplify=simplify,
+                                         unsatfailure=unsatfailure,
+                                         formulas=formulas, cache=cache,
+                                         **params)
+
+
     def _conjsort(self, e):
         if isinstance(e, Logic.Equality):
             return 0.5
@@ -107,6 +108,7 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
         # make equality constraints access their variable domains
         # this is a _really_ dirty hack but it does the job ;-)
         variables = formula.vardoms()
+
         def eqvardoms(self, v=None, c=None):
             if v is None:
                 v = defaultdict(set)
@@ -135,7 +137,7 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
             if isinstance(gf, Logic.TrueFalse):
                 return
             yield gf
-            return 
+            return
         c = constituents[cidx]
         for varass in c.itervargroundings(self.mrf, partial=assignment):
             newass = dict_union(assignment, varass)
@@ -149,8 +151,7 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
                 truthpivot_ = pivotfct(truthpivot, truth)
             for gf in self._itergroundings_fast(formula, constituents, cidx+1, pivotfct, truthpivot_, newass, level+1):
                 yield gf
-            
-        
+
     def _itergroundings(self, simplify=True, unsatfailure=True):
         # generate all groundings
         if not self.formulas:
@@ -164,20 +165,24 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
             i = 0
         if self.multicore:
             pool = Pool()
-            for gfs in pool.imap(with_tracing(create_formula_groundings), batches):
-                if self.verbose: 
-                    bar.inc(batchsizes[i])
-                    bar.label(str(cumsum(batchsizes, i+1)))
-                    i += 1
-                for gf in gfs: yield gf
-            pool.terminate()
-            pool.join()
+            try:
+                for gfs in pool.imap(with_tracing(create_formula_groundings), batches):
+                    if self.verbose:
+                        bar.inc(batchsizes[i])
+                        bar.label(str(cumsum(batchsizes, i + 1)))
+                        i += 1
+                    for gf in gfs: yield gf
+            except Exception as e:
+                logger.error('Error in child process. Terminating pool...')
+                pool.close()
+                raise e
+            finally:
+                pool.terminate()
+                pool.join()
         else:
             for gfs in imap(create_formula_groundings, batches):
-                if self.verbose: 
+                if self.verbose:
                     bar.inc(batchsizes[i])
-                    bar.label(str(cumsum(batchsizes, i+1)))
+                    bar.label(str(cumsum(batchsizes, i + 1)))
                     i += 1
                 for gf in gfs: yield gf
-
-            

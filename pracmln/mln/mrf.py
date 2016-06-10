@@ -251,6 +251,7 @@ class MRF(object):
         :param atomvalues:     a dict mapping ground atom strings/objects/indices to their truth
                                values.
         :param erase:          specifies whether or not variables shall be erased before asserting the evidences.
+                               Only affects the variables that are present in `atomvalues`.
         :param cw:             applies the closed-world assumption for all non evidence atoms.
         '''
         # check validity of evidence values
@@ -498,7 +499,7 @@ class MRF(object):
         
         :returns:    a generator of (idx, possible world) tuples.
         '''
-        for res in self._iterworlds(self.variables, list(self.evidence), CallByRef(0), self.evidence_dicti()):
+        for res in self._iterworlds([v for v in self.variables if v.valuecount(self.evidence) > 1], list(self.evidence), CallByRef(0), self.evidence_dicti()):
             yield res
 
 

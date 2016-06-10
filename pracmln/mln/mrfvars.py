@@ -21,7 +21,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 from pracmln.mln.errors import MRFValueException
-from pracmln.mln.util import Interval, ifNone, out
+from pracmln.mln.util import Interval, ifNone
 
 class MRFVariable(object):
     '''
@@ -350,7 +350,7 @@ class MutexVariable(MRFVariable):
             yield tuple(map(lambda x: 1 if x == 1 else 0, valpattern))
             return
         if all([x == 0 for x in valpattern]):
-            raise MRFValueException('Illegal value for a MutexVariable: %s' % valpattern)
+            raise MRFValueException('Illegal value for a MutexVariable %s: %s' % (self, valpattern))
         for i, val in enumerate(valpattern): # generate a value tuple with a truth value for each atom which is not set to false by evidence
             if val == 0: continue
             elif val is None:

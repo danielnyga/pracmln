@@ -10,3 +10,4 @@ class NoSuchDomainError(Exception): pass
 class MRFValueException(Exception): pass
 class SatisfiabilityException(Exception): pass
 class OutOfMemoryError(Exception): pass
+class NoConstraintsError(Exception): pass

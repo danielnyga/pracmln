@@ -22,20 +22,14 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from collections import defaultdict
-# from logic.fol import isConjunctionOfLiterals
 from pracmln.utils.undo import Ref, Number, List, ListDict, Boolean
-from default import DefaultGroundingFactory
-from pracmln.logic.common import Logic, Lit, GroundLit
-import sys
+from pracmln.logic.common import Logic
 import logging
 import types
-from pracmln.utils.multicore import with_tracing, CtrlCException, make_memsafe,\
-    checkmem
+from pracmln.utils.multicore import with_tracing, checkmem
 from multiprocessing.pool import Pool
-from pracmln.mln.util import unifyDicts, temporary_evidence, fstr, dict_union,\
-    out, stop
-from pracmln.mln.constants import auto, HARD
-from pracmln.mln.mlnpreds import FunctionalPredicate, SoftFunctionalPredicate
+from pracmln.mln.util import unifyDicts, dict_union
+from pracmln.mln.constants import HARD
 from pracmln.mln.errors import SatisfiabilityException
 from pracmln.mln.grounding.fastconj import FastConjunctionGrounding
 from itertools import imap
@@ -43,6 +37,8 @@ from itertools import imap
 # this readonly global is for multiprocessing to exploit copy-on-write
 # on linux systems
 global_bpll_grounding = None
+
+logger = logging.getLogger(__name__)
 
 # multiprocessing function
 def create_formula_groundings(formula, unsatfailure=True):
@@ -96,12 +92,14 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
         # make equality constraints access their variable domains
         # this is a _really_ dirty hack but it does the job ;-)
         vardoms = formula.vardoms()
+
         def eqvardoms(self, v=None, c=None):
             if v is None: v = defaultdict(set)
             for a in self.args:
                 if self.mln.logic.isvar(a):
                     v[a] = vardoms[a]
             return v 
+
         for child in children:
             if isinstance(child, Logic.Equality):
                 setattr(child, 'vardoms', types.MethodType(eqvardoms, child))
@@ -147,8 +145,10 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
                             skip = True
                             break
                         else:
-                            # if there was no literal false so far, we collect statistics only for the current literal
-                            # and only if all future literals will be true by evidence 
+                            # if there was no literal false so far, we
+                            # collect statistics only for the current literal
+                            # and only if all future literals will be true
+                            # by evidence
                             vars_ = []
                             falsevar_ = var.idx
                     if truth > 0 and falsevar is None:
@@ -180,20 +180,22 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
                             self._addstat(fidx, varidx, validx, val)
                         checkmem()
                     yield None
-            except CtrlCException as e:
-                pool.terminate()
+            except Exception as e:
+                logger.error('Error in child process. Terminating pool...')
+                pool.close()
                 raise e
-            pool.close()
-            pool.join()
+            finally:
+                pool.terminate()
+                pool.join()
         else:
             for gndresult in imap(create_formula_groundings, self.formulas):
                 for fidx, stat in gndresult:
-                    for (varidx, validx, val) in stat: 
+                    for (varidx, validx, val) in stat:
                         self._varidx2fidx[varidx].add(fidx)
                         self._addstat(fidx, varidx, validx, val)
                 yield None
-                    
-                    
+
+
     def _addstat(self, fidx, varidx, validx, inc=1):
         if fidx not in self._stat:
             self._stat[fidx] = {}
@@ -201,7 +203,6 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
         if varidx not in d:
             d[varidx] = [0] * self.mrf.variable(varidx).valuecount()
         d[varidx][validx] += inc
-
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -373,7 +374,7 @@ class SmartGroundingFactory(object):
             if assignment is not None:
                 unifyDicts(var_assignments, assignment)
         cost = .0
-        
+
         # first evaluate formula groundings that contain 
         # this gnd atom as an artifact
         min_depth = None
@@ -461,7 +462,7 @@ class SmartGroundingFactory(object):
                         cost += gnd_result
             self.values_processed.put(var, value)
         return cost
-    
+
     def printTree(self):
         queue = [self.root]
         print '---'
@@ -484,5 +485,3 @@ class SmartGroundingFactory(object):
                 assignment[p1] = p2
             elif p1 != p2: return None
         return assignment
-
-

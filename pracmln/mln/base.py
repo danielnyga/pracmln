@@ -35,14 +35,13 @@ import platform
 from methods import InferenceMethods, LearningMethods
 from mrf import MRF
 from errors import MLNParsingError
-# from experimental.mlnboost import MLNBoost
 from pyparsing import ParseException
 from pracmln.mln.constants import HARD, comment_color, predicate_color, weight_color
 import copy
 import os
 import logging
-from pracmln.mln.util import StopWatch, fstr, mergedom, colorize, stripComments, out,\
-    trace, ifNone
+from pracmln.mln.util import StopWatch, mergedom, fstr, colorize, stripComments,\
+    ifNone
 from pracmln.mln.mlnpreds import Predicate, FuzzyPredicate, SoftFunctionalPredicate,\
     FunctionalPredicate
 from pracmln.mln.database import Database
@@ -51,9 +50,7 @@ import sys
 import re
 import traceback
 from pracmln.mln.learning.bpll import BPLL
-from pracmln.utils.project import MLNProject, mlnpath
-from pracmln.logic.common import Logic
-from pracmln.utils.multicore import make_memsafe
+from pracmln.utils.project import mlnpath
 
 
 logger = logging.getLogger(__name__)
@@ -317,8 +314,8 @@ class MLN(object):
             return self.weights[idx]
     
     
-    def __lshift__(self, input):
-        parse_mln(input, '.', logic=None, grammar=None, mln=self)
+    def __lshift__(self, _input):
+        parse_mln(_input, '.', logic=None, grammar=None, mln=self)
     
                 
     def materialize(self, *dbs):
@@ -801,7 +798,11 @@ def parse_mln(text, searchpaths=['.'], projectpath=None, logic='FirstOrderLogic'
                             fixWeightOfNextFormula = False
                             fixweight = True
                             fixedWeightTemplateIndices.append(idxTemplate)
-                        mln.formula(formula, weight, fixweight, uniquevars)
+                        # expand predicate groups
+                        for variant in formula.expandgrouplits():
+                            mln.formula(variant, weight=weight,
+                                        fixweight=fixweight,
+                                        unique_templvars=uniquevars)
                         if uniquevars:
                             uniquevars = None
                     except ParseException, e:

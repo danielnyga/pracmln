@@ -24,12 +24,10 @@
 from pracmln.mln.learning.common import AbstractLearner, DiscriminativeLearner
 import random
 from collections import defaultdict
-from pracmln.mln.util import fsum, StopWatch, dict_union, temporary_evidence,\
-    out, stop
+from pracmln.mln.util import fsum, dict_union, temporary_evidence
 from numpy.ma.core import log, sqrt
 import numpy
 from pracmln.logic.common import Logic
-import sys
 from pracmln.mln.constants import HARD
 from pracmln.mln.errors import SatisfiabilityException
 from pracmln import praclog
@@ -166,7 +164,7 @@ class CLL(AbstractLearner):
                         # formula and remove the temp evidence
                         with temporary_evidence(self.mrf):
                             for atomidx, value in partition.value2dict(world).iteritems():
-                                self.mrf[atomidx] = value
+                                self.mrf.set_evidence({atomidx: value}, erase=True)
                             truth = gndformula(self.mrf.evidence)
                     if truth != 0:
                         self.partition2formulas[partition.idx].add(formula.idx)

@@ -26,17 +26,15 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from Tkinter import *
-from Tkinter import _setit
 from tkFileDialog import askopenfilename, asksaveasfilename
 import os
 import ntpath
 import tkMessageBox
 import traceback
 from pracmln.utils.project import MLNProject, PRACMLNConfig, mlnpath
-from utils import widgets
 from mln.methods import InferenceMethods
 from mln.inference import *
-from utils.widgets import SyntaxHighlightingText, FileEditBar
+from utils.widgets import FileEditBar
 from utils import config
 from pracmln import praclog
 from pracmln.mln.util import out, ifNone, parse_queries, headline, StopWatch
@@ -48,13 +46,16 @@ from cProfile import Profile
 import pstats
 import StringIO
 import pracmln
-import logging
+import logging #import used in eval, do not remove
 
 
 logger = praclog.logger(__name__)
 
-GUI_SETTINGS = ['window_loc', 'db', 'method', 'use_emln', 'save', 'output_filename', 'grammar', 'queries', 'emln']
-ALLOWED_EXTENSIONS = [('PRACMLN project files', '.pracmln'), ('MLN files', '.mln'), ('MLN extension files', '.emln'), ('Database files', '.db')]
+GUI_SETTINGS = ['window_loc', 'db', 'method', 'use_emln', 'save',
+                'output_filename', 'grammar', 'queries', 'emln']
+ALLOWED_EXTENSIONS = [('PRACMLN project files', '.pracmln'),
+                      ('MLN files', '.mln'), ('MLN extension files', '.emln'),
+                      ('Database files', '.db')]
 DEFAULTNAME = 'unknown{}'
 PRACMLN_HOME = os.getenv('PRACMLN_HOME', os.getcwd())
 DEFAULT_CONFIG = os.path.join(PRACMLN_HOME, global_config_filename)
@@ -63,7 +64,7 @@ WINDOWTITLEEDITED = 'PRACMLN Query Tool - {}' + os.path.sep + '*{}'
 
 
 class MLNQuery(object):
-    
+
     def __init__(self, config=None, **params):
         self.configfile = None
         if config is None:
@@ -73,48 +74,49 @@ class MLNQuery(object):
             self.configfile = config
         self._config.update(params)
 
+
     @property
     def mln(self):
         return self._config.get('mln')
-    
-    
+
+
     @property
     def db(self):
-        return  self._config.get('db')
-    
-    
+        return self._config.get('db')
+
+
     @property
     def output_filename(self):
         return self._config.get('output_filename')
-    
-    
+
+
     @property
     def params(self):
         return eval("dict(%s)" % self._config.get('params', ''))
-        
-        
+
+
     @property
     def method(self):
         return InferenceMethods.clazz(self._config.get('method', 'MC-SAT'))
-        
-        
+
+
     @property
     def queries(self):
         q = self._config.get('queries', pracmln.ALL)
         if isinstance(q, basestring):
             return parse_queries(self.mln, q)
         return q
-    
-    
+
+
     @property
     def emln(self):
-        return self._config.get('emln', None) 
-    
+        return self._config.get('emln', None)
+
 
     @property
     def cw(self):
         return self._config.get('cw', False)
-    
+
     
     @property
     def cw_preds(self):
@@ -122,7 +124,7 @@ class MLNQuery(object):
         if type(preds) is str:
             preds = preds.split(',')
         return map(str.strip, preds)
-    
+
     
     @property
     def use_emln(self):
@@ -132,28 +134,28 @@ class MLNQuery(object):
     @property
     def logic(self):
         return self._config.get('logic', 'FirstOrderLogic')
-    
-    
+
+
     @property
     def grammar(self):
         return self._config.get('grammar', 'PRACGrammar')
-    
-    
+
+
     @property
     def multicore(self):
-        return self._config.get('multicore', False) 
+        return self._config.get('multicore', False)
 
-    
+
     @property
     def profile(self):
         return self._config.get('profile', False)
-    
-    
+
+
     @property
     def verbose(self):
         return self._config.get('verbose', False)
-    
-    
+
+
     @property
     def ignore_unknown_preds(self):
         return self._config.get('ignore_unknown_preds', False)
@@ -172,7 +174,7 @@ class MLNQuery(object):
             mln = self.mln
         else:
             raise Exception('No MLN specified')
-        
+
         if self.use_emln and self.emln is not None:
             mlnstr = StringIO.StringIO()
             mln.write(mlnstr)
@@ -198,22 +200,16 @@ class MLNQuery(object):
             params.update(eval("dict(%s)" % params['params']))
             del params['params']
         if self.verbose:
-            print tabulate(sorted(list(params.viewitems()), key=lambda (k,v): str(k)), headers=('Parameter:', 'Value:'))
-        # create the MLN and evidence database and the parse the queries
-#         mln = parse_mln(modelstr, searchPath=self.dir.get(), logic=self.config['logic'], grammar=self.config['grammar'])
-#         db = parse_db(mln, db_content, ignore_unknown_preds=params.get('ignore_unknown_preds', False))
+            print tabulate(sorted(list(params.viewitems()), key=lambda (k, v): str(k)), headers=('Parameter:', 'Value:'))
         if type(db) is list and len(db) > 1:
             raise Exception('Inference can only handle one database at a time')
         elif type(db) is list:
             db = db[0]
-        # parse non-atomic params
-#         if type(self.queries) is not list:
-#             queries = parse_queries(mln, str(self.queries))
         params['cw_preds'] = filter(lambda x: bool(x), self.cw_preds)
         # extract and remove all non-algorithm
         for s in GUI_SETTINGS:
             if s in params: del params[s]
-        
+
         if self.profile:
             prof = Profile()
             print 'starting profiler...'
@@ -272,7 +268,7 @@ class MLNQueryGUI(object):
         self.master.protocol('WM_DELETE_WINDOW', self.quit)
 
         self.dir = os.path.abspath(ifNone(directory, ifNone(gconf['prev_query_path'], os.getcwd())))
-        
+
         self.frame = Frame(master)
         self.frame.pack(fill=BOTH, expand=1)
         self.frame.columnconfigure(1, weight=1)
@@ -333,7 +329,9 @@ class MLNQueryGUI(object):
         row += 1
         self.use_emln = IntVar()
         self.use_emln.set(0)
-        self.cb_use_emln = Checkbutton(self.frame, text="use model extension", variable=self.use_emln, command=self.onchange_use_emln)
+        self.cb_use_emln = Checkbutton(self.frame, text="use model extension",
+                                       variable=self.use_emln,
+                                       command=self.onchange_use_emln)
         self.cb_use_emln.grid(row=row, column=1, sticky="W")
 
         # mln extension section
@@ -341,11 +339,16 @@ class MLNQueryGUI(object):
         self.emlncontainerrow = row
         self.emln_label = Label(self.frame, text="EMLN: ")
         self.emln_label.grid(row=self.emlncontainerrow, column=0, sticky='NE')
-        self.emln_container = FileEditBar(self.frame, dir=self.dir,
-                                          filesettings={'extension':'.emln', 'ftypes':[('MLN extension files', '.emln')]},
-                                          defaultname='*unknown{}', importhook=self.import_emln, deletehook=self.delete_emln,
-                                          projecthook=self.save_proj, filecontenthook=self.emlnfilecontent,
-                                          fileslisthook=self.emlnfiles, updatehook=self.update_emln,
+        self.emln_container = FileEditBar(self.frame,
+                                          dir=self.dir,
+                                          filesettings={'extension': '.emln', 'ftypes': [('MLN extension files','.emln')]},
+                                          defaultname='*unknown{}',
+                                          importhook=self.import_emln,
+                                          deletehook=self.delete_emln,
+                                          projecthook=self.save_proj,
+                                          filecontenthook=self.emlnfilecontent,
+                                          fileslisthook=self.emlnfiles,
+                                          updatehook=self.update_emln,
                                           onchangehook=self.project_setdirty)
         self.emln_container.grid(row=self.emlncontainerrow, column=1, sticky="NEWS")
         self.emln_container.columnconfigure(1, weight=2)
@@ -354,13 +357,18 @@ class MLNQueryGUI(object):
 
         # db section
         row += 1
-        Label(self.frame, text="Evidence: ").grid(row=row, column=0, sticky='NE')
+        Label(self.frame, text="Evidence: ").grid(row=row, column=0,
+                                                  sticky='NE')
         self.db_container = FileEditBar(self.frame, dir=self.dir,
-                                          filesettings={'extension':'.db', 'ftypes':[('Database files', '.db')]},
-                                          defaultname='*unknown{}', importhook=self.import_db, deletehook=self.delete_db,
-                                          projecthook=self.save_proj, filecontenthook=self.dbfilecontent,
-                                          fileslisthook=self.dbfiles, updatehook=self.update_db,
-                                          onchangehook=self.project_setdirty)
+                                        filesettings={'extension': '.db', 'ftypes': [('Database files', '.db')]},
+                                        defaultname='*unknown{}',
+                                        importhook=self.import_db,
+                                        deletehook=self.delete_db,
+                                        projecthook=self.save_proj,
+                                        filecontenthook=self.dbfilecontent,
+                                        fileslisthook=self.dbfiles,
+                                        updatehook=self.update_db,
+                                        onchangehook=self.project_setdirty)
         self.db_container.grid(row=row, column=1, sticky="NEWS")
         self.db_container.columnconfigure(1, weight=2)
         self.frame.rowconfigure(row, weight=1)
@@ -382,22 +390,31 @@ class MLNQueryGUI(object):
 
         # Multiprocessing
         self.multicore = IntVar()
-        self.cb_multicore = Checkbutton(option_container, text="Use all CPUs", variable=self.multicore, command=self.settings_setdirty)
+        self.cb_multicore = Checkbutton(option_container, text="Use all CPUs",
+                                        variable=self.multicore,
+                                        command=self.settings_setdirty)
         self.cb_multicore.grid(row=0, column=2, sticky=W)
 
         # profiling
         self.profile = IntVar()
-        self.cb_profile = Checkbutton(option_container, text='Use Profiler', variable=self.profile, command=self.settings_setdirty)
+        self.cb_profile = Checkbutton(option_container, text='Use Profiler',
+                                      variable=self.profile,
+                                      command=self.settings_setdirty)
         self.cb_profile.grid(row=0, column=3, sticky=W)
 
         # verbose
         self.verbose = IntVar()
-        self.cb_verbose = Checkbutton(option_container, text='verbose', variable=self.verbose, command=self.settings_setdirty)
+        self.cb_verbose = Checkbutton(option_container, text='verbose',
+                                      variable=self.verbose,
+                                      command=self.settings_setdirty)
         self.cb_verbose.grid(row=0, column=4, sticky=W)
 
         # options
         self.ignore_unknown_preds = IntVar(master)
-        self.cb_ignore_unknown_preds = Checkbutton(option_container, text='ignore unkown predicates', variable=self.ignore_unknown_preds, command=self.settings_setdirty)
+        self.cb_ignore_unknown_preds = Checkbutton(option_container,
+                                                   text='ignore unkown predicates',
+                                                   variable=self.ignore_unknown_preds,
+                                                   command=self.settings_setdirty)
         self.cb_ignore_unknown_preds.grid(row=0, column=5, sticky="W")
 
         # queries
@@ -405,14 +422,14 @@ class MLNQueryGUI(object):
         Label(self.frame, text="Queries: ").grid(row=row, column=0, sticky=E)
         self.query = StringVar(master)
         self.query.trace('w', self.settings_setdirty)
-        Entry(self.frame, textvariable = self.query).grid(row=row, column=1, sticky="NEW")
+        Entry(self.frame, textvariable=self.query).grid(row=row, column=1, sticky="NEW")
 
         # additional parameters
         row += 1
         Label(self.frame, text="Add. params: ").grid(row=row, column=0, sticky="NE")
         self.params = StringVar(master)
         self.params.trace('w', self.settings_setdirty)
-        self.entry_params = Entry(self.frame, textvariable = self.params)
+        self.entry_params = Entry(self.frame, textvariable=self.params)
         self.entry_params.grid(row=row, column=1, sticky="NEW")
 
         # closed-world predicates
@@ -425,11 +442,13 @@ class MLNQueryGUI(object):
 
         self.cwPreds = StringVar(master)
         self.cwPreds.trace('w', self.settings_setdirty)
-        self.entry_cw = Entry(cw_container, textvariable = self.cwPreds)
+        self.entry_cw = Entry(cw_container, textvariable=self.cwPreds)
         self.entry_cw.grid(row=0, column=0, sticky="NEWS")
 
         self.closed_world = IntVar()
-        self.cb_closed_world = Checkbutton(cw_container, text="CW Assumption", variable=self.closed_world, command=self.onchange_cw)
+        self.cb_closed_world = Checkbutton(cw_container, text="CW Assumption",
+                                           variable=self.closed_world,
+                                           command=self.onchange_cw)
         self.cb_closed_world.grid(row=0, column=1, sticky='W')
 
         # output filename
@@ -461,7 +480,9 @@ class MLNQueryGUI(object):
         self.project = None
         self.project_dir = os.path.abspath(ifNone(directory, ifNone(gconf['prev_query_path'], os.getcwd())))
         if gconf['prev_query_project': self.project_dir] is not None:
-            self.load_project(os.path.join(self.project_dir, gconf['prev_query_project': self.project_dir]))
+            self.load_project(os.path.join(self.project_dir,
+                                           gconf['prev_query_project':
+                                           self.project_dir]))
         else:
             self.new_project()
 
@@ -492,6 +513,7 @@ class MLNQueryGUI(object):
 
 
     ####################### PROJECT FUNCTIONS #################################
+
     def new_project(self):
         self.project = MLNProject()
         self.project.addlistener(self.project_setdirty)
@@ -501,11 +523,13 @@ class MLNQueryGUI(object):
         self.mln_container.update_file_choices()
         self.emln_container.update_file_choices()
         self.db_container.update_file_choices()
-        self.settings_setdirty()
+        self.project_setdirty(dirty=True)
 
 
     def project_setdirty(self, dirty=False, *args):
-        self.project_dirty.set(dirty or self.mln_container.dirty or self.db_container.dirty or self.emln_container.dirty)
+        self.project_dirty.set(
+            dirty or self.mln_container.dirty or self.db_container.dirty or
+            self.emln_container.dirty)
         self.changewindowtitle()
 
 
@@ -541,15 +565,16 @@ class MLNQueryGUI(object):
             self.db_container.update_file_choices()
             if len(self.project.mlns) > 0:
                 self.mln_container.selected_file.set(self.project.queryconf['mln'] or self.project.mlns.keys()[0])
-                self.mln_container.dirty = False
+            self.mln_container.dirty = False
             if len(self.project.emlns) > 0:
                 self.emln_container.selected_file.set(self.project.queryconf['emln'] or self.project.emlns.keys()[0])
-                self.emln_container.dirty = False
+            self.emln_container.dirty = False
             if len(self.project.dbs) > 0:
                 self.db_container.selected_file.set(self.project.queryconf['db'] or self.project.dbs.keys()[0])
-                self.db_container.dirty = False
+            self.db_container.dirty = False
             self.write_gconfig(savegeometry=False)
             self.settings_dirty.set(0)
+            self.project_setdirty(dirty=False)
             self.changewindowtitle()
         else:
             logger.error('File {} does not exist. Creating new project...'.format(filename))
@@ -564,7 +589,10 @@ class MLNQueryGUI(object):
 
 
     def ask_save_project(self):
-        fullfilename = asksaveasfilename(initialdir=self.project_dir, confirmoverwrite=True, filetypes=[('PRACMLN project files', '.pracmln')], defaultextension=".pracmln")
+        fullfilename = asksaveasfilename(initialdir=self.project_dir,
+                                         confirmoverwrite=True,
+                                         filetypes=[('PRACMLN project files','.pracmln')],
+                                         defaultextension=".pracmln")
         self.save_project(fullfilename)
 
 
@@ -591,10 +619,11 @@ class MLNQueryGUI(object):
     def save_proj(self):
         self.project.save(dirpath=self.project_dir)
         self.write_gconfig()
-        self.project_setdirty()
+        self.project_setdirty(dirty=False)
 
 
     ####################### MLN FUNCTIONS #####################################
+
     def import_mln(self, name, content):
         self.project.add_mln(name, content)
 
@@ -649,6 +678,7 @@ class MLNQueryGUI(object):
 
 
     ####################### EMLN FUNCTIONS #####################################
+
     def import_emln(self, name, content):
         self.project.add_emln(name, content)
 
@@ -789,27 +819,26 @@ class MLNQueryGUI(object):
         self.mln_container.clear()
 
 
-
-    def set_config(self, conf):
-        self.config = conf
-        self.selected_grammar.set(ifNone(conf.get('grammar'), 'PRACGrammar'))
-        self.selected_logic.set(ifNone(conf.get('logic'), 'FirstOrderLogic'))
-        self.mln_container.selected_file.set(ifNone(conf.get('mln'), ''))
+    def set_config(self, newconf):
+        self.config = newconf
+        self.selected_grammar.set(ifNone(newconf.get('grammar'), 'PRACGrammar'))
+        self.selected_logic.set(ifNone(newconf.get('logic'), 'FirstOrderLogic'))
+        self.mln_container.selected_file.set(ifNone(newconf.get('mln'), ''))
         if self.use_emln.get():
-            self.emln_container.selected_file.set(ifNone(conf.get('mln'), ''))
-        self.db_container.selected_file.set(ifNone(conf.get('db'), ""))
-        self.selected_method.set(ifNone(conf.get("method"), InferenceMethods.name('MCSAT'), transform=InferenceMethods.name))
-        self.multicore.set(ifNone(conf.get('multicore'), 0))
-        self.profile.set(ifNone(conf.get('profile'), 0))
-        self.params.set(ifNone(conf.get('params'), ''))
-        self.use_emln.set(ifNone(conf.get('use_emln'), 0))
-        self.verbose.set(ifNone(conf.get('verbose'), 1))
-        self.ignore_unknown_preds.set(ifNone(conf.get('ignore_unknown_preds'), 0))
-        self.output_filename.set(ifNone(conf.get('output_filename'), ''))
-        self.cwPreds.set(ifNone(conf.get('cw_preds'), ''))
-        self.closed_world.set(ifNone(conf.get('cw'), 0))
-        self.save.set(ifNone(conf.get('save'), 0))
-        self.query.set(ifNone(conf.get('queries'), ''))
+            self.emln_container.selected_file.set(ifNone(newconf.get('mln'), ''))
+        self.db_container.selected_file.set(ifNone(newconf.get('db'), ""))
+        self.selected_method.set(ifNone(newconf.get("method"), InferenceMethods.name('MCSAT'), transform=InferenceMethods.name))
+        self.multicore.set(ifNone(newconf.get('multicore'), 0))
+        self.profile.set(ifNone(newconf.get('profile'), 0))
+        self.params.set(ifNone(newconf.get('params'), ''))
+        self.use_emln.set(ifNone(newconf.get('use_emln'), 0))
+        self.verbose.set(ifNone(newconf.get('verbose'), 1))
+        self.ignore_unknown_preds.set(ifNone(newconf.get('ignore_unknown_preds'), 0))
+        self.output_filename.set(ifNone(newconf.get('output_filename'), ''))
+        self.cwPreds.set(ifNone(newconf.get('cw_preds'), ''))
+        self.closed_world.set(ifNone(newconf.get('cw'), 0))
+        self.save.set(ifNone(newconf.get('save'), 0))
+        self.query.set(ifNone(newconf.get('queries'), ''))
         self.onchange_cw()
 
 
@@ -818,7 +847,8 @@ class MLNQueryGUI(object):
             return
         mln = self.mln_container.selected_file.get()
         db = self.db_container.selected_file.get()
-        if "" in (mln, db): return
+        if "" in (mln, db):
+            return
         if self.selected_method.get():
             method = InferenceMethods.clazz(self.selected_method.get())
             methodid = InferenceMethods.id(method)
@@ -880,9 +910,14 @@ class MLNQueryGUI(object):
             print
 
             if options.get('mlnarg') is not None:
-                mlnobj = MLN(mlnfile=os.path.abspath(options.get('mlnarg')), logic=self.config.get('logic', 'FirstOrderLogic'), grammar=self.config.get('grammar', 'PRACGrammar'))
+                mlnobj = MLN(mlnfile=os.path.abspath(options.get('mlnarg')),
+                             logic=self.config.get('logic', 'FirstOrderLogic'),
+                             grammar=self.config.get('grammar', 'PRACGrammar'))
             else:
-                mlnobj = parse_mln(mln_content, searchpaths=[self.dir], projectpath=os.path.join(self.dir, self.project.name), logic=self.config.get('logic', 'FirstOrderLogic'), grammar=self.config.get('grammar', 'PRACGrammar'))
+                mlnobj = parse_mln(mln_content, searchpaths=[self.dir],
+                                   projectpath=os.path.join(self.dir, self.project.name),
+                                   logic=self.config.get('logic', 'FirstOrderLogic'),
+                                   grammar=self.config.get('grammar', 'PRACGrammar'))
 
             if options.get('emlnarg') is not None:
                 emln_content = mlnpath(options.get('emlnarg')).content
@@ -918,7 +953,6 @@ class MLNQueryGUI(object):
                 logger.info('saved result to file results/{} in project {}'.format(fname, self.project.name))
             else:
                 logger.debug('No output file given - results have not been saved.')
-
         except:
             traceback.print_exc()
 
@@ -933,6 +967,7 @@ if __name__ == '__main__':
 
     # read command-line options
     from optparse import OptionParser
+
     parser = OptionParser()
     parser.add_option("-i", "--mln", dest="mlnarg", help="the MLN model file to use")
     parser.add_option("-x", "--emln", dest="emlnarg", help="the MLN model extension file to use")
@@ -941,15 +976,15 @@ if __name__ == '__main__':
     parser.add_option("-r", "--results-file", dest="outputfile", help="the results file to save")
     parser.add_option("--run", action="store_true", dest="run", default=False, help="run with last settings (without showing GUI)")
     (opts, args) = parser.parse_args()
-    options = vars(opts)
+    opts_ = vars(opts)
 
     root = Tk()
     conf = PRACMLNConfig(DEFAULT_CONFIG)
-    app = MLNQueryGUI(root, conf, directory=os.path.abspath(args[0]) if args else None)
+    app = MLNQueryGUI(root, conf,
+                      directory=os.path.abspath(args[0]) if args else None)
 
     if opts.run:
         logger.debug('running mlnlearn without gui')
-        app.infer(savegeometry=False, options=options)
+        app.infer(savegeometry=False, options=opts_)
     else:
         root.mainloop()
-

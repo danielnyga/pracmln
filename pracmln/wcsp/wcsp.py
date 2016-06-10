@@ -27,17 +27,20 @@ from subprocess import Popen, PIPE
 import bisect
 import re
 from collections import defaultdict
+import thread
 from pracmln import praclog
 import platform
+from pracmln.mln.errors import NoConstraintsError
 
 
 logger = praclog.logger(__name__)
 
 class MaxCostExceeded(Exception): pass
 
-temp_wcsp_file = os.path.join('/', 'tmp', 'temp%d.wcsp')
+temp_wcsp_file = os.path.join('/', 'tmp', 'temp%d-%d.wcsp')
 
 toulbar_version = '0.9.7.0'
+
 
 def is_executable(path):
     return os.path.exists(path) and os.access(path, os.X_OK)
@@ -240,7 +243,7 @@ class WCSP(object):
         costs = []
         minWeight = None
         if len(self.constraints) == 0:
-            logger.critical('There are no satisfiable constraints.')
+            raise NoConstraintsError('There are no satisfiable constraints.')
         for constraint in self.constraints.values():
             for value in [constraint.defcost] + constraint.tuples.values():
                 if value == self.top: continue
@@ -349,6 +352,10 @@ class WCSP(object):
                 yield (num, solution)
         p.wait()        
         logger.debug('toulbar2 process returned %s' % str(p.returncode))
+        try:
+            os.remove(wcspfilename)
+        except OSError:
+            logger.warning('could not remove temporary file {}'.format(wcspfilename))
         if p.returncode != 0:
             raise Exception('toulbar2 returned a non-zero exit code: %d' % p.returncode)
 
@@ -361,7 +368,7 @@ class WCSP(object):
         if not is_executable(toulbar2_path()):
             raise Exception('toulbar2 cannot be found.')
         # append the process id to the filename to make it "process safe"
-        wcspfilename = temp_wcsp_file % os.getpid()
+        wcspfilename = temp_wcsp_file % (os.getpid(), thread.get_ident())
         with open(wcspfilename, 'w+') as f:
             self.write(f)
         cmd = '%s -s %s' % (toulbar2_path(), wcspfilename)
@@ -382,6 +389,10 @@ class WCSP(object):
                 nextLineIsSolution = False
         p.wait()        
         logger.debug('toulbar2 process returned %s' % str(p.returncode))
+        try:
+            os.remove(wcspfilename)
+        except OSError:
+            logger.warning('could not remove temporary file {}'.format(wcspfilename))
         if p.returncode != 0:
             raise Exception('toulbar2 returned a non-zero exit code: %d' % p.returncode)
         return solution, cost
@@ -394,4 +405,3 @@ if __name__ == '__main__':
     for i, s in wcsp.itersolutions():
         print i, s
     print 'best solution:', wcsp.solve()
-            
