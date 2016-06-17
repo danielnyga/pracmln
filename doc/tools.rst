@@ -24,8 +24,8 @@ Graphical Tools and Editors
 ---------------------------
 
 Two graphical tools, whose usage is hopefully self-explanatory, are 
-part of the package: There's an inference tool (mlnQueryTool.py) 
-and a parameter learning tool (mlnLearningTool.py). Simply invoke 
+part of the package: There's an inference tool (mlnquery.py) 
+and a parameter learning tool (mlnlearn.py). Simply invoke 
 them using the Python interpreter. (On Windows, do not use 
 pythonw.exe to run them because the console output is an integral 
 part of these tools.)::
@@ -64,7 +64,7 @@ located and then invoke the tool you want to use, e.g. ::
 
 The tool will remember this directory for the 
 next session and will automatically start in that directory. The
-memoized directory from the last session can be overridden by a 
+memorized directory from the last session can be overridden by a 
 command-line argument, so ::
 
     $ mlnquery .

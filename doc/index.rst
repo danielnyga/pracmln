@@ -39,7 +39,20 @@ as a Python module (`pracmln`) that you can use to work with MLNs in
 your own Python scripts. For an introduction into using `pracmln` in
 your own scripts, see :doc:`apidoc`.
 
-Contents:
+Release notes
+^^^^^^^^^^^^^
+
+  * Release |release| (13.06.2016)
+
+  
+    * *Fix*: :ref:`sec-cppbindings`
+    * *Feature*: literal groups for formula expansion (see :ref:`sec-litgroups`)
+    * *Fix*: existentially quantified formulas evaluate to false when they cannot be grounded
+    * *Fix*: cleanup of process pools in multicore mode
+
+
+Contents
+^^^^^^^^
 
 .. toctree::
    :maxdepth: 2
@@ -62,6 +75,7 @@ Contributors
 ############
 
 * Mareike Picklum
+* Ferenc Balint-Benczedi
 * Thiemo Wiedemeyer
 * Valentine Chiwome
 

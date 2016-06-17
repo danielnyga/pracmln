@@ -23,6 +23,7 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+import pyparsing
 
 from pracmln.logic import FirstOrderLogic, FuzzyLogic
 
@@ -211,10 +212,13 @@ class MLN(object):
         <Predicate: foo(arg0,arg1)>
         
         '''
+
         if isinstance(predicate, Predicate):
             return self.declare_predicate(predicate)
         elif isinstance(predicate, basestring):
             return self._predicates.get(predicate, None)
+        elif isinstance(predicate, pyparsing.ParseResults):
+            return predicate.asList()
         else:
             raise Exception('Illegal type of argument predicate: %s' % type(predicate))
         
@@ -332,13 +336,13 @@ class MLN(object):
         :param dbs:     list of :class:`database.Database` objects for materialization.
         '''
         logger.debug("materializing formula templates...")
-        
-        mln_ = self.copy()
 
-        # obtain full domain with all objects 
+        # obtain full domain with all objects
         fulldomain = mergedom(self.domains, *[db.domains for db in dbs])
         logger.debug('full domains: %s' % fulldomain)
-        
+
+        mln_ = self.copy()
+
         # collect the admissible formula templates. templates might be not
         # admissible since the domain of a template variable might be empty.
         for ft in list(mln_.formulas):
@@ -449,6 +453,7 @@ class MLN(object):
             else: dbs.append(db)
         logger.debug('loaded %s evidence databases for learning' % len(dbs))
         newmln = self.materialize(*dbs)
+
         logger.debug('MLN predicates:')
         for p in newmln.predicates: logger.debug(p)
         logger.debug('MLN domains:')
@@ -798,11 +803,13 @@ def parse_mln(text, searchpaths=['.'], projectpath=None, logic='FirstOrderLogic'
                             fixWeightOfNextFormula = False
                             fixweight = True
                             fixedWeightTemplateIndices.append(idxTemplate)
+
                         # expand predicate groups
                         for variant in formula.expandgrouplits():
                             mln.formula(variant, weight=weight,
                                         fixweight=fixweight,
                                         unique_templvars=uniquevars)
+
                         if uniquevars:
                             uniquevars = None
                     except ParseException, e:

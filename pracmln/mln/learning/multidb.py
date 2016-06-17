@@ -42,14 +42,14 @@ def _setup_learner((i, mln_, db, method, params)):
 
 
 class MultipleDatabaseLearner(AbstractLearner):
-    """
+    '''
     Learns from multiple databases using an arbitrary sub-learning method for
     each database, assuming independence between individual databases.
-    """
+    '''
 
 
     def __init__(self, mln_, dbs, method, **params):
-        """
+        '''
         :param dbs:         list of :class:`mln.database.Database` objects to
                             be used for learning.
         :param mln_:        the MLN object to be used for learning
@@ -58,7 +58,8 @@ class MultipleDatabaseLearner(AbstractLearner):
                             :class:`mln.methods.LearningMethods`.
         :param **params:    additional parameters handed over to the base
                             learners.
-        """
+        '''
+
         self.dbs = dbs
         self._params = edict(params)
         if not mln_._materialized:
@@ -72,11 +73,9 @@ class MultipleDatabaseLearner(AbstractLearner):
             bar = ProgressBar(width=100, steps=len(dbs), color='green')
         if self.multicore:
             pool = Pool(maxtasksperchild=1)
-            logger.debug('Setting up multi-core processing for '
-                         '{} cores'.format(pool._processes))
+            logger.debug('Setting up multi-core processing for {} cores'.format(pool._processes))
             try:
-                for i, learner in pool.imap(with_tracing(_setup_learner),
-                                            self._iterdbs(method)):
+                for i, learner in pool.imap(with_tracing(_setup_learner), self._iterdbs(method)):
                     self.learners[i] = learner
                     if self.verbose:
                         bar.label('Database %d, %s' % ((i + 1), learner.name))
@@ -202,13 +201,14 @@ class MultipleDatabaseLearner(AbstractLearner):
 
     def _filter_fixweights(self, v):
         '''
-        Removes from the vector `v` all elements at indices that correspond to a fixed weight formula index.
+        Removes from the vector `v` all elements at indices that correspond to
+        a fixed weight formula index.
         '''
         if len(v) != len(self.mln.formulas):
             raise Exception('Vector must have same length as formula weights')
         return [v[i] for i in range(len(self.mln.formulas)) if not self.mln.fixweights[i] and self.mln.weights[i] != HARD]
 
-    
+
     def _add_fixweights(self, w):
         i = 0
         w_ = []
@@ -222,8 +222,9 @@ class MultipleDatabaseLearner(AbstractLearner):
 
 
     def run(self, **params):
-        if not 'scipy' in sys.modules:
-            raise Exception("Scipy was not imported! Install numpy and scipy if you want to use weight learning.")
+        if 'scipy' not in sys.modules:
+            raise Exception("Scipy was not imported! Install numpy and scipy "
+                            "if you want to use weight learning.")
         # initial parameter vector: all zeros or weights from formulas
         self._w = [0] * len(self.mln.formulas)
         for f in self.mln.formulas:
@@ -232,6 +233,7 @@ class MultipleDatabaseLearner(AbstractLearner):
         runs = 0
         while runs < self.maxrepeat:
             self._prepare()
+
             self._optimize(**self._params)
             self._cleanup()
             runs += 1

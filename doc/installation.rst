@@ -61,6 +61,8 @@ Installation
    If you intend to make use of scripting, also set ``PYTHONPATH`` as described
    by ``setup``.
 
+.. _sec-cppbindings:
+
 C++ bindings
 ------------
 
@@ -122,8 +124,8 @@ Examples
 
 There are example models in the ``./examples/`` directory.
 
-Simply run the ``blnquery`` or ``mlnquery`` applications in one of the subdirectories
+Simply run the ``mlnquery`` applications in one of the subdirectories
 to try out some inference tasks.
 
 In the ``./examples/meals/`` directory, you can also try out learning.
-To train a BLN or MLN model run ``blnlearn`` or ``mlnlearn``. 
+To train a MLN model run ``mlnlearn``. 

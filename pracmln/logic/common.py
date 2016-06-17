@@ -20,6 +20,7 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 import sys
 from pracmln.mln.util import ifNone, fstr, dict_union, colorize
 from pracmln.mln.errors import NoSuchDomainError, NoSuchPredicateError
@@ -305,7 +306,6 @@ class Logic(object):
                     for t in self._ground_template({}):
                         yield t
 
-    
         def template_variables(self, variable=None):
             '''
             Gets all variables of this formula that are required to be expanded 
@@ -960,6 +960,7 @@ class Logic(object):
         @predname.setter
         def predname(self, predname):
             if self.mln is not None and self.mln.predicate(predname) is None:
+            # if self.mln is not None and any(self.mln.predicate(p) is None for p in predname):
                 raise NoSuchPredicateError('Predicate %s is undefined.' % predname)
             self._predname = predname
     
@@ -976,7 +977,7 @@ class Logic(object):
                                                                                                len(self.mln.predicate(self.predname).argdoms), 
                                                                                                self.mln.predicate(self.predname).argdoms))
             self._args = args
-    
+
 
         def __str__(self):
             return {True:'!', False:'', 2: '*'}[self.negated] + self.predname + "(" + ",".join(self.args) + ")"
@@ -1053,7 +1054,7 @@ class Logic(object):
                 else:
                     print "\nground atoms:"
                     mrf.print_gndatoms()
-                    raise Exception("Could not ground formula containing '%s' - this atom is not among the ground atoms (see above)." % atom)
+                    raise Exception("Could not ground formula containing '%s' - this atom is not among the ground atoms (see above)." % self.predname)
     
     
         def _ground_template(self, assignment):
@@ -1137,9 +1138,9 @@ class Logic(object):
 
         @predname.setter
         def predname(self, prednames):
-            """
+            '''
             predname is a list of predicate names, of which each is tested if it is None
-            """
+            '''
             if self.mln is not None and any(self.mln.predicate(p) is None for p in prednames):
                 erroneouspreds = [p for p in prednames if self.mln.predicate(p) is None]
                 raise NoSuchPredicateError('Predicate{} {} is undefined.'.format('s' if len(erroneouspreds) > 1 else '', ', '.join(erroneouspreds)))
@@ -1969,6 +1970,8 @@ class Logic(object):
             self._ground(self.children[0], variables, assignment, gndings, mrf, partial=partial)
             if len(gndings) == 1:
                 return gndings[0]
+            if not gndings:
+                return self.mln.logic.true_false(0, mln=self.mln, idx=self.idx)
             disj = self.mln.logic.disjunction(gndings, mln=self.mln, idx=self.idx)
             if simplify:
                 return disj.simplify(mrf.evidence)

@@ -46,22 +46,24 @@ global_enumAsk = None
 
 
 def eval_queries(world):
-    '''
+    """
     Evaluates the queries given a possible world.
-    '''
+    """
     numerators = [0] * len(global_enumAsk.queries)
     denominator = 0
     expsum = 0
     for gf in global_enumAsk.grounder.itergroundings():
-        if global_enumAsk.soft_evidence_formula(gf):                
+        if global_enumAsk.soft_evidence_formula(gf):
             expsum += gf.noisyor(world) * gf.weight
         else:
             truth = gf(world)
             if gf.weight == HARD:
                 if truth in Interval(']0,1['):
                     raise Exception('No real-valued degrees of truth are allowed in hard constraints.')
-                if truth == 1: continue
-                else: return numerators, 0
+                if truth == 1:
+                    continue
+                else:
+                    return numerators, 0
             expsum += gf(world) * gf.weight
     expsum = exp(expsum)
     # update numerators
@@ -78,25 +80,19 @@ class EnumerationAsk(Inference):
     evidence; supports soft evidence (assuming independence)
     '''
 
-
     def __init__(self, mrf, queries, **params):
         Inference.__init__(self, mrf, queries, **params)
-        self.grounder = FastConjunctionGrounding(mrf, simplify=False,
-                                                 unsatfailure=False,
-                                                 formulas=mrf.formulas,
-                                                 cache=auto, verbose=False,
-                                                 multicore=False)
+        self.grounder = FastConjunctionGrounding(mrf, simplify=False, unsatfailure=False, formulas=mrf.formulas, cache=auto, verbose=False, multicore=False)
         # self.grounder = DefaultGroundingFactory(mrf, simplify=False,
         # unsatfailure=False, formulas=list(mrf.formulas), cache=auto,
         # verbose=False)
         # check consistency of fuzzy and functional variables
         for variable in self.mrf.variables:
-            variable.consistent(self.mrf.evidence,
-                                strict=isinstance(variable, FuzzyVariable))
+            variable.consistent(self.mrf.evidence, strict=isinstance(variable, FuzzyVariable))
 
 
     def _run(self):
-        '''
+        """
         verbose: whether to print results (or anything at all, in fact)
         details: (given that verbose is true) whether to output additional
                  status information
@@ -104,11 +100,10 @@ class EnumerationAsk(Inference):
                  information, in particular the distribution over possible
                  worlds
         debugLevel: level of detail for debug mode
-        '''
+        """
         # check consistency with hard constraints:
         self._watch.tag('check hard constraints', verbose=self.verbose)
-        hcgrounder = FastConjunctionGrounding(self.mrf, simplify=False, 
-                                              unsatfailure=True, 
+        hcgrounder = FastConjunctionGrounding(self.mrf, simplify=False, unsatfailure=True, 
                                               formulas=[f for f in self.mrf.formulas if f.weight == HARD], 
                                               **(self._params + {'multicore': False, 'verbose': False}))
         for gf in hcgrounder.itergroundings():
@@ -165,14 +160,15 @@ class EnumerationAsk(Inference):
         if 'grounding' in self.grounder.watch.tags:
             self._watch.tags['grounding'] = self.grounder.watch['grounding']
         if denominator == 0:
-            raise SatisfiabilityException('MLN is unsatisfiable. All probability masses returned 0.')
+            raise SatisfiabilityException(
+                'MLN is unsatisfiable. All probability masses returned 0.')
         # normalize answers
         dist = map(lambda x: float(x) / denominator, numerators)
         result = {}
         for q, p in zip(self.queries, dist):
             result[str(q)] = p
         return result
-    
-    
+
+
     def soft_evidence_formula(self, gf):
         return isinstance(self.mrf.mln.logic, FirstOrderLogic) and any(map(lambda a: a.truth(self.mrf.evidence) in Interval('(0,1)'), gf.gndatoms()))

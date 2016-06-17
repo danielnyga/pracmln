@@ -1,32 +1,47 @@
-'''
+"""
 Created on Oct 28, 2015
 
 @author: nyga
-'''
-from pracmln import MLN, Database, mlnpath
+"""
+from pracmln import MLN, Database
 from pracmln import query, learn
 from pracmln.mlnlearn import EVIDENCE_PREDS
-from pracmln.utils.project import PRACMLNConfig, MLNProject
-from pracmln.mln.util import out
 import time
+
 
 def test_inference_smokers():
     p = '$PRACMLN_HOME/examples/smokers/smokers.pracmln'
-    mln = MLN(mlnfile=('%s:wts.pybpll.smoking-train-smoking.mln' % p), grammar='StandardGrammar')
+    mln = MLN(mlnfile=('%s:wts.pybpll.smoking-train-smoking.mln' % p),
+              grammar='StandardGrammar')
     db = Database(mln, dbfile='%s:smoking-test-smaller.db' % p)
-    for method in ('EnumerationAsk', 'MC-SAT', 'WCSPInference', 'GibbsSampler'):
+    for method in ('EnumerationAsk',
+                   'MC-SAT',
+                   'WCSPInference',
+                   'GibbsSampler'):
         for multicore in (False, True):
             print '=== INFERENCE TEST:', method, '==='
-            query(queries='Cancer,Smokes,Friends', method=method, mln=mln, db=db, verbose=True, multicore=multicore).run()
+            query(queries='Cancer,Smokes,Friends',
+                  method=method,
+                  mln=mln,
+                  db=db,
+                  verbose=True,
+                  multicore=multicore).run()
     
 
 def test_inference_taxonomies():
     p = '$PRACMLN_HOME/examples/taxonomies/taxonomies.pracmln'
-    mln = MLN(mlnfile=('%s:wts.learned.taxonomy.mln' % p), grammar='PRACGrammar', logic='FuzzyLogic')
+    mln = MLN(mlnfile=('%s:wts.learned.taxonomy.mln' % p),
+              grammar='PRACGrammar',
+              logic='FuzzyLogic')
     db = Database(mln, dbfile='%s:evidence.db' % p)
     for method in ('EnumerationAsk', 'WCSPInference'):
         print '=== INFERENCE TEST:', method, '==='
-        query(queries='has_sense, action_role', method=method, mln=mln, db=db, verbose=False, cw=True).run().write()
+        query(queries='has_sense, action_role',
+              method=method,
+              mln=mln,
+              db=db,
+              verbose=False,
+              cw=True).run().write()
     
     
 def test_learning_smokers():
@@ -37,7 +52,11 @@ def test_learning_smokers():
     for method in ('BPLL', 'BPLL_CG', 'CLL'):
         for multicore in (True, False):
             print '=== LEARNING TEST:', method, '==='
-            learn(method=method, mln=mln, db=db, verbose=True, multicore=multicore).run()
+            learn(method=method,
+                  mln=mln,
+                  db=db,
+                  verbose=True,
+                  multicore=multicore).run()
 
 
 def test_learning_taxonomies():
@@ -48,8 +67,15 @@ def test_learning_taxonomies():
     for method in ('DPLL', 'DBPLL_CG', 'DCLL'):
         for multicore in (True, False):
             print '=== LEARNING TEST:', method, '==='
-            learn(method=method, mln=mln, db=dbs, verbose=True, multicore=multicore, epreds='is_a', discr_preds=EVIDENCE_PREDS).run()
-    
+            learn(method=method,
+                  mln=mln,
+                  db=dbs,
+                  verbose=True,
+                  multicore=multicore,
+                  epreds='is_a',
+                  discr_preds=EVIDENCE_PREDS).run()
+
+
 def runall():
     start = time.time()
     test_inference_smokers()
@@ -61,5 +87,3 @@ def runall():
 
 if __name__ == '__main__':
     runall()
-    
-    

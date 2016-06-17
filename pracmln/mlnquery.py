@@ -117,7 +117,7 @@ class MLNQuery(object):
     def cw(self):
         return self._config.get('cw', False)
 
-    
+
     @property
     def cw_preds(self):
         preds = self._config.get('cw_preds', '')
@@ -125,7 +125,7 @@ class MLNQuery(object):
             preds = preds.split(',')
         return map(str.strip, preds)
 
-    
+
     @property
     def use_emln(self):
         return self._config.get('use_emln', False)
@@ -181,15 +181,18 @@ class MLNQuery(object):
             mlnstr.close()
             mlnstr = str(mlnstr)
             emln = self.emln
-            mln = parse_mln(mlnstr + emln, grammar=self.grammar, logic=self.logic)
-        
+            mln = parse_mln(mlnstr + emln, grammar=self.grammar,
+                            logic=self.logic)
+
         # load the database
-        if isinstance(self.db, Database): 
+        if isinstance(self.db, Database):
             db = self.db
         elif isinstance(self.db, list) and len(self.db) == 1:
             db = self.db[0]
         elif isinstance(self.db, list):
-            raise Exception('Got {} dbs. Can only handle one for inference.'.format(len(self.db)))
+            raise Exception(
+                'Got {} dbs. Can only handle one for inference.'.format(
+                    len(self.db)))
         else:
             raise Exception('DB of invalid format {}'.format(type(self.db)))
 
@@ -255,7 +258,6 @@ class MLNQuery(object):
 
 
 class MLNQueryGUI(object):
-
     def __init__(self, master, gconf, directory=None):
         self.master = master
         # icon = Tkinter.Image("photo", file=os.path.join(PRACMLN_HOME, 'doc', '_static', 'favicon.ico'))
@@ -275,7 +277,8 @@ class MLNQueryGUI(object):
 
         row = 0
         # pracmln project options
-        Label(self.frame, text='PRACMLN Project: ').grid(row=row, column=0, sticky='ES')
+        Label(self.frame, text='PRACMLN Project: ').grid(row=row, column=0,
+                                                         sticky='ES')
         project_container = Frame(self.frame)
         project_container.grid(row=row, column=1, sticky="NEWS")
 
@@ -317,10 +320,14 @@ class MLNQueryGUI(object):
         row += 1
         Label(self.frame, text="MLN: ").grid(row=row, column=0, sticky='NE')
         self.mln_container = FileEditBar(self.frame, dir=self.dir,
-                                         filesettings={'extension':'.mln', 'ftypes':[('MLN files', '.mln')]},
-                                         defaultname='*unknown{}', importhook=self.import_mln, deletehook=self.delete_mln,
-                                         projecthook=self.save_proj, filecontenthook=self.mlnfilecontent,
-                                         fileslisthook=self.mlnfiles, updatehook=self.update_mln,
+                                         filesettings={'extension': '.mln', 'ftypes': [('MLN files', '.mln')]},
+                                         defaultname='*unknown{}',
+                                         importhook=self.import_mln,
+                                         deletehook=self.delete_mln,
+                                         projecthook=self.save_proj,
+                                         filecontenthook=self.mlnfilecontent,
+                                         fileslisthook=self.mlnfiles,
+                                         updatehook=self.update_mln,
                                          onchangehook=self.project_setdirty)
         self.mln_container.grid(row=row, column=1, sticky="NEWS")
         self.mln_container.columnconfigure(1, weight=2)
@@ -357,8 +364,7 @@ class MLNQueryGUI(object):
 
         # db section
         row += 1
-        Label(self.frame, text="Evidence: ").grid(row=row, column=0,
-                                                  sticky='NE')
+        Label(self.frame, text="Evidence: ").grid(row=row, column=0, sticky='NE')
         self.db_container = FileEditBar(self.frame, dir=self.dir,
                                         filesettings={'extension': '.db', 'ftypes': [('Database files', '.db')]},
                                         defaultname='*unknown{}',
@@ -480,9 +486,7 @@ class MLNQueryGUI(object):
         self.project = None
         self.project_dir = os.path.abspath(ifNone(directory, ifNone(gconf['prev_query_path'], os.getcwd())))
         if gconf['prev_query_project': self.project_dir] is not None:
-            self.load_project(os.path.join(self.project_dir,
-                                           gconf['prev_query_project':
-                                           self.project_dir]))
+            self.load_project(os.path.join(self.project_dir, gconf['prev_query_project':self.project_dir]))
         else:
             self.new_project()
 
@@ -502,7 +506,8 @@ class MLNQueryGUI(object):
     def quit(self):
         if self.settings_dirty.get() or self.project_dirty.get():
             savechanges = tkMessageBox.askyesnocancel("Save changes", "You have unsaved project changes. Do you want to save them before quitting?")
-            if savechanges is None: return
+            if savechanges is None:
+                return
             elif savechanges:
                 self.noask_save_project()
             self.master.destroy()
@@ -527,8 +532,7 @@ class MLNQueryGUI(object):
 
 
     def project_setdirty(self, dirty=False, *args):
-        self.project_dirty.set(
-            dirty or self.mln_container.dirty or self.db_container.dirty or
+        self.project_dirty.set(dirty or self.mln_container.dirty or self.db_container.dirty or
             self.emln_container.dirty)
         self.changewindowtitle()
 
@@ -674,7 +678,7 @@ class MLNQueryGUI(object):
     def mlnfilecontent(self, filename):
         return self.project.mlns.get(filename, '').strip()
 
-    ####################### /MLN FUNCTIONS #####################################
+    # /MLN FUNCTIONS #####################################
 
 
     ####################### EMLN FUNCTIONS #####################################
@@ -729,10 +733,9 @@ class MLNQueryGUI(object):
     def emlnfilecontent(self, filename):
         return self.project.emlns.get(filename, '').strip()
 
-    ####################### /EMLN FUNCTIONS #####################################
+    # /EMLN FUNCTIONS #####################################
 
-
-    ####################### DB FUNCTIONS #####################################
+    # DB FUNCTIONS #####################################
     def import_db(self, name, content):
         self.project.add_db(name, content)
 
@@ -783,10 +786,9 @@ class MLNQueryGUI(object):
     def dbfilecontent(self, filename):
         return self.project.dbs.get(filename, '').strip()
 
-    ####################### /DB FUNCTIONS #####################################
+    # /DB FUNCTIONS #####################################
 
-
-    ####################### GENERAL FUNCTIONS #################################
+    # GENERAL FUNCTIONS #################################
 
     def select_method(self, *args):
         self.set_outputfilename()
@@ -969,12 +971,18 @@ if __name__ == '__main__':
     from optparse import OptionParser
 
     parser = OptionParser()
-    parser.add_option("-i", "--mln", dest="mlnarg", help="the MLN model file to use")
-    parser.add_option("-x", "--emln", dest="emlnarg", help="the MLN model extension file to use")
-    parser.add_option("-q", "--queries", dest="queryarg", help="queries (comma-separated)")
-    parser.add_option("-e", "--evidence", dest="dbarg", help="the evidence database file")
-    parser.add_option("-r", "--results-file", dest="outputfile", help="the results file to save")
-    parser.add_option("--run", action="store_true", dest="run", default=False, help="run with last settings (without showing GUI)")
+    parser.add_option("-i", "--mln", dest="mlnarg",
+                      help="the MLN model file to use")
+    parser.add_option("-x", "--emln", dest="emlnarg",
+                      help="the MLN model extension file to use")
+    parser.add_option("-q", "--queries", dest="queryarg",
+                      help="queries (comma-separated)")
+    parser.add_option("-e", "--evidence", dest="dbarg",
+                      help="the evidence database file")
+    parser.add_option("-r", "--results-file", dest="outputfile",
+                      help="the results file to save")
+    parser.add_option("--run", action="store_true", dest="run", default=False,
+                      help="run with last settings (without showing GUI)")
     (opts, args) = parser.parse_args()
     opts_ = vars(opts)
 

@@ -35,6 +35,7 @@ from pracmln.mln.errors import NoConstraintsError
 
 logger = praclog.logger(__name__)
 
+
 class MaxCostExceeded(Exception): pass
 
 temp_wcsp_file = os.path.join('/', 'tmp', 'temp%d-%d.wcsp')
