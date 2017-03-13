@@ -180,31 +180,14 @@ class MLNProject(object):
             else: raise Exception('Need a database name or config.')
         from pracmln.mln.database import parse_db
         path = self.path if hasattr(self, 'path') else None
-        out(db)
-        out(self.dbs[db])
         return parse_db(mln, self.dbs[ifNone(db, config['db'])], ignore_unknown_preds=config['ignore_unknown_preds'], projectpath=path)
     
 
     def save(self, dirpath='.'):
         filename = self.name
         self.path = dirpath
-        with ZipFile(os.path.join(dirpath, filename), 'w', ZIP_DEFLATED) as zf:
-            # save the learn.conf
-            zf.writestr('learn.conf', self.learnconf.dumps())
-            # save the query.conf
-            zf.writestr('query.conf', self.queryconf.dumps())
-            # save the MLNs
-            for name, mln in self.mlns.iteritems():
-                zf.writestr(os.path.join('mlns', name), mln)
-            # save the model extensions
-            for name, emln in self.emlns.iteritems():
-                zf.writestr(os.path.join('emlns', name), emln)
-            # save the DBs
-            for name, db in self.dbs.iteritems():
-                zf.writestr(os.path.join('dbs', name), db)
-            # save the results
-            for name, result in self.results.iteritems():
-                zf.writestr(os.path.join('results', name), result)
+        with open(os.path.join(dirpath, filename), 'w') as zf:
+            self.tostream(zf)
         self.dirty = False
         
     
@@ -235,6 +218,52 @@ class MLNProject(object):
                     elif path == 'results':
                         proj._results[f] = zf.open(member).read()
         return proj
+
+    @staticmethod
+    def read(filename, stream, path=None):
+        proj = MLNProject(filename)
+        proj.path = path
+        with ZipFile(stream, 'r') as zf:
+            for member in zf.namelist():
+                if member == 'learn.conf':
+                    tmpconf = eval(zf.open(member).read())
+                    proj.learnconf = PRACMLNConfig()
+                    proj.learnconf.update(tmpconf)
+                elif member == 'query.conf':
+                    tmpconf = eval(zf.open(member).read())
+                    proj.queryconf = PRACMLNConfig()
+                    proj.queryconf.update(tmpconf)
+                else:
+                    path, f = os.path.split(member)
+                    if path == 'mlns':
+                        proj._mlns[f] = zf.open(member).read()
+                    elif path == 'emlns':
+                        proj._emlns[f] = zf.open(member).read()
+                    elif path == 'dbs':
+                        proj._dbs[f] = zf.open(member).read()
+                    elif path == 'results':
+                        proj._results[f] = zf.open(member).read()
+        return proj
+
+    def tostream(self, stream):
+        with ZipFile(stream, 'w', ZIP_DEFLATED) as zf:
+            # save the learn.conf
+            zf.writestr('learn.conf', self.learnconf.dumps())
+            # save the query.conf
+            zf.writestr('query.conf', self.queryconf.dumps())
+            # save the MLNs
+            for name, mln in self.mlns.iteritems():
+                zf.writestr(os.path.join('mlns', name), mln)
+            # save the model extensions
+            for name, emln in self.emlns.iteritems():
+                zf.writestr(os.path.join('emlns', name), emln)
+            # save the DBs
+            for name, db in self.dbs.iteritems():
+                zf.writestr(os.path.join('dbs', name), db)
+            # save the results
+            for name, result in self.results.iteritems():
+                zf.writestr(os.path.join('results', name), result)
+
         
 
     def write(self, stream=sys.stdout):
@@ -371,23 +400,24 @@ class mlnpath(object):
     
     
     def __init__(self, path):
+
         # split the path wrt slashes
-        tokens = path.split('/')
-        self._abspath = path.startswith('/')
-        if ':' in tokens[-1] or tokens[-1].endswith('.pracmln'):
-            res =  tokens[-1].split(':')
+        self.path, file = os.path.split(path)
+
+        self._abspath = self.path.startswith('/')
+        if ':' in file or file.endswith('.pracmln'):
+            res = file.split(':')
             if len(res) == 2:
                 self.project, self.file = res
             elif len(res) == 1:
-                self.project, self.file = res[0], None 
+                self.project, self.file = res[0], None
         else:
             self.project = None
-            self.file = tokens[-1] 
-        self.path = tokens[:-1]
-    
+            self.file = file
+
     
     def compose(self):
-        p = '/'.join(self.path)
+        p = os.path.join(*self.path)
         if self.project is not None:
             p += ('/' if p else '') + self.project
             if self.file is not None:
@@ -398,7 +428,7 @@ class mlnpath(object):
         
     
     def resolve_path(self):
-        p = os.path.join('/' if self._abspath else '', *self.path)
+        p = ('/' if self._abspath else '') + self.path
         for f in (os.path.expanduser, os.path.expandvars, os.path.normpath):
             p = f(p)
         return p

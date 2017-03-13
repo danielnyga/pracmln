@@ -42,9 +42,12 @@ your own scripts, see :doc:`apidoc`.
 Release notes
 ^^^^^^^^^^^^^
 
-  * Release |release| (13.06.2016)
+  * Release |release| (13.03.2017)
 
-  
+    * *Fix*: Patches for Windows support
+
+  * Release 1.1.0 (13.06.2016)
+
     * *Fix*: :ref:`sec-cppbindings`
     * *Feature*: literal groups for formula expansion (see :ref:`sec-litgroups`)
     * *Fix*: existentially quantified formulas evaluate to false when they cannot be grounded

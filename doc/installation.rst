@@ -7,36 +7,65 @@ Compatibility
 
 This software suite works out-of-the-box on Linux and Windows 64-bit machines. 
 
-Prerequisites 
--------------
-
-* Python 2.7 (or newer) with Tkinter installed.
-
-    .. note::
-      
-      On Windows, Tkinter is usually shipped with Python. 
-      On Linux, the following packages should be installed (tested for Ubuntu)::
-      
-        sudo apt-get install python-tk python-scipy
-        
-  You will also need the following python packages: `pyparsing`, `tabulate` and `psutil`. You can install them via ::
-  
-    $ sudo pip install pyparsing tabulate psutil==0.4.1
-
-* `pracmln` is shipped with the open source WCSP solver `toulbar2` for Linux and Windows 64-bit versions. 
-  For other architectures, it can be obtained from::
-  
-    https://mulcyber.toulouse.inra.fr/projects/toulbar2
-    
-  Its executable ``toulbar2`` should then be included in the ``$PATH`` variable.
-
-
 Source Code
 -----------
 
 The source code is publicly available under BSD License: ::
-  
+
   git clone https://github.com/danielnyga/pracmln.git
+
+
+Prerequisites
+-------------
+
+
+Linux
+^^^^^
+
+* Python 2.7 with Tkinter installed.
+
+    .. note::
+
+      On Linux, the following packages should be installed (tested for Ubuntu).::
+
+        sudo apt-get install python-tk python-scipy
+
+  You will also need the following python packages: `pyparsing`, `tabulate`, `psutil` and `networkx`. You can install them via ::
+
+    $ sudo pip install pyparsing tabulate psutil==0.4.1 networkx
+
+* `pracmln` is shipped with the open source WCSP solver `toulbar2` for Linux and Windows 64-bit versions.
+  For other architectures, it can be obtained from::
+
+    https://mulcyber.toulouse.inra.fr/projects/toulbar2
+
+  Its executable ``toulbar2`` should then be included in the ``$PATH`` variable.
+
+
+Windows
+^^^^^^^
+
+* Python 2.7 with Tkinter installed.
+
+    .. note::
+
+      On Windows, Tkinter is usually shipped with Python.
+
+  You will also need the following python packages: `pyparsing`, `tabulate`, `psutil` and `networkx`. You can install them via ::
+
+    $ pip install numpy pyparsing tabulate psutil==0.4.1 networkx
+
+  You will also need the python package `scipy`. If installing it with pip does not work, obtain a prebuilt version (e.g. scipy‑0.XX.Y‑cp27‑cp27m‑win32.whl) online from::
+
+    http://www.lfd.uci.edu/~gohlke/pythonlibs/#scipy
+
+
+* `pracmln` is shipped with the open source WCSP solver `toulbar2` for Linux and Windows (Intel) 64-bit versions.
+  For other architectures, it can be obtained from::
+
+    https://mulcyber.toulouse.inra.fr/projects/toulbar2
+
+  Its executable ``toulbar2`` should then be included in the ``$PATH`` variable.
 
 
 Installation
@@ -59,7 +88,7 @@ Installation
    If you use `pracmln` a lot, consider adding the ``./apps`` directory to your ``PATH`` variable
    or copy the files created therein to an appropriate directory.
    If you intend to make use of scripting, also set ``PYTHONPATH`` as described
-   by ``setup``.
+   by ``setup`` (the env.bat for Windows will do this automatically).
 
 .. _sec-cppbindings:
 
