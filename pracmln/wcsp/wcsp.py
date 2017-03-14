@@ -31,6 +31,7 @@ import thread
 from pracmln import praclog
 import platform
 from pracmln.mln.errors import NoConstraintsError
+import tempfile
 
 
 logger = praclog.logger(__name__)
@@ -38,20 +39,43 @@ logger = praclog.logger(__name__)
 
 class MaxCostExceeded(Exception): pass
 
-temp_wcsp_file = os.path.join('/', 'tmp', 'temp%d-%d.wcsp')
-
 toulbar_version = '0.9.7.0'
 
+def is_executable_win(program):
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    if not program.endswith('.exe'):
+        program += '.exe'
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
+def is_executable_unix(path):
+    if os.path.exists(path) and os.access(path, os.X_OK):
+        return path
+    else:
+        return None
 
 def is_executable(path):
-    return os.path.exists(path) and os.access(path, os.X_OK)
+    return is_executable_unix(path) or is_executable_win(path)
 
 
 def toulbar2_path():
-    (osname, _, _, _, arch, _) = platform.uname() 
+    (osname, _, _, _, arch, _) = platform.uname()
     execname = 'toulbar2'
-    if is_executable(execname): # use the version in PATH if it can be found
-        return execname
+    en = is_executable(execname)
+    if en is not None: # use the version in PATH if it can be found
+        return en
     # fallback: try to load shipped toulbar2 binary
     if osname == 'Windows': execname += '.exe'
     path = os.path.join(os.getenv('PRACMLN_HOME', '.'), '3rdparty', 'toulbar2-%s' % toulbar_version, arch, osname, execname)
@@ -336,9 +360,10 @@ class WCSP(object):
         if not is_executable(toulbar2_path()):
             raise Exception('toulbar2 cannot be found.')
         # append the process id to the filename to make it "process safe"
-        wcspfilename = temp_wcsp_file % os.getpid()
-        with open(wcspfilename, 'w+') as f:
-            self.write(f)
+        tmpfile = tempfile.NamedTemporaryFile(prefix=os.getpid(), suffix='.wcsp', delete=False)
+        wcspfilename = tmpfile.name
+        self.write(tmpfile)
+        tmpfile.close()
         cmd = '%s -s -a %s' % (toulbar2_path(), wcspfilename)
         logger.debug('solving WCSP...')
         p = Popen(cmd, shell=True, stderr=PIPE, stdout=PIPE)
@@ -369,10 +394,11 @@ class WCSP(object):
         if not is_executable(toulbar2_path()):
             raise Exception('toulbar2 cannot be found.')
         # append the process id to the filename to make it "process safe"
-        wcspfilename = temp_wcsp_file % (os.getpid(), thread.get_ident())
-        with open(wcspfilename, 'w+') as f:
-            self.write(f)
-        cmd = '%s -s %s' % (toulbar2_path(), wcspfilename)
+        tmpfile = tempfile.NamedTemporaryFile(prefix='{}-{}'.format(os.getpid(), thread.get_ident()), suffix='.wcsp', delete=False)
+        wcspfilename = tmpfile.name
+        self.write(tmpfile)
+        tmpfile.close()
+        cmd = '"%s" -s %s' % (toulbar2_path(), wcspfilename)
         logger.debug('solving WCSP...')
         p = Popen(cmd, shell=True, stderr=PIPE, stdout=PIPE)
         solution = None
