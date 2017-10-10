@@ -24,6 +24,7 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+import argparse
 
 from Tkinter import *
 from tkFileDialog import askopenfilename, asksaveasfilename
@@ -33,7 +34,6 @@ import tkMessageBox
 import traceback
 from pracmln.utils.project import MLNProject, PRACMLNConfig, mlnpath
 from mln.methods import InferenceMethods
-from mln.inference import *
 from utils.widgets import FileEditBar
 from utils import config
 from pracmln import praclog
@@ -65,13 +65,24 @@ WINDOWTITLEEDITED = 'PRACMLN Query Tool - {}' + os.path.sep + '*{}'
 
 class MLNQuery(object):
 
-    def __init__(self, config=None, **params):
+    def __init__(self, config=None, verbose=None, **params):
+        '''
+        Class for performing MLN inference
+        :param config:  the configuration file for the inference
+        :param verbose: boolean value whether verbosity logs will be
+                        printed or not
+        :param params:  dictionary of additional settings
+        '''
         self.configfile = None
         if config is None:
             self._config = {}
         elif isinstance(config, PRACMLNConfig):
             self._config = config.config
             self.configfile = config
+        if verbose is not None:
+            self._verbose = verbose
+        else:
+            self._verbose = self._config.get('verbose', False)
         self._config.update(params)
 
 
@@ -153,8 +164,7 @@ class MLNQuery(object):
 
     @property
     def verbose(self):
-        return self._config.get('verbose', False)
-
+        return self._verbose
 
     @property
     def ignore_unknown_preds(self):
@@ -176,10 +186,10 @@ class MLNQuery(object):
             raise Exception('No MLN specified')
 
         if self.use_emln and self.emln is not None:
-            mlnstr = StringIO.StringIO()
-            mln.write(mlnstr)
-            mlnstr.close()
-            mlnstr = str(mlnstr)
+            mlnstrio = StringIO.StringIO()
+            mln.write(mlnstrio)
+            mlnstr = mlnstrio.getvalue()
+            mlnstrio.close()
             emln = self.emln
             mln = parse_mln(mlnstr + emln, grammar=self.grammar,
                             logic=self.logic)
@@ -189,6 +199,8 @@ class MLNQuery(object):
             db = self.db
         elif isinstance(self.db, list) and len(self.db) == 1:
             db = self.db[0]
+        elif isinstance(self.db, list) and len(self.db) == 0:
+            db = Database(mln)
         elif isinstance(self.db, list):
             raise Exception(
                 'Got {} dbs. Can only handle one for inference.'.format(
@@ -202,6 +214,7 @@ class MLNQuery(object):
         if 'params' in params:
             params.update(eval("dict(%s)" % params['params']))
             del params['params']
+        params['verbose'] = self.verbose
         if self.verbose:
             print tabulate(sorted(list(params.viewitems()), key=lambda (k, v): str(k)), headers=('Parameter:', 'Value:'))
         if type(db) is list and len(db) > 1:
@@ -241,6 +254,7 @@ class MLNQuery(object):
                 print
                 inference.write_elapsed_time()
         except SystemExit:
+            traceback.print_exc()
             print 'Cancelled...'
         finally:
             if self.profile:
@@ -319,7 +333,7 @@ class MLNQueryGUI(object):
         # mln section
         row += 1
         Label(self.frame, text="MLN: ").grid(row=row, column=0, sticky='NE')
-        self.mln_container = FileEditBar(self.frame, dir=self.dir,
+        self.mln_container = FileEditBar(self.frame, directory=self.dir,
                                          filesettings={'extension': '.mln', 'ftypes': [('MLN files', '.mln')]},
                                          defaultname='*unknown{}',
                                          importhook=self.import_mln,
@@ -329,6 +343,7 @@ class MLNQueryGUI(object):
                                          fileslisthook=self.mlnfiles,
                                          updatehook=self.update_mln,
                                          onchangehook=self.project_setdirty)
+        self.mln_container.editor.bind("<FocusIn>", self._got_focus)
         self.mln_container.grid(row=row, column=1, sticky="NEWS")
         self.mln_container.columnconfigure(1, weight=2)
         self.frame.rowconfigure(row, weight=1)
@@ -347,7 +362,7 @@ class MLNQueryGUI(object):
         self.emln_label = Label(self.frame, text="EMLN: ")
         self.emln_label.grid(row=self.emlncontainerrow, column=0, sticky='NE')
         self.emln_container = FileEditBar(self.frame,
-                                          dir=self.dir,
+                                          directory=self.dir,
                                           filesettings={'extension': '.emln', 'ftypes': [('MLN extension files','.emln')]},
                                           defaultname='*unknown{}',
                                           importhook=self.import_emln,
@@ -357,6 +372,7 @@ class MLNQueryGUI(object):
                                           fileslisthook=self.emlnfiles,
                                           updatehook=self.update_emln,
                                           onchangehook=self.project_setdirty)
+        self.emln_container.editor.bind("<FocusIn>", self._got_focus)
         self.emln_container.grid(row=self.emlncontainerrow, column=1, sticky="NEWS")
         self.emln_container.columnconfigure(1, weight=2)
         self.onchange_use_emln(dirty=False)
@@ -365,7 +381,7 @@ class MLNQueryGUI(object):
         # db section
         row += 1
         Label(self.frame, text="Evidence: ").grid(row=row, column=0, sticky='NE')
-        self.db_container = FileEditBar(self.frame, dir=self.dir,
+        self.db_container = FileEditBar(self.frame, directory=self.dir,
                                         filesettings={'extension': '.db', 'ftypes': [('Database files', '.db')]},
                                         defaultname='*unknown{}',
                                         importhook=self.import_db,
@@ -375,6 +391,7 @@ class MLNQueryGUI(object):
                                         fileslisthook=self.dbfiles,
                                         updatehook=self.update_db,
                                         onchangehook=self.project_setdirty)
+        self.db_container.editor.bind("<FocusIn>", self._got_focus)
         self.db_container.grid(row=row, column=1, sticky="NEWS")
         self.db_container.columnconfigure(1, weight=2)
         self.frame.rowconfigure(row, weight=1)
@@ -501,6 +518,18 @@ class MLNQueryGUI(object):
         self.master.geometry(gconf['window_loc_query'])
 
         self.initialized = True
+
+
+    def _got_focus(self, *_):
+        if self.master.focus_get() == self.mln_container.editor:
+            if not self.project.mlns and not self.mln_container.file_buffer:
+                self.mln_container.new_file()
+        elif self.master.focus_get() == self.db_container.editor:
+            if not self.project.dbs and not self.db_container.file_buffer:
+                self.db_container.new_file()
+        elif self.master.focus_get() == self.emln_container.editor:
+            if not self.project.emlns and not self.emln_container.file_buffer:
+                self.emln_container.new_file()
 
 
     def quit(self):
@@ -963,36 +992,33 @@ class MLNQueryGUI(object):
         self.master.deiconify()
 
 
-# -- main app --
-if __name__ == '__main__':
+def main():
     praclog.level(praclog.DEBUG)
 
-    # read command-line options
-    from optparse import OptionParser
+    usage = 'PRACMLN Query Tool'
 
-    parser = OptionParser()
-    parser.add_option("-i", "--mln", dest="mlnarg",
-                      help="the MLN model file to use")
-    parser.add_option("-x", "--emln", dest="emlnarg",
-                      help="the MLN model extension file to use")
-    parser.add_option("-q", "--queries", dest="queryarg",
-                      help="queries (comma-separated)")
-    parser.add_option("-e", "--evidence", dest="dbarg",
-                      help="the evidence database file")
-    parser.add_option("-r", "--results-file", dest="outputfile",
-                      help="the results file to save")
-    parser.add_option("--run", action="store_true", dest="run", default=False,
-                      help="run with last settings (without showing GUI)")
-    (opts, args) = parser.parse_args()
-    opts_ = vars(opts)
+    parser = argparse.ArgumentParser(description=usage)
+    parser.add_argument("-i", "--mln", dest="mlnarg", help="the MLN model file to use")
+    parser.add_argument("-d", "--dir", dest="directory", action='store', help="the directory to start the tool from", metavar="FILE", type=str)
+    parser.add_argument("-x", "--emln", dest="emlnarg", help="the MLN model extension file to use")
+    parser.add_argument("-q", "--queries", dest="queryarg", help="queries (comma-separated)")
+    parser.add_argument("-e", "--evidence", dest="dbarg", help="the evidence database file")
+    parser.add_argument("-r", "--results-file", dest="outputfile", help="the results file to save")
+    parser.add_argument("--run", action="store_true", dest="run", default=False, help="run with last settings (without showing GUI)")
+
+    args = parser.parse_args()
+    opts_ = vars(args)
 
     root = Tk()
     conf = PRACMLNConfig(DEFAULT_CONFIG)
-    app = MLNQueryGUI(root, conf,
-                      directory=os.path.abspath(args[0]) if args else None)
+    app = MLNQueryGUI(root, conf, directory=os.path.abspath(args.directory) if args.directory else None)
 
-    if opts.run:
+    if args.run:
         logger.debug('running mlnlearn without gui')
         app.infer(savegeometry=False, options=opts_)
     else:
         root.mainloop()
+
+
+if __name__ == '__main__':
+    main()

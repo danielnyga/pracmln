@@ -24,6 +24,8 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+import argparse
+
 import StringIO
 
 from Tkinter import *
@@ -498,7 +500,7 @@ class MLNLearnGUI:
         # mln section
         row += 1
         Label(self.frame, text="MLN: ").grid(row=row, column=0, sticky='NE')
-        self.mln_container = FileEditBar(self.frame, dir=self.dir,
+        self.mln_container = FileEditBar(self.frame, directory=self.dir,
                                          filesettings={'extension': '.mln', 'ftypes': [('MLN files', '.mln')]},
                                          defaultname='*unknown{}',
                                          importhook=self.import_mln,
@@ -506,9 +508,11 @@ class MLNLearnGUI:
                                          projecthook=self.save_proj,
                                          filecontenthook=self.mlnfilecontent,
                                          fileslisthook=self.mlnfiles,
+                                         selectfilehook=self.set_outputfilename,
                                          updatehook=self.update_mln,
                                          onchangehook=self.project_setdirty)
         self.mln_container.grid(row=row, column=1, sticky="NEWS")
+        self.mln_container.editor.bind("<FocusIn>", self._got_focus)
         self.mln_container.columnconfigure(1, weight=2)
         self.frame.rowconfigure(row, weight=1)
 
@@ -596,7 +600,7 @@ class MLNLearnGUI:
         # db section
         row += 1
         Label(self.frame, text="Evidence: ").grid(row=row, column=0, sticky='NE')
-        self.db_container = FileEditBar(self.frame, dir=self.dir,
+        self.db_container = FileEditBar(self.frame, directory=self.dir,
                                         filesettings={'extension': '.db', 'ftypes': [('Database files', '.db')]},
                                         defaultname='*unknown{}',
                                         importhook=self.import_db,
@@ -604,9 +608,11 @@ class MLNLearnGUI:
                                         projecthook=self.save_proj,
                                         filecontenthook=self.dbfilecontent,
                                         fileslisthook=self.dbfiles,
+                                        selectfilehook=self.set_outputfilename,
                                         updatehook=self.update_db,
                                         onchangehook=self.project_setdirty)
         self.db_container.grid(row=row, column=1, sticky="NEWS")
+        self.db_container.editor.bind("<FocusIn>", self._got_focus)
         self.db_container.columnconfigure(1, weight=2)
         self.frame.rowconfigure(row, weight=1)
 
@@ -707,6 +713,15 @@ class MLNLearnGUI:
         self.master.geometry(gconf['window_loc_learn'])
 
         self.initialized = True
+
+
+    def _got_focus(self, *_):
+        if self.master.focus_get() == self.mln_container.editor:
+            if not self.project.mlns and not self.mln_container.file_buffer:
+                self.mln_container.new_file()
+        elif self.master.focus_get() == self.db_container.editor:
+            if not self.project.dbs and not self.db_container.file_buffer:
+                self.db_container.new_file()
 
 
     def quit(self):
@@ -972,12 +987,8 @@ class MLNLearnGUI:
 
 
     def set_outputfilename(self):
-        if not hasattr(self, "output_filename") or not hasattr(self, "db_filename") or not hasattr(self, "mln_filename"):
-            return
-        mln = self.mln_container.selected_file.get()
-        db = self.db_container.selected_file.get()
-        if "" in (mln, db):
-            return
+        mln = self.mln_container.selected_file.get() or 'unknown.mln'
+        db = self.db_container.selected_file.get() or 'unknown.db'
         if self.selected_method.get():
             method = LearningMethods.clazz(self.selected_method.get())
             methodid = LearningMethods.id(method)
@@ -1187,35 +1198,32 @@ class MLNLearnGUI:
         self.master.deiconify()
 
 
-# -- main app --
-if __name__ == '__main__':
+def main():
     praclog.level(praclog.DEBUG)
 
-    # read command-line options
-    from optparse import OptionParser
+    usage = 'PRACMLN Learning Tool'
 
+    parser = argparse.ArgumentParser(description=usage)
+    parser.add_argument("--run", action="store_true", dest="run", default=False, help="run last configuration without showing gui")
+    parser.add_argument("-d", "--dir", dest="directory", action='store', help="the directory to start the tool from", metavar="FILE", type=str)
+    parser.add_argument("-i", "--mln-filename", dest="mlnarg", action='store', help="input MLN filename", metavar="FILE", type=str)
+    parser.add_argument("-t", "--db-filename", dest="dbarg", action='store', help="training database filename", metavar="FILE", type=str)
+    parser.add_argument("-o", "--output-file", dest="outputfile", action='store', help="output MLN filename", metavar="FILE", type=str)
 
-    parser = OptionParser()
-    parser.add_option("--run", action="store_true", dest="run", default=False,
-                      help="run last configuration without showing gui")
-    parser.add_option("-i", "--mln-filename", dest="mlnarg",
-                      help="input MLN filename", metavar="FILE", type="string")
-    parser.add_option("-t", "--db-filename", dest="dbarg",
-                      help="training database filename", metavar="FILE",
-                      type="string")
-    parser.add_option("-o", "--output-file", dest="outputfile",
-                      help="output MLN filename", metavar="FILE",
-                      type="string")
-    (opts, args) = parser.parse_args()
-    opts_ = vars(opts)
+    args = parser.parse_args()
+    opts_ = vars(args)
 
     # run learning task/GUI
     root = Tk()
     conf = PRACMLNConfig(DEFAULT_CONFIG)
-    app = MLNLearnGUI(root, conf, directory=os.path.abspath(args[0]) if args else None)
+    app = MLNLearnGUI(root, conf, directory=os.path.abspath(args.directory) if args.directory else None)
 
-    if opts.run:
+    if args.run:
         logger.debug('running mlnlearn without gui')
         app.learn(savegeometry=False, options=opts_)
     else:
         root.mainloop()
+
+
+if __name__ == '__main__':
+    main()
