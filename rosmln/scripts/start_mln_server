@@ -1,0 +1,7 @@
+#!/bin/bash
+
+SCRIPT_PATH=`readlink -f $0`
+ROSMLN_SCRIPT_DIR=`dirname $SCRIPT_PATH`
+PRACMLN_DIR=$ROSMLN_SCRIPT_DIR/../../
+source $PRACMLN_DIR/env.sh
+python $ROSMLN_SCRIPT_DIR/mln_server.py

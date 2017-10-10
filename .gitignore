@@ -1,0 +1,12 @@
+bin
+apps
+experiments
+env.bat
+env.sh
+*.class
+*.pyc
+*.pyo
+*.log
+*.bak
+libpracmln/build
+libpracmln/install
