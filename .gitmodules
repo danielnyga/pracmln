@@ -1,0 +1,6 @@
+[submodule "python3"]
+	path = python3
+	url = git@github.com:danielnyga/pracmln.git
+[submodule "python2"]
+	path = python2
+	url = git@github.com:danielnyga/pracmln.git
