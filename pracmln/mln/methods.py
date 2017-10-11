@@ -20,16 +20,15 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pracmln.mln.inference.gibbs import GibbsSampler
-from pracmln.mln.inference.mcsat import MCSAT
-from pracmln.mln.inference.exact import EnumerationAsk
-from pracmln.mln.inference.fastexact import FastExact
-from pracmln.mln.inference.wcspinfer import WCSPInference
-from pracmln.mln.inference.maxwalk import SAMaxWalkSAT
-from pracmln.mln.learning.cll import CLL, DCLL
-from pracmln.mln.learning.ll import LL
-from pracmln.mln.learning.sll import SLL_DN
-from pracmln.mln.learning.bpll import BPLL, DPLL , BPLL_CG, DBPLL_CG
+from .inference.gibbs import GibbsSampler
+from .inference.mcsat import MCSAT
+from .inference.exact import EnumerationAsk
+# from .inference.fastexact import FastExact
+from .inference.wcspinfer import WCSPInference
+from .inference.maxwalk import SAMaxWalkSAT
+from .learning.cll import CLL, DCLL
+from .learning.ll import LL
+from .learning.bpll import BPLL, DPLL , BPLL_CG, DBPLL_CG
 
 class Enum(object):
     
@@ -79,7 +78,7 @@ InferenceMethods = Enum(
 #      (FuzzyMCSAT,  'Fuzzy MC-SAT'),
 #      (IPFPM, 'IPFP-M'), 
      (EnumerationAsk, 'Enumeration-Ask (exact)'),
-     (FastExact, 'FastExact (only for conjunctions)'),
+     # (FastExact, 'FastExact (only for conjunctions)'),
      (WCSPInference, 'WCSP (exact MPE with toulbar2)'),
      (SAMaxWalkSAT, 'Max-Walk-SAT with simulated annealing (approx. MPE)')
     ))
@@ -90,7 +89,6 @@ LearningMethods = Enum(
       (CLL, 'composite-log-likelihood'),
       (DCLL, '[discriminative] composite-log-likelihood'),
       (LL, "log-likelihood"),
-      (SLL_DN, 'sampling-based log-likelihood via diagonal Newton'),
       (DPLL, '[discriminative] pseudo-log-likelihood'),
       (BPLL, 'pseudo-log-likelihood'),
       (BPLL_CG, 'pseudo-log-likelihood (fast conjunction grounding)'),

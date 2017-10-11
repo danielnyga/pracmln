@@ -21,9 +21,11 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from dnutils import ifnone
 
 from .common import Logic
-from pracmln.mln.util import fstr, ifNone
+from ..mln.util import fstr
+
 
 class FirstOrderLogic(Logic):
     """
@@ -151,7 +153,7 @@ class FirstOrderLogic(Logic):
         def noisyor(self, world):     
             prod = 1.0
             for lit in self.children:
-                p = ifNone(lit(world), 1)
+                p = ifnone(lit(world), 1)
                 if not lit.negated:
                     factor = p 
                 else:

@@ -23,12 +23,12 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from dnutils import logs
+
 from . import optimize
-import logging
 import sys
 from numpy.ma.core import exp
-from pracmln.mln.util import out, stop
-from pracmln.mln.constants import HARD
+from ..constants import HARD
 
 
 try:
@@ -36,7 +36,7 @@ try:
 except:
     pass
 
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 
 class AbstractLearner(object):

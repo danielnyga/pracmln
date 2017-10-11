@@ -24,22 +24,21 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import logging
 from collections import defaultdict
 
 import numpy
+from dnutils import logs
+from dnutils.console import barstr
 from numpy.ma.core import sqrt, log
 
-from pracmln.mln.constants import HARD
-from pracmln.mln.errors import SatisfiabilityException
-from pracmln.mln.grounding.bpll import BPLLGroundingFactory
-from pracmln.mln.grounding.default import DefaultGroundingFactory
-from pracmln.mln.learning.common import DiscriminativeLearner
-from pracmln.mln.util import barstr, fsum, temporary_evidence
-from .common import AbstractLearner
+from ..constants import HARD
+from ..errors import SatisfiabilityException
+from ..grounding.bpll import BPLLGroundingFactory
+from ..grounding.default import DefaultGroundingFactory
+from .common import DiscriminativeLearner, AbstractLearner
+from ..util import fsum, temporary_evidence
 
-
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 
 class BPLL(AbstractLearner):

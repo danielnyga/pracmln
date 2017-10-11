@@ -26,13 +26,14 @@
 import random
 
 
-import logging
-from pracmln.mln.inference.infer import Inference
-from pracmln.mln.util import fstr, out, stop
-from pracmln.mln.constants import ALL
+from dnutils import logs
+
+from .infer import Inference
+from ..util import fstr
+from ..constants import ALL
 
 
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 
 class MCMCInference(Inference):
@@ -43,8 +44,7 @@ class MCMCInference(Inference):
     def __init__(self, mrf, queries=ALL, **params):
         Inference.__init__(self, mrf, queries, **params)
         
-    
-    
+
     def random_world(self, evidence=None):
         """
         Get a random possible world, taking the evidence into account.

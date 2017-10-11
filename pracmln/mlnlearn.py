@@ -34,22 +34,23 @@ from cProfile import Profile
 from tkinter import *
 from tkinter.filedialog import asksaveasfilename
 
+from dnutils import logs, out, ifnone
 from tabulate import tabulate
 
-from pracmln import MLN
-from pracmln.mln.base import parse_mln
-from pracmln.mln.database import Database, parse_db
-from pracmln.mln.learning.common import DiscriminativeLearner
-from pracmln.mln.methods import LearningMethods
-from pracmln.mln.util import ifNone, headline, StopWatch
-from pracmln.utils import config
-from pracmln.utils.config import global_config_filename
-from pracmln.utils.project import MLNProject, PRACMLNConfig
-from pracmln.utils.widgets import *
+from . import MLN
+from .mln.base import parse_mln
+from .mln.database import Database, parse_db
+from .mln.learning.common import DiscriminativeLearner
+from .mln.methods import LearningMethods
+from .mln.util import headline, StopWatch
+from .utils import config
+from .utils.config import global_config_filename
+from .utils.project import MLNProject, PRACMLNConfig
+from .utils.widgets import *
 import logging #import used in eval, do not remove
 
 
-logger = praclog.logger(__name__)
+logger = logs.getlogger(__name__)
 
 QUERY_PREDS = 0
 EVIDENCE_PREDS = 1
@@ -395,9 +396,8 @@ class MLNLearn(object):
         else:
             prof = None
         # set the debug level
-        olddebug = praclog.level()
-        praclog.level(
-            eval('logging.%s' % params.get('debug', 'WARNING').upper()))
+        olddebug = logger.level
+        logger.level = eval('logs.%s' % params.get('debug', 'WARNING').upper())
         mlnlearnt = None
         try:
             # run the learner
@@ -417,7 +417,7 @@ class MLNLearn(object):
                     'cumulative')
                 ps.print_stats()
             # reset the debug level
-            praclog.level(olddebug)
+            logger.level = olddebug
         print()
         watch.finish()
         watch.printSteps()
@@ -441,7 +441,7 @@ class MLNLearnGUI:
 
         # logo = Label(self.master, image=img)
         # logo.pack(side = "right", anchor='ne')
-        self.dir = os.path.abspath(ifNone(directory, ifNone(gconf['prev_learnwts_path'], os.getcwd())))
+        self.dir = os.path.abspath(ifnone(directory, ifnone(gconf['prev_learnwts_path'], os.getcwd())))
 
         self.frame = Frame(master)
         self.frame.pack(fill=BOTH, expand=1)
@@ -694,7 +694,7 @@ class MLNLearnGUI:
 
         self.gconf = gconf
         self.project = None
-        self.project_dir = os.path.abspath(ifNone(directory, ifNone(gconf['prev_learnwts_path'], os.getcwd())))
+        self.project_dir = os.path.abspath(ifnone(directory, ifnone(gconf['prev_learnwts_path'], os.getcwd())))
         if gconf['prev_learnwts_project': self.project_dir] is not None:
             self.load_project(os.path.join(self.project_dir, gconf['prev_learnwts_project':self.project_dir]))
         else:
@@ -1015,29 +1015,29 @@ class MLNLearnGUI:
 
     def set_config(self, newconf):
         self.config = newconf
-        self.selected_grammar.set(ifNone(newconf.get('grammar'), 'PRACGrammar'))
-        self.selected_logic.set(ifNone(newconf.get('logic'), 'FirstOrderLogic'))
-        self.mln_container.selected_file.set(ifNone(newconf.get('mln'), ''))
-        self.db_container.selected_file.set(ifNone(newconf.get('db'), ""))
-        self.selected_method.set(ifNone(newconf.get("method"), LearningMethods.name('BPLL'), transform=LearningMethods.name))
-        self.pattern.set(ifNone(newconf.get('pattern'), ''))
-        self.multicore.set(ifNone(newconf.get('multicore'), 0))
-        self.use_prior.set(ifNone(newconf.get('use_prior'), 0))
-        self.priorMean.set(ifNone(newconf.get('prior_mean'), 0))
-        self.priorStdDev.set(ifNone(newconf.get('prior_stdev'), 5))
-        self.incremental.set(ifNone(newconf.get('incremental'), 0))
-        self.shuffle.set(ifNone(newconf.get('shuffle'), 0))
-        self.use_initial_weights.set(ifNone(newconf.get('use_initial_weights'), 0))
-        self.profile.set(ifNone(newconf.get('profile'), 0))
-        self.params.set(ifNone(newconf.get('params'), ''))
-        self.verbose.set(ifNone(newconf.get('verbose'), 1))
-        self.ignore_unknown_preds.set(ifNone(newconf.get('ignore_unknown_preds'), 0))
-        self.output_filename.set(ifNone(newconf.get('output_filename'), ''))
-        self.queryPreds.set(ifNone(newconf.get('qpreds'), ''))
-        self.evidencePreds.set(ifNone(newconf.get('epreds'), ''))
-        self.discrPredicates.set(ifNone(newconf.get('discr_preds'), 0))
-        self.ignore_zero_weight_formulas.set(ifNone(newconf.get('ignore_zero_weight_formulas'), 0))
-        self.save.set(ifNone(newconf.get('save'), 0))
+        self.selected_grammar.set(ifnone(newconf.get('grammar'), 'PRACGrammar'))
+        self.selected_logic.set(ifnone(newconf.get('logic'), 'FirstOrderLogic'))
+        self.mln_container.selected_file.set(ifnone(newconf.get('mln'), ''))
+        self.db_container.selected_file.set(ifnone(newconf.get('db'), ""))
+        self.selected_method.set(ifnone(newconf.get("method"), LearningMethods.name('BPLL'), transform=LearningMethods.name))
+        self.pattern.set(ifnone(newconf.get('pattern'), ''))
+        self.multicore.set(ifnone(newconf.get('multicore'), 0))
+        self.use_prior.set(ifnone(newconf.get('use_prior'), 0))
+        self.priorMean.set(ifnone(newconf.get('prior_mean'), 0))
+        self.priorStdDev.set(ifnone(newconf.get('prior_stdev'), 5))
+        self.incremental.set(ifnone(newconf.get('incremental'), 0))
+        self.shuffle.set(ifnone(newconf.get('shuffle'), 0))
+        self.use_initial_weights.set(ifnone(newconf.get('use_initial_weights'), 0))
+        self.profile.set(ifnone(newconf.get('profile'), 0))
+        self.params.set(ifnone(newconf.get('params'), ''))
+        self.verbose.set(ifnone(newconf.get('verbose'), 1))
+        self.ignore_unknown_preds.set(ifnone(newconf.get('ignore_unknown_preds'), 0))
+        self.output_filename.set(ifnone(newconf.get('output_filename'), ''))
+        self.queryPreds.set(ifnone(newconf.get('qpreds'), ''))
+        self.evidencePreds.set(ifnone(newconf.get('epreds'), ''))
+        self.discrPredicates.set(ifnone(newconf.get('discr_preds'), 0))
+        self.ignore_zero_weight_formulas.set(ifnone(newconf.get('ignore_zero_weight_formulas'), 0))
+        self.save.set(ifnone(newconf.get('save'), 0))
 
 
     def get_training_db_paths(self, pattern):
@@ -1195,7 +1195,7 @@ class MLNLearnGUI:
 
 
 def main():
-    praclog.level(praclog.DEBUG)
+    logger.level = logs.DEBUG
 
     usage = 'PRACMLN Learning Tool'
 

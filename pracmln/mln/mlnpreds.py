@@ -20,12 +20,13 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-from pracmln.mln.mrfvars import BinaryVariable, FuzzyVariable, SoftMutexVariable,\
-    MutexVariable
-import logging
+from dnutils import logs
+
+from pracmln.mln.mrfvars import (BinaryVariable, FuzzyVariable, SoftMutexVariable,
+    MutexVariable)
 
 
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 
 class Predicate(object):

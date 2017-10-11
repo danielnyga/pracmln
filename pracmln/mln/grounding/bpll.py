@@ -22,23 +22,25 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from collections import defaultdict
-from pracmln.utils.undo import Ref, Number, List, ListDict, Boolean
-from pracmln.logic.common import Logic
-import logging
-import types
-from pracmln.utils.multicore import with_tracing, checkmem
-from multiprocessing.pool import Pool
-from pracmln.mln.util import unifyDicts, dict_union
-from pracmln.mln.constants import HARD
-from pracmln.mln.errors import SatisfiabilityException
-from pracmln.mln.grounding.fastconj import FastConjunctionGrounding
 
+from dnutils import logs
+
+from .fastconj import FastConjunctionGrounding
+from ..util import unifyDicts, dict_union
+from ..constants import HARD
+from ..errors import SatisfiabilityException
+from ...utils.undo import Ref, Number, List, ListDict, Boolean
+from ...logic.common import Logic
+from ...utils.multicore import with_tracing, checkmem
+
+import types
+from multiprocessing.pool import Pool
 
 # this readonly global is for multiprocessing to exploit copy-on-write
 # on linux systems
 global_bpll_grounding = None
 
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 # multiprocessing function
 def create_formula_groundings(formula, unsatfailure=True):

@@ -24,37 +24,30 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import pyparsing
+from dnutils import logs, ifnone
 
-from pracmln.logic import FirstOrderLogic, FuzzyLogic
-
-from string import whitespace
-
-from . import learning
-# from inference import *
+from ..logic import FirstOrderLogic, FuzzyLogic
 
 import platform
-from .methods import InferenceMethods, LearningMethods
 from .mrf import MRF
 from .errors import MLNParsingError
 from pyparsing import ParseException
-from pracmln.mln.constants import HARD, comment_color, predicate_color, weight_color
+from .constants import HARD, comment_color, predicate_color, weight_color
 import copy
 import os
-import logging
-from pracmln.mln.util import StopWatch, mergedom, fstr, colorize, stripComments,\
-    ifNone
-from pracmln.mln.mlnpreds import Predicate, FuzzyPredicate, SoftFunctionalPredicate,\
-    FunctionalPredicate
-from pracmln.mln.database import Database
-from pracmln.mln.learning.multidb import MultipleDatabaseLearner
+from .util import StopWatch, mergedom, fstr, colorize, stripComments
+from .mlnpreds import (Predicate, FuzzyPredicate, SoftFunctionalPredicate,
+    FunctionalPredicate)
+from .database import Database
+from .learning.multidb import MultipleDatabaseLearner
 import sys
 import re
 import traceback
-from pracmln.mln.learning.bpll import BPLL
-from pracmln.utils.project import mlnpath
+from .learning.bpll import BPLL
+from ..utils.project import mlnpath
 from importlib import util as imputil
 
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 
 if platform.architecture()[0] == '32bit':
@@ -683,7 +676,7 @@ def parse_mln(text, searchpaths=['.'], projectpath=None, logic='FirstOrderLogic'
                 logger.debug('Including file: "%s"' % includefilename)
                 p = mlnpath(includefilename)
                 parse_mln(text=mlnpath(includefilename).content, searchpaths=[p.resolve_path()]+dirs, 
-                          projectpath=ifNone(p.project, projectpath, lambda x: '/'.join(p.path+[x])), 
+                          projectpath=ifnone(p.project, projectpath, lambda x: '/'.join(p.path+[x])),
                           logic=logic, grammar=grammar, mln=mln)
                 continue
             elif line.startswith('#unique'):

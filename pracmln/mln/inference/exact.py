@@ -23,22 +23,22 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from dnutils import logs, ProgressBar
 
-from pracmln.logic.fol import FirstOrderLogic
-from pracmln.praclog import logging
+from .infer import Inference
 from multiprocessing import Pool
-from pracmln.utils.multicore import with_tracing
-from pracmln.mln.mrfvars import FuzzyVariable
-from pracmln.mln.constants import auto, HARD
-from pracmln.mln.errors import SatisfiabilityException
-from pracmln.mln.grounding.fastconj import FastConjunctionGrounding
-from pracmln.mln.util import Interval, ProgressBar, colorize
+from ..mrfvars import FuzzyVariable
+from ..constants import auto, HARD
+from ..errors import SatisfiabilityException
+from ..grounding.fastconj import FastConjunctionGrounding
+from ..util import Interval, colorize
+from ...utils.multicore import with_tracing
+from ...logic.fol import FirstOrderLogic
+from ...logic.common import Logic
 from numpy.ma.core import exp
-from pracmln.mln.inference.infer import Inference
-from pracmln.logic.common import Logic
 
 
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 # this readonly global is for multiprocessing to exploit copy-on-write
 # on linux systems
@@ -127,7 +127,7 @@ class EnumerationAsk(Inference):
         global_enumAsk = self
         bar = None
         if self.verbose:
-            bar = ProgressBar(width=100, steps=worlds, color='green')
+            bar = ProgressBar(steps=worlds, color='green')
         if self.multicore:
             pool = Pool()
             logger.debug('Using multiprocessing on {} core(s)...'.format(pool._processes))

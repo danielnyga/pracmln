@@ -24,25 +24,20 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import pickle
-from pracmln.logic.common import Logic, Disjunction
-import logging
-import time
 import math
-from pracmln.mln.util import fstr, out, item, stop, crash, eset, ProgressBar,\
-    trace, stoptrace
-from pracmln.mln.database import Database
-from pracmln.mln.inference.infer import Inference
-from pracmln.mln.inference.mcmc import MCMCInference
-from pracmln.mln.constants import ALL, HARD
-from pracmln import praclog
 import random
 from collections import defaultdict
-from pracmln.mln.grounding.fastconj import FastConjunctionGrounding
-import numpy
 
-logger = praclog.logger(__name__)
+from dnutils import logs, ProgressBar, out
 
+from .mcmc import MCMCInference
+from ..constants import ALL, HARD
+from ..grounding.fastconj import FastConjunctionGrounding
+from ..util import item
+from ...logic.common import Logic
+
+
+logger = logs.getlogger(__name__)
 
 
 class MCSAT(MCMCInference):
@@ -226,13 +221,13 @@ class MCSAT(MCMCInference):
             if M or NLC:
                 logger.debug('Running SampleSAT')
                 chain.state = SampleSAT(self.mrf, chain.state, M, NLC, self, p=self.p).run() # Note: can't use p=1.0 because there is a chance of getting into an oscillating state
-        if praclog.level == praclog.DEBUG:
+        if logger.level == logs.DEBUG:
             self.mrf.print_world_vars(chain.state)
         self.step = 1        
         logger.debug('running MC-SAT with %d chains' % len(chaingroup.chains))
         self._watch.tag('running MC-SAT', self.verbose)
         if self.verbose:
-            bar = ProgressBar(width=100, steps=self.maxsteps, color='green')
+            bar = ProgressBar(steps=self.maxsteps, color='green')
         while self.step <= self.maxsteps:
             # take one step in each chain
             for chain in chaingroup.chains:
@@ -335,7 +330,7 @@ class SampleSAT:
         state: the state (array of booleans) to work with (is reinitialized randomly by this constructor)
         NLConstraints: list of grounded non-logical constraints
         """
-        self.debug = praclog.level() == logging.DEBUG
+        self.debug = logger.level == logs.DEBUG
         self.infer = infer
         self.mrf = mrf
         self.mln = mrf.mln        

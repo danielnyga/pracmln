@@ -3,9 +3,9 @@ Created on Oct 28, 2015
 
 @author: nyga
 """
-from pracmln import MLN, Database
-from pracmln import query, learn
-from pracmln.mlnlearn import EVIDENCE_PREDS
+from .pracmln import MLN, Database
+from .pracmln import query, learn
+from .pracmln.mlnlearn import EVIDENCE_PREDS
 import time
 
 

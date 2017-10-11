@@ -28,14 +28,16 @@ import bisect
 import re
 from collections import defaultdict
 import _thread
-from pracmln import praclog
 import platform
-from pracmln.mln.errors import NoConstraintsError
+
+from dnutils import logs
+
+from ..mln.errors import NoConstraintsError
 import tempfile
 from functools import reduce
 
 
-logger = praclog.logger(__name__)
+logger = logs.getlogger(__name__)
 
 
 class MaxCostExceeded(Exception): pass

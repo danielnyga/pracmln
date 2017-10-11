@@ -22,13 +22,13 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from dnutils import logs
 
 from .infer import Inference
-from pracmln import praclog
-from pracmln.mln.inference.exact import EnumerationAsk
+from .exact import EnumerationAsk
 
 
-logger = praclog.logger(__name__)
+logger = logs.getlogger(__name__)
 
 
 class IPFPM(Inference):

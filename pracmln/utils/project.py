@@ -24,13 +24,12 @@ import copy
 from zipfile import ZipFile, ZIP_DEFLATED
 import os
 import sys
-from pracmln.mln.util import out, ifNone
+from dnutils import ifnone, logs
 import json
-from pracmln import praclog
 import collections
 
 
-logger = praclog.logger(__name__)
+logger = logs.getlogger(__name__)
 
 class MLNProject(object):
     """
@@ -170,7 +169,7 @@ class MLNProject(object):
         elif config == 'learn': config = self.learnconf
         from pracmln.mln.base import parse_mln
         path = self.path if hasattr(self, 'path') else None
-        return parse_mln(self.mlns[ifNone(mln, config['mln'])], projectpath=path, logic=config['logic'], grammar=config['grammar'])
+        return parse_mln(self.mlns[ifnone(mln, config['mln'])], projectpath=path, logic=config['logic'], grammar=config['grammar'])
         
     
     def loaddb(self, mln, config, db=None):
@@ -180,7 +179,7 @@ class MLNProject(object):
             else: raise Exception('Need a database name or config.')
         from pracmln.mln.database import parse_db
         path = self.path if hasattr(self, 'path') else None
-        return parse_db(mln, self.dbs[ifNone(db, config['db'])], ignore_unknown_preds=config['ignore_unknown_preds'], projectpath=path)
+        return parse_db(mln, self.dbs[ifnone(db, config['db'])], ignore_unknown_preds=config['ignore_unknown_preds'], projectpath=path)
     
 
     def save(self, dirpath='.'):
@@ -423,7 +422,7 @@ class mlnpath(object):
             if self.file is not None:
                 p += ':' + str(self.file)
         else:
-            p += ifNone(self.file, '', lambda x: '/' + str(x))
+            p += ifnone(self.file, '', lambda x: '/' + str(x))
         return p
         
     
@@ -503,7 +502,7 @@ class mlnpath(object):
         """
         Checks if the file exists.
         """
-        return os.path.exists(os.path.join(self.resolve_path(), ifNone(self.project, self.file)))
+        return os.path.exists(os.path.join(self.resolve_path(), ifnone(self.project, self.file)))
         
 
     @property

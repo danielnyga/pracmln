@@ -23,15 +23,12 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import sys
+from dnutils import ProgressBar
 
 from .common import *
-from pracmln.mln.mrfvars import SoftMutexVariable
-from pracmln.mln.grounding.default import DefaultGroundingFactory
-from pracmln.mln.util import ProgressBar
-from pracmln.mln.constants import HARD
-from pracmln.mln.errors import SatisfiabilityException
+from ..grounding.default import DefaultGroundingFactory
+from ..constants import HARD
+from ..errors import SatisfiabilityException
 
 
 class LL(AbstractLearner):
@@ -99,7 +96,7 @@ class LL(AbstractLearner):
         grounder = DefaultGroundingFactory(self.mrf)
         eworld = list(self.mrf.evidence)
         if self.verbose:
-            bar = ProgressBar(width=100, steps=self.mrf.countworlds(), color='green')
+            bar = ProgressBar(steps=self.mrf.countworlds(), color='green')
         for widx, world in self.mrf.iterallworlds():
             if self.verbose:
                 bar.label(str(widx))
@@ -111,5 +108,3 @@ class LL(AbstractLearner):
             for gf in grounder.itergroundings():
                 truth = gf(world)
                 if truth != 0: values[gf.idx] = values.get(gf.idx, 0) + truth
-                
-            

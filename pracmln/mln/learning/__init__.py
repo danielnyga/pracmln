@@ -23,6 +23,5 @@
 
 from .multidb import MultipleDatabaseLearner
 from .ll import *
-from .sll import *
 from .bpll import *
 from .cll import *

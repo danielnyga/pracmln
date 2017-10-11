@@ -20,15 +20,10 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-import json
-import os
-from pracmln import praclog
-import traceback
-from pracmln.mln.util import out
-import collections
 
+from dnutils import logs
 
-logger = praclog.logger(__name__)
+logger = logs.getlogger(__name__)
 
 
 fixed_width_font = ("Monospace", -12)

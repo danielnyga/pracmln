@@ -27,10 +27,11 @@
 import re
 import time
 import logging
-import sys
-import os
 import traceback
-from pracmln.praclog.logformat import RainbowLoggingHandler
+import colored
+
+from dnutils import out, ifnone
+
 from collections import defaultdict
 import random
 from functools import reduce
@@ -56,60 +57,6 @@ else:
 from math import sqrt
 
 import math
-
-def currentframe():
-    '''Return the frame object for the caller's stack frame.'''
-    try:
-        raise Exception()
-    except:
-        traceback.print_exc()
-        return sys.exc_info()[2].tb_frame
-
-if hasattr(sys, '_getframe'): currentframe = lambda: sys._getframe(2)
-
-
-def caller(tb=1):
-    '''
-    Find the stack frame of the caller so that we can note the source
-    file name, line number and function name.
-    '''
-    f = currentframe()
-    #On some versions of IronPython, currentframe() returns None if
-    #IronPython isn't run with -X:Frames.
-    rv = "(unknown file)", 0, "(unknown function)"
-    d = 0
-    while hasattr(f, "f_code"):
-        co = f.f_code
-        rv = (co.co_filename, f.f_lineno, co.co_name)
-        if d >= tb: break
-        d += 1
-        f = f.f_back
-    return rv
-
-
-def out(*args, **kwargs):
-    rv = caller(kwargs.get('tb', 1))
-    print('{}: l.{}: {}'.format(os.path.basename(rv[0]), rv[1], ' '.join(map(str, args))))
-
-
-def stop(*args, **kwargs):
-    out(*args, **edict(kwargs) + {'tb': kwargs.get('tb', 1) + 1})
-    sys.stdout.write('<press enter to continue>\r')
-    eval(input())
-    
-
-def trace(*args, **kwargs):
-    print('=== STACK TRACE ===')
-    sys.stdout.flush()
-    traceback.print_stack(file=sys.stdout)
-    out(*args, **edict(kwargs) + {'tb': kwargs.get('tb', 1) + 1})
-    sys.stdout.flush()
-    
-    
-def stoptrace(*args, **kwargs):
-    trace(**edict(kwargs) + {'tb': kwargs.get('tb', 1) + 1})
-    stop(*args, **edict(kwargs) + {'tb': kwargs.get('tb', 1) + 1})
-
 
 def crash(*args, **kwargs):
     out(*args, **edict(kwargs) + {'tb': kwargs.get('tb', 1) + 1})
@@ -239,6 +186,7 @@ class CallByRef(object):
 INC = 1
 EXC = 2
 
+
 class Interval:
     
     def __init__(self, interval):
@@ -262,33 +210,6 @@ class Interval:
         return (self.start <= x if self.left == INC else self.start < x) and  (self.end >= x if self.right == INC else self.end > x) 
         
     
-def ifNone(expr, else_expr, transform=None):
-    '''
-    Short version of the ternary if-then-else construct that returns the given expression `expr` if it is
-    not `None` or else_expr otherwise. Optionally, a transformation can be specified, which
-    is applied to `expr` in case it is not None.
-    
-    :Example:
-    
-    >>> import time
-    >>> print ifNone(time.time(), 'N/A')
-    >>> 1434619614.42
-    >>> print ifNone(None, 'N/A')
-    N/A
-    >>> print ifNone(time.time(), 'N/A', time.ctime)
-    Thu Jun 18 11:27:23 2015
-    >>> print ifNone(None, 'N/A', time.ctime)
-    N/A
-    '''
-    if expr is None:
-        return else_expr
-    else:
-        if transform is not None:
-            return transform(expr)
-        else:
-            return expr
-
-
 def elapsedtime(start, end=None):
     '''
     Compute the elapsed time of the interval `start` to `end`.
@@ -338,7 +259,7 @@ def fstr(f):
 
 
 def cumsum(i, upto=None):
-    return 0 if (not i or upto == 0) else reduce(int.__add__, i[:ifNone(upto, len(i))])
+    return 0 if (not i or upto == 0) else reduce(int.__add__, i[:ifnone(upto, len(i))])
 
 
 def evidence2conjunction(evidence):
@@ -352,62 +273,7 @@ def evidence2conjunction(evidence):
 def tty(stream):
     isatty = getattr(stream, 'isatty', None)
     return isatty and isatty()
-    
-def barstr(width, percent, color=None):
-    '''
-    Returns the string representation of an ASCII 'progress bar'.
-    '''
-    barw = int(round(width * percent))
-    bar = ''.ljust(barw, '=')
-    bar = bar.ljust(width, ' ')
-    if color is not None:
-        filler = u"\u25A0"
-        bar = bar.replace('=', filler)
-        bar = colorize('[', format=(None, None, True), color=True) + colorize(bar, format=(None, color, False), color=True) + colorize(']', format=(None, None, True), color=True)
-    else:
-        bar = '[{}]'.format(bar)
-    return '{0} {1: >7.3f} %'.format(bar, percent * 100.)
 
-class ProgressBar:
-    
-    def __init__(self, width, value=0, steps=None, label='', color=None, stream=sys.stdout):
-        self.width = width
-        self.steps = steps
-        self.stream = stream
-        if steps is not None:
-            self.step = value
-            self.value = float(value) / steps
-        else:
-            self.value = value
-            self.step = None
-            self.steps = None
-        self.color = color
-        self._label = label
-        if tty(sys.stdout):
-            self.update(self.value)
-        
-        
-    def label(self, label):
-        self._label = label
-        self.update(self.value)
-        
-    
-    def update(self, value, label=None):
-        self.value = value
-        if label is not None: self._label = label
-        if value == 1: self._label = ''
-        if tty(sys.stdout):
-            sys.stdout.write('\r' + barstr(self.width, value, color=self.color) + ' ' + self._label[:min(len(self._label), 20)].ljust(20, ' ') + '\n')
-            sys.stdout.flush()
-            
-    
-    def inc(self, steps=1):
-        if self.steps is None:
-            raise Exception('Cannot call inc() on a real-valued progress bar.')
-        self.step += steps
-        self.value = float(self.step) / self.steps
-        self.update(self.value)
-        
 BOLD = (None, None, True)
             
 def headline(s):
@@ -451,19 +317,17 @@ def colorize(message, format, color=False):
                  is to be actually performed.
     '''
 
-    colorize.colorHandler = RainbowLoggingHandler(sys.stdout)
     if color is False: return message
-    params = []
     (bg, fg, bold) = format
-    if bg in colorize.colorHandler.color_map:
-        params.append(str(colorize.colorHandler.color_map[bg] + 40))
-    if fg in colorize.colorHandler.color_map:
-        params.append(str(colorize.colorHandler.color_map[fg] + 30))
+    params = []
     if bold:
-        params.append('1')
-    if params:
-        message = ''.join((colorize.colorHandler.csi, ';'.join(params), 'm', message, colorize.colorHandler.reset))
-    return message
+        params.append(colored.attr('bold'))
+    if bg:
+        params.append(colored.bg(bg))
+    if fg:
+        params.append(colored.fg(fg))
+
+    return colored.stylize(message, set(params))
 
 
 class StopWatchTag:
@@ -475,7 +339,7 @@ class StopWatchTag:
         
     @property
     def elapsedtime(self):
-        return ifNone(self.stoptime, time.time()) - self.starttime 
+        return ifnone(self.stoptime, time.time()) - self.starttime 
     
     @property
     def finished(self):
@@ -508,7 +372,7 @@ class StopWatch(object):
         now = time.time()
         if label is None:
             for _, tag in list(self.tags.items()):
-                tag.stoptime = ifNone(tag.stoptime, now)
+                tag.stoptime = ifnone(tag.stoptime, now)
         else:
             tag = self.tags.get(label)
             if tag is None:
@@ -657,8 +521,8 @@ if __name__ == '__main__':
     
     l = [1,2,3]
     upto = 2
-    out(ifNone(upto, len(l)))
-    out(l[:ifNone(upto, len(l))])
+    out(ifnone(upto, len(l)))
+    out(l[:ifnone(upto, len(l))])
     out(cumsum(l,1))
     
 #     d = edict({1:2,2:3,'hi':'world'})

@@ -20,23 +20,23 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from dnutils import logs, ProgressBar
 
-from pracmln.mln.grounding.default import DefaultGroundingFactory
-import logging
-from pracmln.logic.common import Logic
 import types
 from multiprocessing.pool import Pool
-from pracmln.utils.multicore import with_tracing
 
-from pracmln.mln.mlnpreds import FunctionalPredicate, SoftFunctionalPredicate, FuzzyPredicate
-from pracmln.mln.util import dict_union, ProgressBar, rndbatches, cumsum
-from pracmln.mln.errors import SatisfiabilityException
-from pracmln.mln.constants import HARD
+from .default import DefaultGroundingFactory
+from ..mlnpreds import FunctionalPredicate, SoftFunctionalPredicate, FuzzyPredicate
+from ..util import dict_union, rndbatches, cumsum
+from ..errors import SatisfiabilityException
+from ..constants import HARD
+from ...logic.common import Logic
+from ...logic.fuzzy import FuzzyLogic
+from ...utils.multicore import with_tracing
 from collections import defaultdict
-from pracmln.logic.fuzzy import FuzzyLogic
 
 
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 # this readonly global is for multiprocessing to exploit copy-on-write
 # on linux systems
@@ -167,7 +167,7 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
         batches = list(rndbatches(self.formulas, 20))
         batchsizes = [len(b) for b in batches]
         if self.verbose:
-            bar = ProgressBar(width=100, steps=sum(batchsizes), color='green')
+            bar = ProgressBar(steps=sum(batchsizes), color='green')
             i = 0
         if self.multicore:
             pool = Pool()

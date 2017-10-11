@@ -26,11 +26,14 @@
 
 import random
 from collections import defaultdict
-from pracmln.mln.inference.mcmc import MCMCInference
-from pracmln.mln.util import out, ProgressBar
-from pracmln.mln.grounding.fastconj import FastConjunctionGrounding
-from pracmln.logic.common import Logic
-from pracmln.mln.constants import HARD, ALL
+
+from dnutils import ProgressBar
+
+from .mcmc import MCMCInference
+from ..constants import HARD, ALL
+from ..grounding.fastconj import FastConjunctionGrounding
+from ...logic.common import Logic
+
 
 class SAMaxWalkSAT(MCMCInference):
     """
@@ -81,7 +84,7 @@ class SAMaxWalkSAT(MCMCInference):
         i_max = self.maxsteps
         thr = self.thr
         if self.verbose:
-            bar = ProgressBar(width=100, steps=i_max, color='green')
+            bar = ProgressBar(steps=i_max, color='green')
         while i < i_max and self.sum > self.thr:
             # randomly choose a variable to modify
             var = self.mrf.variables[random.randint(0, len(self.mrf.variables)-1)]
@@ -124,5 +127,3 @@ class SAMaxWalkSAT(MCMCInference):
             print("SAMaxWalkSAT: %d iterations, sum=%f, threshold=%f" % (i, self.sum, self.thr))
         self.mrf.mln.weights = self.weights
         return dict([(str(q), self.state[q.gndatom.idx]) for q in self.queries])
-    
-    

@@ -4,7 +4,7 @@ import traceback
 import sys
 import signal
 import os
-from pracmln.mln.errors import OutOfMemoryError
+from ..mln.errors import OutOfMemoryError
 import psutil
 
      

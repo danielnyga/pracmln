@@ -33,24 +33,26 @@ from tkinter import Frame, BOTH, Label, Button, OptionMenu, IntVar, Checkbutton,
     W, E, Entry, messagebox, END, DISABLED, NORMAL, Tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename, StringVar
 
-from pracmln.utils.project import MLNProject, PRACMLNConfig, mlnpath
-from pracmln.mln.methods import InferenceMethods
-from pracmln.utils.widgets import FileEditBar
-from pracmln.utils import config
-from pracmln import praclog
-from pracmln.mln.util import out, ifNone, parse_queries, headline, StopWatch
-from pracmln.utils.config import global_config_filename
-from pracmln.mln.base import parse_mln, MLN
-from pracmln.mln.database import parse_db, Database
+from dnutils import logs, ifnone, out
+
+from . import ALL
+from .utils.project import MLNProject, PRACMLNConfig, mlnpath
+from .mln.methods import InferenceMethods
+from .utils.widgets import FileEditBar
+from .utils import config
+from .mln.util import parse_queries, headline, StopWatch
+from .utils.config import global_config_filename
+from .mln.base import parse_mln, MLN
+from .mln.database import parse_db, Database
 from tabulate import tabulate
 from cProfile import Profile
 import pstats
 import io
-import pracmln
+# import pracmln
 import logging #import used in eval, do not remove
 
 
-logger = praclog.logger(__name__)
+logger = logs.getlogger(__name__)
 
 GUI_SETTINGS = ['window_loc', 'db', 'method', 'use_emln', 'save',
                 'output_filename', 'grammar', 'queries', 'emln']
@@ -114,7 +116,7 @@ class MLNQuery(object):
 
     @property
     def queries(self):
-        q = self._config.get('queries', pracmln.ALL)
+        q = self._config.get('queries', ALL)
         if isinstance(q, str):
             return parse_queries(self.mln, q)
         return q
@@ -232,8 +234,8 @@ class MLNQuery(object):
             print('starting profiler...')
             prof.enable()
         # set the debug level
-        olddebug = praclog.level()
-        praclog.level(eval('logging.%s' % params.get('debug', 'WARNING').upper()))
+        olddebug = logger.level
+        logger.level = (eval('logs.%s' % params.get('debug', 'WARNING').upper()))
         result = None
         try:
             mln_ = mln.materialize(db)
@@ -264,7 +266,7 @@ class MLNQuery(object):
                 ps = pstats.Stats(prof, stream=sys.stdout).sort_stats('cumulative')
                 ps.print_stats()
             # reset the debug level
-            praclog.level(olddebug)
+            logger.level = olddebug
         if self.verbose:
             print()
             watch.finish()
@@ -284,7 +286,7 @@ class MLNQueryGUI(object):
         self.master.bind('<Escape>', lambda a: self.master.quit())
         self.master.protocol('WM_DELETE_WINDOW', self.quit)
 
-        self.dir = os.path.abspath(ifNone(directory, ifNone(gconf['prev_query_path'], os.getcwd())))
+        self.dir = os.path.abspath(ifnone(directory, ifnone(gconf['prev_query_path'], os.getcwd())))
 
         self.frame = Frame(master)
         self.frame.pack(fill=BOTH, expand=1)
@@ -502,7 +504,7 @@ class MLNQueryGUI(object):
 
         self.gconf = gconf
         self.project = None
-        self.project_dir = os.path.abspath(ifNone(directory, ifNone(gconf['prev_query_path'], os.getcwd())))
+        self.project_dir = os.path.abspath(ifnone(directory, ifnone(gconf['prev_query_path'], os.getcwd())))
         if gconf['prev_query_project': self.project_dir] is not None:
             self.load_project(os.path.join(self.project_dir, gconf['prev_query_project':self.project_dir]))
         else:
@@ -851,24 +853,24 @@ class MLNQueryGUI(object):
 
     def set_config(self, newconf):
         self.config = newconf
-        self.selected_grammar.set(ifNone(newconf.get('grammar'), 'PRACGrammar'))
-        self.selected_logic.set(ifNone(newconf.get('logic'), 'FirstOrderLogic'))
-        self.mln_container.selected_file.set(ifNone(newconf.get('mln'), ''))
+        self.selected_grammar.set(ifnone(newconf.get('grammar'), 'PRACGrammar'))
+        self.selected_logic.set(ifnone(newconf.get('logic'), 'FirstOrderLogic'))
+        self.mln_container.selected_file.set(ifnone(newconf.get('mln'), ''))
         if self.use_emln.get():
-            self.emln_container.selected_file.set(ifNone(newconf.get('mln'), ''))
-        self.db_container.selected_file.set(ifNone(newconf.get('db'), ""))
-        self.selected_method.set(ifNone(newconf.get("method"), InferenceMethods.name('MCSAT'), transform=InferenceMethods.name))
-        self.multicore.set(ifNone(newconf.get('multicore'), 0))
-        self.profile.set(ifNone(newconf.get('profile'), 0))
-        self.params.set(ifNone(newconf.get('params'), ''))
-        self.use_emln.set(ifNone(newconf.get('use_emln'), 0))
-        self.verbose.set(ifNone(newconf.get('verbose'), 1))
-        self.ignore_unknown_preds.set(ifNone(newconf.get('ignore_unknown_preds'), 0))
-        self.output_filename.set(ifNone(newconf.get('output_filename'), ''))
-        self.cwPreds.set(ifNone(newconf.get('cw_preds'), ''))
-        self.closed_world.set(ifNone(newconf.get('cw'), 0))
-        self.save.set(ifNone(newconf.get('save'), 0))
-        self.query.set(ifNone(newconf.get('queries'), ''))
+            self.emln_container.selected_file.set(ifnone(newconf.get('mln'), ''))
+        self.db_container.selected_file.set(ifnone(newconf.get('db'), ""))
+        self.selected_method.set(ifnone(newconf.get("method"), InferenceMethods.name('MCSAT'), transform=InferenceMethods.name))
+        self.multicore.set(ifnone(newconf.get('multicore'), 0))
+        self.profile.set(ifnone(newconf.get('profile'), 0))
+        self.params.set(ifnone(newconf.get('params'), ''))
+        self.use_emln.set(ifnone(newconf.get('use_emln'), 0))
+        self.verbose.set(ifnone(newconf.get('verbose'), 1))
+        self.ignore_unknown_preds.set(ifnone(newconf.get('ignore_unknown_preds'), 0))
+        self.output_filename.set(ifnone(newconf.get('output_filename'), ''))
+        self.cwPreds.set(ifnone(newconf.get('cw_preds'), ''))
+        self.closed_world.set(ifnone(newconf.get('cw'), 0))
+        self.save.set(ifnone(newconf.get('save'), 0))
+        self.query.set(ifnone(newconf.get('queries'), ''))
         self.onchange_cw()
 
 
@@ -992,7 +994,7 @@ class MLNQueryGUI(object):
 
 
 def main():
-    praclog.level(praclog.DEBUG)
+    logger.level = logs.DEBUG
 
     usage = 'PRACMLN Query Tool'
 

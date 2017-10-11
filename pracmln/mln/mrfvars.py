@@ -20,8 +20,10 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-from pracmln.mln.errors import MRFValueException
-from pracmln.mln.util import Interval, ifNone
+from dnutils import ifnone
+
+from .errors import MRFValueException
+from .util import Interval
 
 class MRFVariable(object):
     """
@@ -229,12 +231,12 @@ class MRFVariable(object):
                          ground atoms in the variable that do not have a truth value assigned.
         """
         total = 0
-        evstr = ','.join([ifNone(world[atom.idx], '?', str) for atom in self.gndatoms])
+        evstr = ','.join([ifnone(world[atom.idx], '?', str) for atom in self.gndatoms])
         for gnatom in self.gndatoms:
             val = world[gnatom.idx]
             if strict and val is None:
                 raise MRFValueException('Not all values have truth assignments: %s: %s' % (repr(self), evstr))
-            total += ifNone(val, 0)
+            total += ifnone(val, 0)
         if not (total == 1 if strict else total in Interval('[0,1]')):
             raise MRFValueException('Invalid value of variable %s: %s' % (repr(self), evstr))
         return True

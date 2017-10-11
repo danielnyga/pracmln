@@ -30,26 +30,25 @@ import tkinter.messagebox
 import tkinter.simpledialog
 from importlib import util as imputil
 from string import ascii_letters, digits, punctuation
-from tkinter import _setit, Menu, TclError, Frame, StringVar, Button, Text, \
-    IntVar, Checkbutton, Entry, OptionMenu, Scrollbar, Grid, Place, Pack
-from tkinter.constants import INSERT, LEFT, W, END, DISABLED, NORMAL, RIGHT, Y, \
-    BOTTOM, X, BOTH, HORIZONTAL, SEL
+from tkinter import (_setit, Menu, TclError, Frame, StringVar, Button, Text,
+    IntVar, Checkbutton, Entry, OptionMenu, Scrollbar, Grid, Place, Pack)
+from tkinter.constants import (INSERT, LEFT, W, END, DISABLED, NORMAL, RIGHT, Y,
+    BOTTOM, X, BOTH, HORIZONTAL, SEL)
 from tkinter.filedialog import askopenfilename
 
-from pracmln import praclog
-from pracmln.mln.util import out
-from pracmln.utils.project import mlnpath
+from .project import mlnpath
 
-if imputil.find_spec('Pmw'):
-    from Pmw.Pmw_2_0_1.lib.PmwComboBox import ComboBox
-    havePMW = True
-else:
+try:
+    if imputil.find_spec('Pmw'):
+        from Pmw.Pmw_2_0_1.lib.PmwComboBox import ComboBox
+        havePMW = True
+    else:
+        havePMW = False
+except:
     havePMW = False
 
 BOLDFONT = '*-Monospace-Bold-R-Normal-*-12-*'
 ITALICFONT = '*-Monospace-Medium-O-Normal-*-12-*'
-logger = praclog.logger(__name__)
-
 
 
 class ScrolledText2(Text):
@@ -553,7 +552,6 @@ class FileEditBar(Frame, object):
             self.delete_hook(fname)
 
         f = self.update_file_choices()
-        out(f)
         # select first element from remaining list
         if f: self.list_files['menu'].invoke(0)
         else:

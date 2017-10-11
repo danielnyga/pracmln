@@ -23,7 +23,7 @@
 
 import pickle
 from subprocess import Popen, PIPE
-from pracmln.mln.util import logx
+from ..mln.util import logx
 
 def KLDivergence(p, q):
 	'''

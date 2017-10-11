@@ -24,32 +24,26 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import logging
-from pracmln.mln.database import Database
-from .util import mergedom
-import copy
-import sys
 import re
-from .util import fstr
-from pracmln.logic import FirstOrderLogic
-from .util import logx
+import sys
 import time
-from .grounding import *
-from pracmln.logic.common import Logic
-from pracmln.mln.constants import HARD, nan
-from pracmln.logic.fuzzy import FuzzyLogic
-from pracmln.mln.mrfvars import MutexVariable, SoftMutexVariable, FuzzyVariable,\
-    BinaryVariable
-from pracmln.mln.errors import MRFValueException, NoSuchDomainError,\
-    NoSuchPredicateError
-from pracmln.mln.util import CallByRef, Interval, trace, out, temporary_evidence,\
-    tty, stop
-from pracmln.mln.methods import InferenceMethods
 from math import *
-import traceback
+
+from dnutils import out, logs
+
+from .database import Database
+from .errors import (MRFValueException, NoSuchDomainError, NoSuchPredicateError)
+from .methods import InferenceMethods
+from .constants import HARD
+from .mrfvars import (MutexVariable, SoftMutexVariable, FuzzyVariable,
+    BinaryVariable)
+from .util import fstr, logx, mergedom, CallByRef, Interval
+from ..logic import FirstOrderLogic
+from ..logic.common import Logic
+from ..logic.fuzzy import FuzzyLogic
 
 
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 
 class MRF(object):

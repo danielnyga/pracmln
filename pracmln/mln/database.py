@@ -22,25 +22,25 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."""
+from dnutils import ifnone, logs
+from dnutils.console import barstr
 
 from .util import stripComments, mergedom
-from pracmln.praclog import logging
-from pracmln.logic.common import Logic
+from ..logic.common import Logic
+from ..logic.fol import FirstOrderLogic
 from .errors import NoSuchPredicateError
-from pracmln.logic.fol import FirstOrderLogic
 import os
 from io import StringIO
 import sys
-from pracmln.mln.util import barstr, colorize, ifNone
-from pracmln.mln.errors import MLNParsingError
+from .util import colorize
+from .errors import MLNParsingError
 import traceback
 from collections import defaultdict
 import re
-from pracmln import praclog
-from pracmln.utils.project import mlnpath
+from ..utils.project import mlnpath
 
 
-logger = praclog.logger(__name__)
+logger = logs.getlogger(__name__)
 
 
 class Database(object):
@@ -556,7 +556,7 @@ def parse_db(mln, content, ignore_unknown_preds=False, db=None, dirs=['.'], proj
                                     a new `Database` object will be created.
     :return:                        a list of databases
     """
-    log = logging.getLogger('db')
+    log = logs.getlogger('db')
     content = stripComments(content)
     allow_multiple = True
     if db is None:
@@ -608,7 +608,7 @@ def parse_db(mln, content, ignore_unknown_preds=False, db=None, dirs=['.'], proj
             logger.debug('Including file: "%s"' % includefilename)
             p = mlnpath(includefilename)
             dbs.extend(parse_db(content=mlnpath(includefilename).content, ignore_unknown_preds=ignore_unknown_preds, dirs=[p.resolve_path()]+dirs, 
-                      projectpath=ifNone(p.project, projectpath, lambda x: '/'.join(p.path+[x])), mln=mln)) 
+                      projectpath=ifnone(p.project, projectpath, lambda x: '/'.join(p.path+[x])), mln=mln)) 
             continue
         # valued evidence
         elif l[0] in "0123456789":

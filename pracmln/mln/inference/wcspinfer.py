@@ -20,24 +20,21 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-from pracmln.mln.util import combinations, dict_union, Interval, out, stop, \
-    temporary_evidence
-from pracmln.mln.inference.infer import Inference
-from pracmln.wcsp import Constraint
-from pracmln.wcsp import WCSP
-from pracmln.logic.common import Logic
-from pracmln.mln.mrfvars import FuzzyVariable
-import logging
 from collections import defaultdict
-from pracmln.mln.constants import infty, HARD
-from pracmln.mln.grounding.fastconj import FastConjunctionGrounding
-from pracmln.mln.grounding.default import DefaultGroundingFactory
-from pracmln.mln.errors import SatisfiabilityException, MRFValueException
-import time
+
+from dnutils import logs
+
+from .infer import Inference
+from ..constants import infty, HARD
+from ..errors import SatisfiabilityException, MRFValueException
+from ..grounding.fastconj import FastConjunctionGrounding
+from ..mrfvars import FuzzyVariable
+from ..util import (combinations, dict_union, Interval, temporary_evidence)
+from ...wcsp import Constraint, WCSP
+from ...logic.common import Logic
 
 
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 
 class WCSPInference(Inference):

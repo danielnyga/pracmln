@@ -1,8 +1,10 @@
 
 import sys
-import logging
 import time
 import math
+
+from dnutils import logs
+
 
 try:
     import numpy
@@ -26,7 +28,7 @@ class DirectDescent(object):
             raise Exception('learning rate must lie in [0,1[: %s' % self.learningRate)
     
     def run(self):
-        log = logging.getLogger(self.__class__.__name__)
+        log = logs.getlogger(self.__class__.__name__)
         norm = 1
         alpha = 1.0
         step = 1
@@ -199,7 +201,7 @@ class SciPyOpt(object):
         #if not useGrad or not p.useGrad(): neg_grad = None
         if not p.usef: 
             neg_f = lambda wt: -p._fDummy(wt)
-        log = logging.getLogger(self.__class__.__name__)
+        log = logs.getlogger(self.__class__.__name__)
         if optimizer == "bfgs":
             params = dict([k_v for k_v in iter(self.optParams.items()) if k_v[0] in ["gtol", "epsilon", "maxiter"]])
             if self.verbose: print("starting optimization with %s... %s\n" % (optimizer, params))

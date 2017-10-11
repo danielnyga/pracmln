@@ -24,6 +24,7 @@
 from .common import Logic
 from functools import reduce
 
+
 class FuzzyLogic(Logic):
     """
     Implementation of fuzzy logic for MLNs.

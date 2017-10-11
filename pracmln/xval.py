@@ -30,20 +30,22 @@ import shutil
 from optparse import OptionParser
 from random import shuffle, sample
 import math
+
+from dnutils import logs, stop, out
+
 from .mln.methods import LearningMethods, InferenceMethods
 from .utils.eval import ConfusionMatrix
 from multiprocessing import Pool
 import logging
 from . import praclog
 from logging import FileHandler
-from pracmln.mln.database import Database
-from pracmln.mlnquery import MLNQuery
-from pracmln.mlnlearn import MLNLearn
-from pracmln.mln.mlnpreds import FuzzyPredicate
-from pracmln.utils.project import MLNProject
-from pracmln.mln.util import out, stop
+from .mln.database import Database
+from .mlnquery import MLNQuery
+from .mlnlearn import MLNLearn
+from .mln.mlnpreds import FuzzyPredicate
+from .utils.project import MLNProject
 
-logger = praclog.logger(__name__)
+logger = logs.getlogger(__name__)
 
 
 usage = '''Usage: %prog [options] <predicate> <mlnproject> <dbfile>'''

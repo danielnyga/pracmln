@@ -10,7 +10,7 @@ import numpy as np
 from matplotlib import rc
 from numpy.ma.core import floor, ceil
 import _thread
-from pracmln.utils.latexmath2png import math2png
+from .latexmath2png import math2png
 
 
 COLORS = ['blue', 'green', 'red', 'orange']

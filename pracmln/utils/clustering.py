@@ -21,11 +21,10 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."""
-from utils.evalSeqLabels import editDistance
+from .evalSeqLabels import editDistance
 import math
 import numpy
 from collections import defaultdict
-from utils import dict_union
 from itertools import combinations
 
 class Cluster(object):
@@ -351,8 +350,8 @@ if __name__ == '__main__':
 #      
 #     print SAHN(s)
      
-    from mln.mln import readMLNFromFile
-    from mln.database import readDBFromFile
+    from ..mln import readMLNFromFile
+    from ..mln.database import readDBFromFile
     mln = readMLNFromFile('/home/nyga/code/pracmln/models/object-detection.mln')
     dbs = readDBFromFile(mln, '/home/nyga/code/pracmln/models/scenes.db')
     mln.materializeFormulaTemplates(dbs, verbose=True)

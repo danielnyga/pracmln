@@ -21,20 +21,21 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from dnutils import logs
+from dnutils.console import barstr
 
-from pracmln.logic.common import Logic
-from pracmln.mln.database import Database
-from pracmln.mln.constants import ALL
-from pracmln.mln.mrfvars import MutexVariable, SoftMutexVariable, FuzzyVariable
-from pracmln.mln.util import StopWatch, barstr, colorize, elapsed_time_str, out,\
-    headline, tty, edict
+from ...logic.common import Logic
+from ..database import Database
+from ..constants import ALL
+from ..mrfvars import MutexVariable, SoftMutexVariable, FuzzyVariable
+from ..util import StopWatch, elapsed_time_str, headline, tty, edict
 import sys
-from pracmln.mln.errors import NoSuchPredicateError
-from pracmln import praclog
-from pracmln.mln.mlnpreds import SoftFunctionalPredicate, FunctionalPredicate
+from ..errors import NoSuchPredicateError
+from ..mlnpreds import SoftFunctionalPredicate, FunctionalPredicate
 from functools import reduce
 
-logger = praclog.logger(__name__)
+logger = logs.getlogger(__name__)
+
 
 class Inference(object):
     """

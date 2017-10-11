@@ -23,21 +23,19 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pracmln.mln.inference.maxwalk import SAMaxWalkSAT
-from pracmln.mln.mrfvars import BinaryVariable
-from pracmln.mln.inference.mcmc import MCMCInference
 import random
-import math
-from pracmln.mln.constants import ALL
-from pracmln.mln.util import ProgressBar, out, stop
-import numpy
 from collections import defaultdict
-from pracmln.mln.grounding.fastconj import FastConjunctionGrounding
-from pracmln.logic.common import Logic
-from pracmln.mln.errors import SatisfiabilityException
+
+import numpy
+from dnutils import ProgressBar
+
+from .mcmc import MCMCInference
+from ..constants import ALL
+from ..grounding.fastconj import FastConjunctionGrounding
+from ...logic.common import Logic
+
 
 class GibbsSampler(MCMCInference):
-
 
     def __init__(self, mrf, queries=ALL, **params):
         MCMCInference.__init__(self, mrf, queries, **params)
@@ -56,11 +54,9 @@ class GibbsSampler(MCMCInference):
     def maxsteps(self):
         return self._params.get('maxsteps', 500)
     
-    
-    
+
     class Chain(MCMCInference.Chain):
     
-        
         def __init__(self, infer, queries):
             MCMCInference.Chain.__init__(self, infer, queries)
             mrf = infer.mrf
@@ -142,7 +138,7 @@ class GibbsSampler(MCMCInference):
         converged = 0
         steps = 0
         if self.verbose:
-            bar = ProgressBar(width=100, color='green', steps=self.maxsteps)
+            bar = ProgressBar(color='green', steps=self.maxsteps)
         while converged != self.chains and steps < self.maxsteps:
             converged = 0
             steps += 1

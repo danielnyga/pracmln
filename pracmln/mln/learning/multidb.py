@@ -20,18 +20,18 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from dnutils import logs, ProgressBar
 
 from .common import AbstractLearner
 import sys
-from pracmln.mln.util import StopWatch, ProgressBar, edict
+from ..util import StopWatch, edict
 from multiprocessing import Pool
-import logging
-from pracmln.utils.multicore import with_tracing, _methodcaller, checkmem
+from ...utils.multicore import with_tracing, _methodcaller, checkmem
 import numpy
-from pracmln.mln.constants import HARD
+from ..constants import HARD
 
 
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 
 def _setup_learner(xxx_todo_changeme):
@@ -71,7 +71,7 @@ class MultipleDatabaseLearner(AbstractLearner):
         self.learners = [None] * len(dbs)
         self.watch.tag('setup learners', verbose=self.verbose)
         if self.verbose:
-            bar = ProgressBar(width=100, steps=len(dbs), color='green')
+            bar = ProgressBar(layout='100%', steps=len(dbs), color='green')
         if self.multicore:
             pool = Pool(maxtasksperchild=1)
             logger.debug('Setting up multi-core processing for {} cores'.format(pool._processes))
@@ -178,7 +178,7 @@ class MultipleDatabaseLearner(AbstractLearner):
     def _prepare(self):
         self.watch.tag('preparing optimization', verbose=self.verbose)
         if self.verbose:
-            bar = ProgressBar(width=100, steps=len(self.dbs), color='green')
+            bar = ProgressBar(steps=len(self.dbs), color='green')
         if self.multicore:
             pool = Pool(maxtasksperchild=1)
             try:

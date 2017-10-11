@@ -20,20 +20,21 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from dnutils import logs
 
-from pracmln.mln.learning.common import AbstractLearner, DiscriminativeLearner
+from .common import AbstractLearner, DiscriminativeLearner
 import random
 from collections import defaultdict
-from pracmln.mln.util import fsum, dict_union, temporary_evidence
+from ..util import fsum, dict_union, temporary_evidence
 from numpy.ma.core import log, sqrt
 import numpy
-from pracmln.logic.common import Logic
-from pracmln.mln.constants import HARD
-from pracmln.mln.errors import SatisfiabilityException
-from pracmln import praclog
+from ...logic.common import Logic
+from ..constants import HARD
+from ..errors import SatisfiabilityException
 
 
-logger = praclog.logger(__name__)
+logger = logs.getlogger(__name__)
+
 
 class CLL(AbstractLearner):
     """

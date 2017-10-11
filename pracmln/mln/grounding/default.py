@@ -20,16 +20,14 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from dnutils import logs, ProgressBar, ifnone
 
-from .common import AbstractGroundingFactory
-import logging
-from pracmln.mln.util import fstr, dict_union, StopWatch, ProgressBar, out,\
-    ifNone, stop
-from pracmln.mln.constants import auto, HARD
-from pracmln.mln.errors import SatisfiabilityException
+from ..util import fstr, dict_union, StopWatch
+from ..constants import auto, HARD
+from ..errors import SatisfiabilityException
 
 
-logger = logging.getLogger(__name__)
+logger = logs.getlogger(__name__)
 
 
 CACHE_SIZE = 100000
@@ -48,7 +46,7 @@ class DefaultGroundingFactory:
     
     def __init__(self, mrf, simplify=False, unsatfailure=False, formulas=None, cache=auto, **params):
         self.mrf = mrf
-        self.formulas = ifNone(formulas, list(self.mrf.formulas))
+        self.formulas = ifnone(formulas, list(self.mrf.formulas))
         self.total_gf = 0
         for f in self.formulas:
             self.total_gf += f.countgroundings(self.mrf)
