@@ -120,7 +120,7 @@ class DefaultGroundingFactory:
             
     def _itergroundings(self, simplify=False, unsatfailure=False):
         if self.verbose: 
-            bar = ProgressBar(width=100, color='green')
+            bar = ProgressBar(color='green')
         for i, formula in enumerate(self.formulas):
             if self.verbose: bar.update((i+1) / float(len(self.formulas)))
             for gndformula in formula.itergroundings(self.mrf, simplify=simplify):
