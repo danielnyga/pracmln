@@ -29,6 +29,8 @@ import collections
 
 from dnutils import logs, ifnone
 
+from pracmln.utils import locs
+
 
 logger = logs.getlogger(__name__)
 
@@ -428,7 +430,7 @@ class mlnpath(object):
         
     
     def resolve_path(self):
-        p = ('/' if self._abspath else '') + self.path
+        p = self.path
         for f in (os.path.expanduser, os.path.expandvars, os.path.normpath):
             p = f(p)
         return p
@@ -526,7 +528,7 @@ if __name__ == '__main__':
 #     proj.add_mln('model.mln', '// predicate declarations\nfoo(x)')
 #     proj.add_db('data.db', 'foox(X)')
 #     proj.save()
-    proj = MLNProject.open('/home/mareikep/Desktop/mln/test.pracmln')
+    proj = MLNProject.open(os.path.join(locs.examples, 'smokers', 'smokers.pracmln'))
     proj.write()
     print proj.queryconf.config
     
