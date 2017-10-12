@@ -1,9 +1,8 @@
+import glob
 import os
-import shutil
 
-from setuptools import setup as sutep
+from setuptools import setup
 
-import sys
 import _version
 
 __basedir__ = _version.__basedir__
@@ -18,13 +17,25 @@ with open(os.path.join(os.path.dirname(__file__), __basedir__, 'requirements.txt
     requirements = [l.strip() for l in f.readlines() if l.strip()]
 
 
-sutep(
+def datafiles(d):
+    data_files = []
+    for root, dirs, files in os.walk(os.path.join(os.path.dirname(__file__), d)):
+        if not files: continue
+        data_files.append((root, [os.path.join(root, f) for f in files]))
+
+    return data_files
+
+
+setup(
     name='pracmln',
-    packages=['pracmln', 'pracmln._version'],
+    packages=['pracmln', 'pracmln._version', 'pracmln.logic', 'pracmln.mln',
+        'pracmln.utils', 'pracmln.wcsp', 'pracmln.mln.grounding',
+        'pracmln.mln.inference', 'pracmln.mln.learning'],
     package_dir={
         'pracmln': basedir('pracmln'),
         'pracmln._version': '_version',
     },
+    data_files=datafiles('examples') + datafiles('3rdparty') + datafiles('libpracmln'),
     version=__version__,
     description='A collection of convenience tools for everyday Python programming',
     author='Daniel Nyga',
@@ -55,12 +66,11 @@ sutep(
         'Programming Language :: Python :: 3.5',
     ],
     install_requires=requirements,
-    # scripts=[basedir('pracmln/apps/mlnlearn')],
     entry_points={
         'console_scripts': [
-	        'mlnlearn=' + __basedir__ + '.pracmln.mlnlearn:main',
-	        'mlnquery=' + __basedir__ + '.pracmln.mlnquery:main',
-	        'cpplibs=' + __basedir__ + '.pracmln.libpracmln:createcpplibs',
+            'mlnlearn=pracmln.mlnlearn:main',
+	        'mlnquery=pracmln.mlnquery:main',
+	        'libpracmln-build=pracmln.libpracmln:createcpplibs',
         ],
     },
 )

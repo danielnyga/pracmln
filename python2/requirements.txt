@@ -1,0 +1,13 @@
+Pmw
+tabulate
+pymongo
+numpy
+scipy
+logutils
+pyparsing
+psutil
+matplotlib
+networkx
+mpmath
+Image
+dnutils

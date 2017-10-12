@@ -1,0 +1,2 @@
+string[] evidence
+MRFClique[] cliques

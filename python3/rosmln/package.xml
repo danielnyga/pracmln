@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+  <name>rosmln</name>
+  <version>0.0.2</version>
+  <description>ROS bindings for pracmln</description>
+  <maintainer email="nyga@cs.uni-bremen.de">Daniel Nyga</maintainer>
+  <license>BSD</license>
+  <url type="website">http://pracmln.org/</url>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <build_depend>message_generation</build_depend>
+  <run_depend>message_runtime</run_depend>
+  <export></export>
+</package>
