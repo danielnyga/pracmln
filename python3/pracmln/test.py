@@ -3,14 +3,18 @@ Created on Oct 28, 2015
 
 @author: nyga
 """
-from .pracmln import MLN, Database
-from .pracmln import query, learn
-from .pracmln.mlnlearn import EVIDENCE_PREDS
+import os
+
+from pracmln import MLN, Database
+from pracmln import query, learn
+from pracmln.mlnlearn import EVIDENCE_PREDS
 import time
+
+from pracmln.utils import locs
 
 
 def test_inference_smokers():
-    p = '$PRACMLN_HOME/examples/smokers/smokers.pracmln'
+    p = os.path.join(locs.examples, 'smokers', 'smokers.pracmln')
     mln = MLN(mlnfile=('%s:wts.pybpll.smoking-train-smoking.mln' % p),
               grammar='StandardGrammar')
     db = Database(mln, dbfile='%s:smoking-test-smaller.db' % p)
@@ -26,10 +30,10 @@ def test_inference_smokers():
                   db=db,
                   verbose=True,
                   multicore=multicore).run()
-    
+
 
 def test_inference_taxonomies():
-    p = '$PRACMLN_HOME/examples/taxonomies/taxonomies.pracmln'
+    p = os.path.join(locs.examples, 'taxonomies', 'taxonomies.pracmln')
     mln = MLN(mlnfile=('%s:wts.learned.taxonomy.mln' % p),
               grammar='PRACGrammar',
               logic='FuzzyLogic')
@@ -45,7 +49,7 @@ def test_inference_taxonomies():
     
     
 def test_learning_smokers():
-    p = '$PRACMLN_HOME/examples/smokers/smokers.pracmln'
+    p = os.path.join(locs.examples, 'smokers', 'smokers.pracmln')
     mln = MLN(mlnfile=('%s:smoking.mln' % p), grammar='StandardGrammar')
     mln.write()
     db = Database(mln, dbfile='%s:smoking-train.db' % p)
@@ -60,7 +64,7 @@ def test_learning_smokers():
 
 
 def test_learning_taxonomies():
-    p = '$PRACMLN_HOME/examples/taxonomies/taxonomies.pracmln'
+    p = os.path.join(locs.examples, 'taxonomies', 'taxonomies.pracmln')
     mln = MLN(mlnfile=('%s:senses_and_roles.mln' % p), grammar='PRACGrammar')
     mln.write()
     dbs = Database.load(mln, dbfiles='%s:training.db' % p)
@@ -85,5 +89,8 @@ def runall():
     print()
     print('all test finished after', time.time() - start, 'secs')
 
-if __name__ == '__main__':
+def main():
     runall()
+
+if __name__ == '__main__':
+    main()

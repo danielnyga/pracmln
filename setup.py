@@ -71,6 +71,7 @@ setup(
             'mlnlearn=pracmln.mlnlearn:main',
 	        'mlnquery=pracmln.mlnquery:main',
 	        'libpracmln-build=pracmln.libpracmln:createcpplibs',
+            'pracmlntest=pracmln.test:main',
         ],
     },
 )
