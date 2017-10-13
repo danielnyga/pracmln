@@ -31,8 +31,8 @@ them using the Python interpreter. (On Windows, do not use
 pythonw.exe to run them because the console output is an integral 
 part of these tools.)::
 
-    python mlnquery.py  
-    python mlnlearn.py
+    mlnquery
+    mlnlearn
 
 General Usage
 ~~~~~~~~~~~~~

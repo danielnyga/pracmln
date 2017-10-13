@@ -20,24 +20,34 @@ import sphinx_bootstrap_theme
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath("../../pracmln"))
-sys.path.append('..')
-sys.path.append('.')
-sys.path.append(os.path.join('..', '3rdparty', 'logutils-0.3.3'))
+
+sys.path.append(os.path.abspath('../..'))
+import _version
+
+sys.path.insert(0, os.path.abspath(_version.__basedir__))
+# sys.path.append('.')
+# sys.path.append(os.path.join('..', '3rdparty', 'logutils-0.3.3'))
+
+
+print('using', _version.__basedir__)
 
 try:
     from sphinxcontrib import bibtex
 except:
-    print 'ERROR: bibtex extension for sphinx not found. Install with'
-    print
-    print '   pip install sphinxcontrib-bibtex'
-    print 
+    print('ERROR: bibtex extension for sphinx not found. Install with')
+    print()
+    print('   pip install sphinxcontrib-bibtex')
+    print()
     exit(1)
 
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = '1.0'
+
+
+def setup(app):
+    app.add_stylesheet('css/custom_styles.css')  # may also be an URL
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -69,9 +79,9 @@ copyright = u'%s, Daniel Nyga' % datetime.datetime.now().year
 # built documents.
 #
 # The short X.Y version.
-version = u'1.1'
+version = _version.VERSION_STRING_SHORT
 # The full version, including alpha/beta/rc tags.
-release = u'1.1.2'
+release = _version.VERSION_STRING_FULL
 
 rst_epilog = """
 .. |version| replace:: {version}

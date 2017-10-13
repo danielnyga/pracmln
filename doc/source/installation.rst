@@ -21,17 +21,13 @@ Prerequisites
 Linux
 ~~~~~
 
-* Python 2.7 with Tkinter installed.
+* Python 2.7/3 (tested with 3.5) with Tkinter installed.
 
     .. note::
 
       On Linux, the following packages should be installed (tested for Ubuntu).::
 
-        sudo apt-get install python-tk python-scipy
-
-  You will also need the following python packages: `pyparsing`, `tabulate`, `psutil` and `networkx`. You can install them via ::
-
-    $ sudo pip install pyparsing tabulate psutil==0.4.1 networkx
+        sudo apt-get install python-tk
 
 * `pracmln` is shipped with the open source WCSP solver `toulbar2` for Linux and Windows 64-bit versions.
   For other architectures, it can be obtained from::
@@ -77,24 +73,14 @@ Windows
 Installation
 ^^^^^^^^^^^^
 
-#. Generating Apps
+As of Version 0.2.0, `pracmln` is shipped as a ``pip``-compliant package. For installing it, just checkout the code from::
 
-   Run the ``setup.py`` script: ::
-    
-    python setup.py
+  $> git clone https://github.com/danielnyga/pracmln.git
 
-   This will generate a number of shell scripts (or batch files for Windows) in the ``./apps`` directory. 
+and install it with::
 
-#. Setting up your Environment
+  $> python setup.py install
 
-   ``setup.py`` will report how to set up your environment.
-   
-   To temporarily configure your environment, you can simply use the ``env`` script/batch
-   file it creates to get everything set up.
-   If you use `pracmln` a lot, consider adding the ``./apps`` directory to your ``PATH`` variable
-   or copy the files created therein to an appropriate directory.
-   If you intend to make use of scripting, also set ``PYTHONPATH`` as described
-   by ``setup`` (the env.bat for Windows will do this automatically).
 
 .. _sec-cppbindings:
 
@@ -103,7 +89,7 @@ C++ bindings
 
 * Requirements:
 
- * Linux OS (tested on Ubuntu 14.04)
+ * Linux OS (tested on Ubuntu 14.04, 16.04 with Python 2.7 and Python 3.5)
 
  * libboost-python
 
@@ -111,9 +97,11 @@ C++ bindings
 
 * Installation:
 
- * Run the ``setup`` script with ``--cppbindings``: ::
+ * After the installation of `pracmln`, run::
 
-    python setup.py --cppbindings
+    libpracmln-build
+
+   It will compile the C++ sources in the current working directory, creating a folder ``libpracmln``.
 
 * Usage:
 

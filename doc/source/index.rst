@@ -42,7 +42,13 @@ your own scripts, see :doc:`apidoc`.
 Release notes
 ^^^^^^^^^^^^^
 
-  * Release |release| (14.03.2017)
+  * Release 1.2.0 (13.10.2017)
+
+    * Support for Python 2 and Python 3
+    * Release a ``pip``-compliant package
+    * Minor fixes
+
+  * Release 1.1.2 (14.03.2017)
 
     * *Fix*: Patches for using toulbar2 on Windows platforms
 
@@ -127,7 +133,9 @@ Publications
 ^^^^^^^^^^^^
 
 .. bibliography:: refs.bib
-    :list: bullet
+    :list: enumerated
+    :enumtype: arabic
+    :filter: author % "Nyga" or author % "Jain"
     :all:
 
 
