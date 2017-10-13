@@ -169,6 +169,8 @@ class EnumerationAsk(Inference):
             result[str(q)] = p
         return result
 
-
     def soft_evidence_formula(self, gf):
-        return isinstance(self.mrf.mln.logic, FirstOrderLogic) and any([a.truth(self.mrf.evidence) in Interval('(0,1)') for a in gf.gndatoms()])
+        truths = [a.truth(self.mrf.evidence) for a in gf.gndatoms()]
+        if None in truths:
+            return False
+        return isinstance(self.mrf.mln.logic, FirstOrderLogic) and any([t in Interval('(0,1)') for t in truths])

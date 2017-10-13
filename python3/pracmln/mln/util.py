@@ -208,7 +208,7 @@ class Interval:
         self.end = float(tokens[2])
         
     def __contains__(self, x):
-        return (self.start <= x if self.left == INC else self.start < x) and  (self.end >= x if self.right == INC else self.end > x) 
+        return (self.start <= x if self.left == INC else self.start < x) and (self.end >= x if self.right == INC else self.end > x)
         
     
 def elapsedtime(start, end=None):
