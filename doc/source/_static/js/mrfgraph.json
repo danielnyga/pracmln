@@ -75,10 +75,6 @@
       "target": 3
     }, 
     {
-      "source": 3, 
-      "target": 4
-    }, 
-    {
       "source": 4, 
       "target": 0
     }, 
