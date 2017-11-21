@@ -21,6 +21,9 @@ CVALUE = {'blue': '#355FD6',
           'orange': '#D0742F'}
 
 MARKERS = ['s', 'v', 'o', '^']
+DECLARATIONS = [r'''\DeclareMathOperator*{\argmin}{\arg\!\min}''',
+                r'''\DeclareMathOperator*{\argmax}{\arg\!\max}''',
+                r'''\newcommand{\Pcond}[1]{\ensuremath{P\left(\begin{array}{c|c}#1\end{array}\right)}}''']
 
 
 def plot_fscores(labels, series):
@@ -103,10 +106,6 @@ def get_cond_prob_png(queries, dbs, filename='cond_prob', filedir='/tmp',
     """
     safefilename = '{}-{}-{}'.format(filename, os.getpid(), thread.get_ident())
 
-    declarations = [r'''\DeclareMathOperator*{\argmin}{\arg\!\min}''',
-                    r'''\DeclareMathOperator*{\argmax}{\arg\!\max}''',
-                    r'''\newcommand{\Pcond}[1]{\ensuremath{P\left(\begin{array}{c|c}#1\end{array}\right)}}''',
-                    r'''\newcommand{\simil}[1]{\ensuremath{sim\left(\begin{array}{cc}#1\end{array}\right)}}''']
 
     if isinstance(queries, str):
         queries = queries.split(',')
