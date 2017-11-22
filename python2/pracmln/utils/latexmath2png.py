@@ -58,10 +58,11 @@ default_packages = [
         'bm'
         ]
 
+
 def __build_preamble(packages, declarations):
     preamble = '\documentclass{article}\n'
     for p in packages:
-        preamble += "\usepackage{{{}}}\n".format(p)
+        preamble += "\\usepackage{{{}}}\n".format(p)
 
     for d in declarations:
         preamble += '{}\n'.format(d)
@@ -69,7 +70,8 @@ def __build_preamble(packages, declarations):
     preamble += "\pagestyle{empty}\n\\begin{document}\n"
     return preamble
 
-def __write_output(infile, outdir, workdir='.', filename='', size=1):
+
+def __write_output(infile, outdir, workdir='.', filename='', size=1, svg=True):
     try:
         # Generate the DVI file. NOTE: no output in stdout, as it is piped into /dev/null!
         latexcmd = 'latex -halt-on-error -output-directory {} {} >/dev/null'.format(workdir, infile)
@@ -82,11 +84,15 @@ def __write_output(infile, outdir, workdir='.', filename='', size=1):
         # Convert the DVI file to PNG's
         dvifile = infile.replace('.tex', '.dvi')
         outfilename = os.path.join(outdir, filename)
-        dvicmd = "dvipng -q* -T tight -x {} -z 9 -bg Transparent "\
-                "-o {}.png {} >/dev/null".format(size * 1000, outfilename, dvifile)
+
+        if svg:
+            dvicmd = "dvisvgm -o {}.svg --no-fonts {} >/dev/null".format(outfilename, dvifile)
+        else:
+            dvicmd = "dvipng -q* -T tight -x {} -z 9 -bg Transparent "\
+                    "-o {}.png {} >/dev/null".format(size * 1000, outfilename, dvifile)
         rc = os.system(dvicmd)
         if rc != 0:
-            raise Exception('dvipng error')
+            raise Exception('{} error'.format('dvisvgm error' if svg else'dvipng'))
     finally:
         # Cleanup temporaries
         basefile = infile.replace('.tex', '')
@@ -96,7 +102,8 @@ def __write_output(infile, outdir, workdir='.', filename='', size=1):
             if os.path.exists(tempfile):
                 os.remove(tempfile)
 
-def math2png(content, outdir, packages=default_packages, declarations=[], filename='', size=1):
+
+def math2png(content, outdir, packages=default_packages, declarations=[], filename='', size=1, svg=True):
     """
     Generate png images from $$...$$ style math environment equations.
 
@@ -115,23 +122,32 @@ def math2png(content, outdir, packages=default_packages, declarations=[], filena
         # Get a temporary file
         fd, texfile = tempfile.mkstemp('.tex', 'eq', workdir, True)
 
+        content = content.replace('$', r'\$')
+
         # Create the TeX document and save to tempfile
         fileContent = '{}$${}$$\n\end{{document}}'.format(__build_preamble(packages, declarations), content)
+
         with os.fdopen(fd, 'w+') as f:
             f.write(fileContent)
 
-        __write_output(texfile, outdir, workdir=workdir, filename=filename, size=size)
+        __write_output(texfile, outdir, workdir=workdir, filename=filename, size=size, svg=svg)
     finally:
-        outfilename = os.path.join(outdir, '{}.png'.format(filename))
+        outfilename = os.path.join(outdir, '{}.{}'.format(filename, 'svg' if svg else 'png'))
 
-        # determine image size
-        im = Image.open(outfilename)
-        width, height = im.size
-        ratio = float(width)/float(height)
 
-        # create base64 encoded file content 
-        png = open(outfilename)
-        pngb64 = base64.b64encode(png.read())
+        if svg:
+            with open(outfilename, 'r') as outfile:
+                filecontent = outfile.read()
+                ratio = 1
+        else:
+            # determine image size
+            im = Image.open(outfilename)
+            width, height = im.size
+            ratio = float(width)/float(height)
+
+            # create base64 encoded file content
+            png = open(outfilename)
+            filecontent = base64.b64encode(png.read())
 
         # cleanup and delete temporary files
         if os.path.exists(texfile):
@@ -139,7 +155,8 @@ def math2png(content, outdir, packages=default_packages, declarations=[], filena
         if os.path.exists(outfilename):
             os.remove(outfilename)
 
-        return (pngb64, ratio)
+        return (filecontent, ratio)
+
 
 def usage():
     print """
@@ -163,6 +180,7 @@ Reads equations from the specified FILEs or standard input if none is given. One
 equation is allowed per line of text and each equation is rendered to a separate
 PNG image numbered sequentially from 1, with an optional filename.
     """.format(os.path.split(sys.argv[0])[1])
+
 
 def main():
     try:

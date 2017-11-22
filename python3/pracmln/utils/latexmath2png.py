@@ -1,7 +1,6 @@
 #!/usr/bin/python2.5
  # Until Python 2.6
 
-from pracmln.mln.util import out
 
 
 """
@@ -61,6 +60,7 @@ default_packages = [
         'bm'
         ]
 
+
 def __build_preamble(packages, declarations):
     preamble = '\documentclass{article}\n'
     for p in packages:
@@ -71,6 +71,7 @@ def __build_preamble(packages, declarations):
 
     preamble += "\pagestyle{empty}\n\\begin{document}\n"
     return preamble
+
 
 def __write_output(infile, outdir, workdir='.', filename='', size=1, svg=True):
     try:
@@ -103,6 +104,7 @@ def __write_output(infile, outdir, workdir='.', filename='', size=1, svg=True):
             if os.path.exists(tempfile):
                 os.remove(tempfile)
 
+
 def math2png(content, outdir, packages=default_packages, declarations=[], filename='', size=1, svg=True):
     """
     Generate png images from $$...$$ style math environment equations.
@@ -121,8 +123,7 @@ def math2png(content, outdir, packages=default_packages, declarations=[], filena
 
         # Get a temporary file
         fd, texfile = tempfile.mkstemp('.tex', 'eq', workdir, True)
-        
-        
+
         content = content.replace('$', r'\$')
 
         # Create the TeX document and save to tempfile
