@@ -22,7 +22,7 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.'''
-from dnutils import logs, ifnone
+from dnutils import logs, ifnone, out
 from dnutils.console import barstr
 
 from util import stripComments, mergedom
@@ -194,7 +194,9 @@ class Database(object):
         :param truth:      the truth value of this ground literal. 0 stands for false, 1 for true.
                            In case of soft or fuzzy evidence, any truth value in [0,1] is allowed.
         '''
-        if type(gndlit) is str:
+        if isinstance(gndlit, unicode):
+            gndlit = gndlit.encode('utf-8')
+        if isinstance(gndlit, str):
             true, predname, args = self.mln.logic.parse_literal(gndlit)
             atom_str = str(self.mln.logic.gnd_atom(predname, args, self.mln))
         elif isinstance(gndlit, Logic.GroundLit):
