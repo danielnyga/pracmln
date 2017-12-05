@@ -130,7 +130,7 @@ class BPLL(AbstractLearner):
                 for i, val in enumerate(counts):
                     g -= val * self._pls[varidx][i]
                 grad[fidx] += g
-        self.grad_opt_norm = float(sqrt(float(fsum([x * x for x in grad]))))
+        self.grad_opt_norm = sqrt(float(fsum([x * x for x in grad])))
         return numpy.array(grad)
 
     
@@ -189,7 +189,7 @@ class DPLL(BPLL, DiscriminativeLearner):
                 for i, val in enumerate(counts):
                     g -= val * self._pls[varidx][i]
                 grad[fidx] += g
-        self.grad_opt_norm = float(sqrt(float(fsum([x * x for x in grad]))))
+        self.grad_opt_norm = sqrt(float(fsum([x * x for x in grad])))
         return numpy.array(grad)
 
 
