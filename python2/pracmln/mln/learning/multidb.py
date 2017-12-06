@@ -70,7 +70,7 @@ class MultipleDatabaseLearner(AbstractLearner):
         self.learners = [None] * len(dbs)
         self.watch.tag('setup learners', verbose=self.verbose)
         if self.verbose:
-            bar = ProgressBar(width=100, steps=len(dbs), color='green')
+            bar = ProgressBar(steps=len(dbs), color='green')
         if self.multicore:
             pool = Pool(maxtasksperchild=1)
             logger.debug('Setting up multi-core processing for {} cores'.format(pool._processes))
@@ -177,7 +177,7 @@ class MultipleDatabaseLearner(AbstractLearner):
     def _prepare(self):
         self.watch.tag('preparing optimization', verbose=self.verbose)
         if self.verbose:
-            bar = ProgressBar(width=100, steps=len(self.dbs), color='green')
+            bar = ProgressBar(steps=len(self.dbs), color='green')
         if self.multicore:
             pool = Pool(maxtasksperchild=1)
             try:
