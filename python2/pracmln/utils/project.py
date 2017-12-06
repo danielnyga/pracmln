@@ -24,10 +24,9 @@ import copy
 from zipfile import ZipFile, ZIP_DEFLATED
 import os
 import sys
+from dnutils import ifnone, logs
 import json
 import collections
-
-from dnutils import logs, ifnone
 
 from pracmln.utils import locs
 
@@ -177,9 +176,11 @@ class MLNProject(object):
     
     def loaddb(self, mln, config, db=None):
         if db is None:
-            if config == 'query': config = self.queryconf
-            elif config == 'learn': config = self.learnconf
-            else: raise Exception('Need a database name or config.')
+            if config not in ['query', 'learn']:
+                raise Exception('Need a database name or config.')
+        if config == 'query': config = self.queryconf
+        elif config == 'learn': config = self.learnconf
+
         from pracmln.mln.database import parse_db
         path = self.path if hasattr(self, 'path') else None
         return parse_db(mln, self.dbs[ifnone(db, config['db'])], ignore_unknown_preds=config['ignore_unknown_preds'], projectpath=path)
