@@ -37,7 +37,7 @@ setup(
     },
     data_files=datafiles('examples') + datafiles('3rdparty') + datafiles('libpracmln'),
     version=__version__,
-    description='A collection of convenience tools for everyday Python programming',
+    description='Markov logic networks in Python',
     author='Daniel Nyga',
     author_email='nyga@cs.uni-bremen.de',
     url='https://pracmln.org',
