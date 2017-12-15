@@ -21,13 +21,10 @@ import sphinx_bootstrap_theme
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
-sys.path.append(os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('../..'))
 import _version
 
-sys.path.insert(0, os.path.abspath(_version.__basedir__))
-# sys.path.append('.')
-# sys.path.append(os.path.join('..', '3rdparty', 'logutils-0.3.3'))
-
+sys.path.insert(0, os.path.abspath(os.path.join('..', '..',  _version.__basedir__)))
 
 print('using', _version.__basedir__)
 
@@ -293,7 +290,7 @@ texinfo_documents = [
 epub_title = u'PRAC'
 epub_author = u'Daniel Nyga'
 epub_publisher = u'Daniel Nyga'
-epub_copyright = u'2012, Daniel Nyga'
+epub_copyright = u'%s, Daniel Nyga' % datetime.datetime.now().year
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
