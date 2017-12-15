@@ -35,7 +35,7 @@ setup(
         'pracmln': basedir('pracmln'),
         'pracmln._version': '_version',
     },
-    data_files=datafiles('examples') + datafiles('3rdparty') + datafiles('libpracmln'),
+    data_files=datafiles('examples') + datafiles('3rdparty') + datafiles('libpracmln') + datafiles('etc'),
     version=__version__,
     description='A collection of convenience tools for everyday Python programming',
     author='Daniel Nyga',

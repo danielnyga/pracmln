@@ -5,3 +5,4 @@ if os.path.basename(home).startswith('python'):
     home = os.path.realpath(os.path.join(home, '..'))
 trdparty = os.path.join(home, '3rdparty')
 examples = os.path.join(home, 'examples')
+etc = os.path.join(home, 'etc')
