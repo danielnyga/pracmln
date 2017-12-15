@@ -91,7 +91,7 @@ def __write_output(infile, outdir, workdir='.', filename='', size=1, svg=True):
         outfilename = os.path.join(outdir, filename)
 
         if svg:
-            dvicmd = "dvisvgm -o {}.svg --no-fonts {} >/dev/null".format(outfilename, dvifile)
+            dvicmd = "dvisvgm -v 0 -o {}.svg --no-fonts {}".format(outfilename, dvifile)
         else:
             dvicmd = "dvipng -q* -T tight -x {} -z 9 -bg Transparent -o {}.png {} >/dev/null".format(size * 1000, outfilename, dvifile)
         rc = os.system(dvicmd)
@@ -144,6 +144,7 @@ def math2png(content, outdir, packages=default_packages, declarations=[], filena
                      'generating the {} image from the .dvi file.'.format('dvisvgm' if svg else 'dvipng', 'svg' if svg else 'png'))
         outfilename = os.path.join(locs.etc, 'default.{}'.format('svg' if svg else 'png'))
     finally:
+        outfilename = os.path.join(locs.etc, 'default.{}'.format('svg' if svg else 'png'))
         if svg:
             with open(outfilename, 'r') as outfile:
                 filecontent = outfile.read()
@@ -159,8 +160,8 @@ def math2png(content, outdir, packages=default_packages, declarations=[], filena
             filecontent = base64.b64encode(png.read())
 
         # cleanup and delete temporary files
-        if os.path.exists(texfile):
+        if os.path.exists(texfile) and locs.etc not in outfilename:
             os.remove(texfile)
-        if os.path.exists(outfilename):
+        if os.path.exists(outfilename) and locs.etc not in outfilename:
             os.remove(outfilename)
         return filecontent, ratio
