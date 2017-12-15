@@ -1,12 +1,33 @@
+import distutils
 import glob
 import os
 
-from setuptools import setup
+import sys
+from distutils.core import setup
+from site import USER_SITE
+
+import appdirs
+# from setuptools.command import build_py
+from distutils.command.install import INSTALL_SCHEMES, SCHEME_KEYS
 
 import _version
 
+
 __basedir__ = _version.__basedir__
 __version__ = _version.__version__
+
+
+appname = 'pracmln'
+appauthor = 'danielnyga'
+
+
+def iamroot():
+    '''Checks if this process has admin permissions.'''
+    try:
+        return os.getuid() == 0
+    except AttributeError:
+        import ctypes
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
 
 
 def basedir(name):
@@ -21,9 +42,24 @@ def datafiles(d):
     data_files = []
     for root, dirs, files in os.walk(os.path.join(os.path.dirname(__file__), d)):
         if not files: continue
-        data_files.append((root, [os.path.join(root, f) for f in files]))
-
+        root_ = root.replace(os.getcwd() + os.path.sep, '')
+        data_files.append((root_, [os.path.join(root_, f) for f in files]))
     return data_files
+
+
+def datapath():
+    '''Returns the path where app data is to be installed.'''
+    if iamroot():
+        return appdirs.site_data_dir(appname, appauthor)
+    else:
+        return appdirs.user_data_dir(appname, appauthor)
+
+
+class myinstall(distutils.command.install.install):
+
+    def __init__(self, *args, **kwargs):
+        distutils.command.install.install.__init__(self, *args, **kwargs)
+        self.distribution.get_command_obj('install_data').install_dir = datapath()
 
 
 setup(
@@ -74,5 +110,6 @@ setup(
             'pracmlntest=pracmln.test:main',
         ],
     },
+    cmdclass={'install': myinstall}
 )
 

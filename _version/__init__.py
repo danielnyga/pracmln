@@ -9,9 +9,14 @@ __all__ = [
     'VERSION_MINOR',
     'VERSION_PATCH',
     'VERSION_STRING',
+    'APPNAME',
+    'APPAUTHOR',
     '__version__',
     '__basedir__'
 ]
+
+APPNAME = 'pracmln'
+APPAUTHOR = 'danielnyga'
 
 VERSION_MAJOR = 1
 VERSION_MINOR = 2

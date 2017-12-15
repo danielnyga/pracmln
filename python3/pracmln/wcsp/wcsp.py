@@ -82,17 +82,21 @@ def toulbar2_path():
         return en
     # fallback: try to load shipped toulbar2 binary
     if osname == 'Windows': execname += '.exe'
-    path = os.path.join(locs.trdparty, 'toulbar2-{}'.format(toulbar_version), arch, osname, execname)
-    path = os.path.abspath(path)
-    return path
+    return os.path.join('3rdparty', 'toulbar2-{}'.format(toulbar_version), arch, osname, execname)
 
 
 # Globally check if the toulbar2 executable can be found when
 # this module is loaded. Print a warning if not.
-_tb2path = toulbar2_path()
-if not is_executable(_tb2path):
-    logger.error('toulbar2 was expected at {} but cannot be found. WCSP inference will not be possible.'.format(_tb2path))
+pathoptions = [os.path.join(locs.home, toulbar2_path()),
+               os.path.join(locs.datapathnonroot, toulbar2_path()),
+               os.path.join(locs.datapathroot, toulbar2_path())]
 
+for p in pathoptions:
+    if is_executable(p):
+        _tb2path = p
+        break
+else:
+    logger.error('toulbar2 was expected to be in any of the listed locations below but cannot be found. WCSP inference will not be possible.\n{}'.format('\n'.join(pathoptions)))
 
 class Constraint(object):
     '''
@@ -361,14 +365,14 @@ class WCSP(object):
         :returns:    a generator of (idx, solution) tuples, where idx is the index and solution is a tuple
                      of variable value indices.
         '''
-        if not is_executable(toulbar2_path()):
+        if not is_executable(_tb2path):
             raise Exception('toulbar2 cannot be found.')
         # append the process id to the filename to make it "process safe"
         tmpfile = tempfile.NamedTemporaryFile(prefix=os.getpid(), suffix='.wcsp', delete=False)
         wcspfilename = tmpfile.name
         self.write(stream=tmpfile)
         tmpfile.close()
-        cmd = '{} -s -a {}'.format(toulbar2_path(), wcspfilename)
+        cmd = '%s -s -a %s' % (_tb2path, wcspfilename)
         logger.debug('solving WCSP...')
         p = Popen(cmd, shell=True, stderr=PIPE, stdout=PIPE)
         solution = None
@@ -395,14 +399,14 @@ class WCSP(object):
         Uses toulbar2 inference. Returns the best solution, i.e. a tuple
         of variable assignments.
         '''
-        if not is_executable(toulbar2_path()):
+        if not is_executable(_tb2path):
             raise Exception('toulbar2 cannot be found.')
         # append the process id to the filename to make it "process safe"
         tmpfile = tempfile.NamedTemporaryFile(prefix='{}-{}'.format(os.getpid(), _thread.get_ident()), suffix='.wcsp', delete=False)
         wcspfilename = tmpfile.name
         self.write(stream=tmpfile)
         tmpfile.close()
-        cmd = '"{}" -s {}'.format(toulbar2_path(), wcspfilename)
+        cmd = '"%s" -s %s' % (_tb2path, wcspfilename)
         logger.debug('solving WCSP...')
         p = Popen(cmd, shell=True, stderr=PIPE, stdout=PIPE)
         solution = None
