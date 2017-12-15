@@ -1,6 +1,9 @@
 #!/usr/bin/python2.5
  # Until Python 2.6
 
+from dnutils import logs
+
+from pracmln.utils import locs
 
 
 """
@@ -46,11 +49,11 @@ IN THE SOFTWARE.
 """
 
 import os
-import sys
 import tempfile
-import getopt
 from PIL import Image
 import base64
+
+logger = logs.getlogger(__name__, logs.DEBUG)
 
 # Default packages to use when generating output
 default_packages = [
@@ -88,17 +91,16 @@ def __write_output(infile, outdir, workdir='.', filename='', size=1, svg=True):
         outfilename = os.path.join(outdir, filename)
 
         if svg:
-            dvicmd = "dvisvgm -o {}.svg --no-fonts {} >/dev/null".format(outfilename, dvifile)
+            dvicmd = "dvisvgm -v 0 -o {}.svg --no-fonts {}".format(outfilename, dvifile)
         else:
-            dvicmd = "dvipng -q* -T tight -x {} -z 9 -bg Transparent "\
-                    "-o {}.png {} >/dev/null".format(size * 1000, outfilename, dvifile)
+            dvicmd = "dvipng -q* -T tight -x {} -z 9 -bg Transparent -o {}.png {} >/dev/null".format(size * 1000, outfilename, dvifile)
         rc = os.system(dvicmd)
         if rc != 0:
             raise Exception('{} error'.format('dvisvgm error' if svg else'dvipng'))
     finally:
         # Cleanup temporaries
         basefile = infile.replace('.tex', '')
-        tempext = [ '.aux', '.dvi', '.log' ]
+        tempext = ['.aux', '.dvi', '.log']
         for te in tempext:
             tempfile = basefile + te
             if os.path.exists(tempfile):
@@ -117,13 +119,13 @@ def math2png(content, outdir, packages=default_packages, declarations=[], filena
         filename     - Optional filename for output files
         size         - Scale factor for output
     """
+    outfilename = '/tmp/default.tex'
+    # Set the working directory
+    workdir = tempfile.gettempdir()
+
+    # Get a temporary file
+    fd, texfile = tempfile.mkstemp('.tex', 'eq', workdir, True)
     try:
-        # Set the working directory
-        workdir = tempfile.gettempdir()
-
-        # Get a temporary file
-        fd, texfile = tempfile.mkstemp('.tex', 'eq', workdir, True)
-
         content = content.replace('$', r'\$')
 
         # Create the TeX document and save to tempfile
@@ -133,10 +135,15 @@ def math2png(content, outdir, packages=default_packages, declarations=[], filena
             f.write(fileContent)
 
         __write_output(texfile, outdir, workdir=workdir, filename=filename, size=size, svg=svg)
-    finally:
         outfilename = os.path.join(outdir, '{}.{}'.format(filename, 'svg' if svg else 'png'))
 
-
+    except:
+        logger.error('Unable to create image. A reason you encounter '
+                     'this error might be that you are either missing latex '
+                     'packages for generating .dvi files or {} for '
+                     'generating the {} image from the .dvi file.'.format('dvisvgm' if svg else 'dvipng', 'svg' if svg else 'png'))
+        outfilename = os.path.join(locs.etc, 'default.{}'.format('svg' if svg else 'png'))
+    finally:
         if svg:
             with open(outfilename, 'r') as outfile:
                 filecontent = outfile.read()
@@ -152,84 +159,8 @@ def math2png(content, outdir, packages=default_packages, declarations=[], filena
             filecontent = base64.b64encode(png.read())
 
         # cleanup and delete temporary files
-        if os.path.exists(texfile):
+        if os.path.exists(texfile) and locs.etc not in outfilename:
             os.remove(texfile)
-        if os.path.exists(outfilename):
+        if os.path.exists(outfilename) and locs.etc not in outfilename:
             os.remove(outfilename)
-
-        return (filecontent, ratio)
-
-
-def usage():
-    print('''
-Usage: {} [OPTION] ... [FILE] ...
-Converts LaTeX math input to PNG.
-
-Options are:
-    -h, --help              Display this help information
-    --outdir=OUTDIR         PNG file output directory 
-                            Default: the current working directory
-    --packages=PACKAGES     Comma separated list of packages to use
-                            Default: amsmath,amsthm,amssymb,bm
-    --declarations=DECLS    Comma separated list of declarations to use
-                            Default: ''
-    --filename=filename         filename output file names with filename
-                            Default: no filename
-    --scale=SCALE           Scale the output by a factor of SCALE. 
-                            Default: 1 = 100%%
-
-Reads equations from the specified FILEs or standard input if none is given. One
-equation is allowed per line of text and each equation is rendered to a separate
-PNG image numbered sequentially from 1, with an optional filename.
-    '''.format(os.path.split(sys.argv[0])[1]))
-
-def main():
-    try:
-        shortopts = [ 'h', ]
-        longopts = [
-                'help',
-                'outdir=',
-                'packages=',
-                'filename=',
-                ]
-        opts, args = getopt.getopt(sys.argv[1:], shortopts, longopts)
-    except getopt.GetoptError as err:
-        scriptname = os.path.split(sys.argv[0])[1]
-        print("{}: {}".format(scriptname, err))
-        print("Try `{} --help` for more information.".format(scriptname))
-        sys.exit(2)
-
-    packages = []
-    declarations = []
-    filename = ''
-    outdir = os.getcwd()
-    for o, a in opts:
-        if o in ("-h", "--help"):
-            usage()
-            sys.exit()
-        if o in ("--packages"):
-            packages = a.split(',')
-        if o in ("--declarations"):
-            declarations = a.split(',')
-        if o in ("--filename"):
-            filename = a
-        if o in ("--outdir"):
-            outdir = os.path.abspath(a)
-
-    input = ''
-    if args:
-        # If filenames were provided on the command line, read their equations
-        for a in args:
-            fd = os.open(a, os.O_RDONLY)
-            with os.fdopen(fd, 'r') as f:
-                cur = [i.strip('\n') for i in f.readlines()]
-                input.extend(cur)
-    else:
-        # Otherwise read from stdin
-        input = [i.strip('\n') for i in sys.stdin.readlines()]
-
-    # Engage!
-    math2png(input, outdir, packages, declarations, filename)
-
-if __name__ == '__main__':
-    main()
+        return filecontent, ratio
