@@ -144,7 +144,6 @@ def math2png(content, outdir, packages=default_packages, declarations=[], filena
                      'generating the {} image from the .dvi file.'.format('dvisvgm' if svg else 'dvipng', 'svg' if svg else 'png'))
         outfilename = os.path.join(locs.etc, 'default.{}'.format('svg' if svg else 'png'))
     finally:
-        outfilename = os.path.join(locs.etc, 'default.{}'.format('svg' if svg else 'png'))
         if svg:
             with open(outfilename, 'r') as outfile:
                 filecontent = outfile.read()
