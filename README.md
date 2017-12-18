@@ -9,6 +9,12 @@ pracmln is a toolbox for statistical relational learning and reasoning and provi
   * Lead developer: Daniel Nyga (nyga@cs.uni-bremen.de)
 
 
+Installation
+------------
+
+    $ pip install pracmln
+    
+
 Documentation
 -------------
 
