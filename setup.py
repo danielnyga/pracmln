@@ -1,16 +1,11 @@
 import distutils
-import glob
 import os
-
-import sys
 from distutils.core import setup
-from site import USER_SITE
-
-import appdirs
-# from setuptools.command import build_py
-from distutils.command.install import INSTALL_SCHEMES, SCHEME_KEYS
 
 import _version
+import pip
+pip.main(['install', 'appdirs'])
+# from setuptools.command import build_py
 
 
 __basedir__ = _version.__basedir__
@@ -49,6 +44,7 @@ def datafiles(d):
 
 def datapath():
     '''Returns the path where app data is to be installed.'''
+    import appdirs
     if iamroot():
         return appdirs.site_data_dir(appname, appauthor)
     else:

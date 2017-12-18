@@ -11,3 +11,4 @@ networkx
 mpmath
 Image
 dnutils
+appdirs

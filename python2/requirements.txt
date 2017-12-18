@@ -1,3 +1,4 @@
+django<=1.11 # we actually do not use this but django dropped support for python2
 Pmw
 tabulate
 pymongo
@@ -11,3 +12,4 @@ networkx
 mpmath
 Image
 dnutils
+appdirs

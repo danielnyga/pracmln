@@ -87,16 +87,11 @@ def toulbar2_path():
 
 # Globally check if the toulbar2 executable can be found when
 # this module is loaded. Print a warning if not.
-pathoptions = [os.path.join(locs.home, toulbar2_path()),
-               os.path.join(locs.datapathnonroot, toulbar2_path()),
-               os.path.join(locs.datapathroot, toulbar2_path())]
+_tb2path = os.path.join(locs.app_data, toulbar2_path())
 
-for p in pathoptions:
-    if is_executable(p):
-        _tb2path = p
-        break
-else:
-    logger.error('toulbar2 was expected to be in any of the listed locations below but cannot be found. WCSP inference will not be possible.\n{}'.format('\n'.join(pathoptions)))
+if not is_executable(_tb2path):
+    logger.error('toulbar2 was expected to be in {} but cannot be found. WCSP inference will not be possible.\n'.format(_tb2path))
+
 
 class Constraint(object):
     '''

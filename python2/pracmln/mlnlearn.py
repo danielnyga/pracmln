@@ -41,7 +41,7 @@ import tkMessageBox
 import fnmatch
 from mln.methods import LearningMethods
 from cProfile import Profile
-from pracmln.utils import config
+from pracmln.utils import config, locs
 from pracmln.mln.util import headline, StopWatch
 from tkFileDialog import asksaveasfilename, askopenfilename
 from pracmln.utils.config import global_config_filename
@@ -58,8 +58,7 @@ logger = logs.getlogger(__name__)
 QUERY_PREDS = 0
 EVIDENCE_PREDS = 1
 DEFAULTNAME = 'unknown{}'
-PRACMLN_HOME = os.getenv('PRACMLN_HOME', os.getcwd())
-DEFAULT_CONFIG = os.path.join(PRACMLN_HOME, global_config_filename)
+DEFAULT_CONFIG = os.path.join(locs.user_data, global_config_filename)
 WINDOWTITLE = 'PRACMLN Learning Tool - {}' + os.path.sep + '{}'
 WINDOWTITLEEDITED = 'PRACMLN Learning Tool - {}' + os.path.sep + '*{}'
 
@@ -430,11 +429,6 @@ class MLNLearn(object):
 class MLNLearnGUI:
     def __init__(self, master, gconf, directory=None):
         self.master = master
-        # icon = Tkinter.Image("photo", file=os.path.join(PRACMLN_HOME,
-        #                                                 'doc',
-        #                                                 '_static',
-        #                                                 'favicon.ico'))
-        # self.master.tk.call('wm', 'iconphoto', self.master._w, icon)
 
         self.initialized = False
 
@@ -715,7 +709,6 @@ class MLNLearnGUI:
 
         self.initialized = True
 
-
     def _got_focus(self, *_):
         if self.master.focus_get() == self.mln_container.editor:
             if not self.project.mlns and not self.mln_container.file_buffer:
@@ -723,7 +716,6 @@ class MLNLearnGUI:
         elif self.master.focus_get() == self.db_container.editor:
             if not self.project.dbs and not self.db_container.file_buffer:
                 self.db_container.new_file()
-
 
     def quit(self):
         if self.settings_dirty.get() or self.project_dirty.get():
@@ -1217,8 +1209,7 @@ def main():
     # run learning task/GUI
     root = Tk()
     conf = PRACMLNConfig(DEFAULT_CONFIG)
-    print('dir', args.directory)
-    app = MLNLearnGUI(root, conf, directory=os.path.abspath(args.directory) if args.directory is not None else None)
+    app = MLNLearnGUI(root, conf, directory=os.path.abspath(args.directory) if args.directory is not None else os.path.join(locs.app_data, 'examples'))
 
     if args.run:
         logger.debug('running mlnlearn without gui')

@@ -34,6 +34,7 @@ import tkMessageBox
 import traceback
 
 from dnutils import logs, ifnone, out
+from pracmln.utils import locs
 
 from pracmln.utils.project import MLNProject, PRACMLNConfig, mlnpath
 from mln.methods import InferenceMethods
@@ -58,8 +59,7 @@ ALLOWED_EXTENSIONS = [('PRACMLN project files', '.pracmln'),
                       ('MLN files', '.mln'), ('MLN extension files', '.emln'),
                       ('Database files', '.db')]
 DEFAULTNAME = 'unknown{}'
-PRACMLN_HOME = os.getenv('PRACMLN_HOME', os.getcwd())
-DEFAULT_CONFIG = os.path.join(PRACMLN_HOME, global_config_filename)
+DEFAULT_CONFIG = os.path.join(locs.user_data, global_config_filename)
 WINDOWTITLE = 'PRACMLN Query Tool - {}' + os.path.sep + '{}'
 WINDOWTITLEEDITED = 'PRACMLN Query Tool - {}' + os.path.sep + '*{}'
 
@@ -275,8 +275,6 @@ class MLNQuery(object):
 class MLNQueryGUI(object):
     def __init__(self, master, gconf, directory=None):
         self.master = master
-        # icon = Tkinter.Image("photo", file=os.path.join(PRACMLN_HOME, 'doc', '_static', 'favicon.ico'))
-        # self.master.tk.call('wm', 'iconphoto', self.master._w, icon)
 
         self.initialized = False
 

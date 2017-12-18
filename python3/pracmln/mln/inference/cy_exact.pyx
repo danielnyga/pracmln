@@ -45,10 +45,10 @@ logger = logs.getlogger(__name__)
 global_enumAsk = None
 
 
-def eval_queries(world):
-    """
+cdef eval_queries(float* world):
+    '''
     Evaluates the queries given a possible world.
-    """
+    '''
     numerators = [0] * len(global_enumAsk.queries)
     denominator = 0
     expsum = 0
