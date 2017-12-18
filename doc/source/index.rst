@@ -42,7 +42,7 @@ your own scripts, see :doc:`apidoc`.
 Release notes
 ^^^^^^^^^^^^^
 
-  * Release 1.2.1 (18.12.2017)
+  * Release 1.2.2 (18.12.2017)
 
     * Support for Python 2 and Python 3
     * Release a ``pip``-compliant package

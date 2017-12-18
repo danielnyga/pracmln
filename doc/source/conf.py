@@ -14,6 +14,9 @@
 import sys
 import os
 import datetime
+import pip
+pip.main(['install', 'sphinx', 'sphinx_bootstrap_theme', 'sphinxcontrib-bibtex'])
+
 import sphinx_bootstrap_theme
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -23,6 +26,7 @@ import sphinx_bootstrap_theme
 
 sys.path.insert(0, os.path.abspath('../..'))
 import _version
+
 
 sys.path.insert(0, os.path.abspath(os.path.join('..', '..',  _version.__basedir__)))
 

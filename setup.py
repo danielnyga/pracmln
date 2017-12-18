@@ -51,6 +51,13 @@ def datapath():
         return appdirs.user_data_dir(appname, appauthor)
 
 
+def description():
+    try:
+        with open('README.md') as f:
+            return f.read()
+    except:
+        return 'Markov logic networks in Python. Please visit http://www.pracmln.org'
+
 class myinstall(distutils.command.install.install):
 
     def __init__(self, *args, **kwargs):
@@ -70,9 +77,10 @@ setup(
     data_files=datafiles('examples') + datafiles('3rdparty') + datafiles('libpracmln') + datafiles('etc'),
     version=__version__,
     description='Markov logic networks in Python',
+    long_description=description(),
     author='Daniel Nyga',
     author_email='nyga@cs.uni-bremen.de',
-    url='https://pracmln.org',
+    url='http://www.pracmln.org',
     download_url='https://github.com/danielnyga/pracmln/archive/%s.tar.gz' % __version__,
     keywords=['statistical relational learning', 'mln', 'Markov logic networks', 'reasoning', 'probcog'],
     classifiers=[
