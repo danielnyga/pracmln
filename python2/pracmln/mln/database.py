@@ -347,10 +347,13 @@ class Database(object):
     
     def __lshift__(self, arg):
         if type(arg) is tuple:
-            if len(arg) != 2: raise Exception('Illegal argument arg: %s' % str(arg))
+            if len(arg) != 2:
+                raise Exception('Illegal argument arg: %s' % str(arg))
             self.add(arg[0], float(arg[1]))
-        elif type(arg) == str:
+        elif isinstance(arg, basestring):
             self.add(arg)
+        else:
+            raise ValueError('illegal argument: must be string or <string, truth> pair. Got: %s' % repr(arg))
             
     
     def __rshift__(self, atom):
