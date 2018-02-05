@@ -1004,7 +1004,7 @@ class Logic(object):
                     varname = arg
                     domain = argdoms[i]
                     if varname in variables and variables[varname] != domain and variables[varname] is not None:
-                        raise Exception("Variable '%s' bound to more than one domain" % varname)
+                        raise Exception("Variable '%s' bound to more than one domain: %s" % (varname, str((variables[varname], domain))))
                     variables[varname] = domain
                 elif constants is not None:
                     domain = argdoms[i]
