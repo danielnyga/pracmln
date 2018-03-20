@@ -21,11 +21,19 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.'''
-from .evalSeqLabels import editDistance
+from dnutils import getlogger, first
+
+from pracmln.utils.project import MLNProject
+
+from pracmln import MLN, Database, mlnpath
+
+from pracmln.mln.util import mergedom
+from evalSeqLabels import editDistance
 import math
 import numpy
 from collections import defaultdict
 from itertools import combinations
+
 
 class Cluster(object):
     '''
@@ -40,7 +48,7 @@ class Cluster(object):
         self.type = None
         for point in dataPoints:
             t = type(point)
-            t = 'number' if t is int or t is float or t is long else 'str'
+            t = 'number' if t is int or t is float or t is int else 'str'
             if self.type is not None and self.type != t:
                 raise Exception('Data points must be all of the same type (%s).' % self.type)
             self.type = t
@@ -330,8 +338,6 @@ class CorrelationClustering():
             self.cluster2data[c1].add(d)
                 
     def remove_cluster(self, c):
-#         if c < 0: clusters = self.negclusters
-#         else: clusters = self.posclusters
         print map(str, self.cluster2data[c])
         for d in list(self.cluster2data[c]):
             print d
@@ -342,22 +348,82 @@ class CorrelationClustering():
         
     def strcluster(self, c):
         return map(str, self.cluster2data[c])
-                
+
+
+class NoisyStringClustering(object):
+    '''
+    This transformer takes a set of strings and performs a clustering
+    based on the edit distance. It transforms databases wrt to the clusters.
+    '''
+
+    def __init__(self, mln, domains, verbose=True):
+        self.mln = mln
+        self.domains = domains
+        self.verbose = verbose
+        self.clusters = {} # maps domain name -> list of clusters
+        self.noisy_domains = {}
+        self.log = getlogger('noisystr')
+
+    def materialize(self, dbs):
+        '''
+        For each noisy domain, (1) if there is a static domain specification,
+        map the values of that domain in all dbs to their closest neighbor
+        in the domain.
+        (2) If there is no static domain declaration, apply SAHN clustering
+        to the values appearing dbs, take the cluster centroids as the values
+        of the domain and map the dbs as in (1).
+        '''
+        fulldomains = mergedom(*[db.domains for db in dbs])
+        for domain in self.domains:
+            if fulldomains.get(domain, None) is None:
+                continue
+            # apply the clustering step
+            values = fulldomains[domain]
+            clusters = SAHN(values)
+            self.clusters[domain] = clusters
+            self.noisy_domains[domain] = [c._computeCentroid()[0] for c in clusters]
+            if self.verbose:
+                self.log.info('  reducing domain %s: %d -> %d values' % (domain, len(values), len(clusters)))
+                self.log.info('   %s', str(self.noisy_domains[domain]))
+        return self.transform_dbs(dbs)
+
+    def transform_dbs(self, dbs):
+        newdbs = []
+        for db in dbs:
+            common_doms = set(db.domains.keys()).intersection(set(self.domains))
+            if len(common_doms) == 0:
+                newdbs.append(db)
+                continue
+            newdb = db.copy()
+            for domain in common_doms:
+                # map the values in the database to the static domain values
+                valmap = dict([(val, computeClosestCluster(val, self.clusters[domain])[1][0]) for val in newdb.domains[domain]])
+                newdb.domains[domain] = valmap.values()
+                # replace the affected evidences
+                for ev in newdb.evidence.keys():
+                    truth = newdb.evidence[ev]
+                    _, pred, params = db.mln.logic.parse_literal(ev)
+                    if domain in self.mln.predicate(pred).argdoms:  # domain is affected by the mapping
+                        newdb.retract(ev)
+                        newargs = [v if domain != self.mln.predicate(pred).argdoms[i] else valmap[v] for i, v in enumerate(params)]
+                        atom = '%s%s(%s)' % ('' if truth else '!', pred, ','.join(newargs))
+                        newdb << atom
+            newdbs.append(newdb)
+        return newdbs
+
             
 if __name__ == '__main__':
-    
-#     s = ['otto', 'otte', 'obama', 'markov logic network', 'markov logic', 'otta', 'markov random field']
-#      
-#     print SAHN(s)
-     
-    from ..mln import readMLNFromFile
-    from ..mln.database import readDBFromFile
-    mln = readMLNFromFile('/home/nyga/code/pracmln/models/object-detection.mln')
-    dbs = readDBFromFile(mln, '/home/nyga/code/pracmln/models/scenes.db')
-    mln.materializeFormulaTemplates(dbs, verbose=True)
-    print mln.domains['text']
-     
-    clusters = SAHN(mln.domains['text'])
-             
+    mln = MLN.load('/home/nyga/code/pracmln/examples/object-recognition/object-recognition.pracmln:object-detection.mln')
+    dbs = Database.load(mln, '/home/nyga/code/pracmln/examples/object-recognition/object-recognition.pracmln:scenes-new.db')
+
+    # do some plain clustering on texts
+    s = ['otto', 'otte', 'obama', 'markov logic network', 'markov logic', 'otta', 'markov random field']
+    s = set([val for db in Database.load(mln, '/home/nyga/code/pracmln/examples/object-recognition/object-recognition.pracmln:scenes-new.db') for val in db.domains['text']])
+    clusters = SAHN(s)
     for c in clusters:
         print c
+
+    # apply clustering to a set of databases
+    cluster = NoisyStringClustering(mln, ['text'])
+    cluster.materialize(dbs)
+

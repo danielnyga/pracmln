@@ -20,17 +20,25 @@
 # IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."""
-from .evalSeqLabels import editDistance
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.'''
+from dnutils import getlogger, first
+
+from pracmln.utils.project import MLNProject
+
+from pracmln import MLN, Database, mlnpath
+
+from pracmln.mln.util import mergedom
+from evalSeqLabels import editDistance
 import math
 import numpy
 from collections import defaultdict
 from itertools import combinations
 
+
 class Cluster(object):
-    """
+    '''
     Class representing a cluster of some set of abstract data points.
-    """
+    '''
     
     def __init__(self, dataPoints=None):
         if dataPoints is None:
@@ -47,9 +55,9 @@ class Cluster(object):
             
             
     def _computeCentroid(self, distance='auto'):
-        """
+        '''
         Compute the centroid of the cluster.
-        """
+        '''
         dist = self._getDistanceMetrics(distance)
         centroid = None
         if self.type == 'str':
@@ -83,13 +91,13 @@ class Cluster(object):
         return dist
             
     def addPoint(self, dataPoint):
-        """
+        '''
         Adds a data Point to the cluster.
-        """
+        '''
         self.dataPoints.append(dataPoint)
         
     def computeDistance(self, cluster, linkage='avg', distance='auto'):
-        """
+        '''
         Computes the distance between from the current cluster to the given one.
         - linkage:     specifies the linkage method for the clustering:
             - 'avg':   average linkage
@@ -100,7 +108,7 @@ class Cluster(object):
             - 'edit':       the edit (Levenshtein) distance
             - 'manh':       the Manhatten distance
           distance also might be a callable for custom distance metrics.
-        """
+        '''
         dist = self._getDistanceMetrics(distance)
         
         if linkage == 'avg':
@@ -126,10 +134,10 @@ class Cluster(object):
         return totalDist
     
     def merge(self, cluster):
-        """
+        '''
         Merges this cluster with the given one. Returns a new cluster without
         modifying any of the original clusters.
-        """
+        '''
         return Cluster(list(self.dataPoints) + list(cluster.dataPoints))
         
     def __repr__(self):
@@ -138,13 +146,13 @@ class Cluster(object):
         
         
 def SAHN(dataPoints, threshold=None, linkage='avg', dist='auto'):
-    """
+    '''
     Performs sequential agglomerative hierarchical non-overlapping (SAHN) clustering.
     - dataPoints:     list of numerical or categorical data points.
     - threshold:      the threshold for cluster distances when the merging of
                       cluster shall stop. If threshold is None, the median
                       of the complete SAHN clustering will be taken.
-    """ 
+    '''
     clusters = [Cluster([p]) for p in dataPoints]
     threshold2clusters = {}
     if threshold is None:
@@ -177,9 +185,9 @@ def SAHN(dataPoints, threshold=None, linkage='avg', dist='auto'):
     return clusters
     
 def computeClosestCluster(dataPoint, clusters, linkage='avg', dist='auto'):
-    """
+    '''
     Returns the closest cluster and its centroid to the given dataPoint.
-    """
+    '''
     c1 = Cluster([dataPoint])
     minDist = float('inf')
     for c2 in clusters:
@@ -193,13 +201,13 @@ POS = 1
 NEG = -1
 
 class CorrelationClustering():
-    """
+    '''
     Clustering based on similarity or correlation only, without having
     to represent the data points explicitly.
-    """
+    '''
     
     def __init__(self, correlations, points, corr_matrix, thr=None):
-        """
+        '''
         The data is given as a sequence of pairs ((d1,d2), corr(d1, d2)) representing
         pairs of data points and their correlation/similarity. Type of the data 
         points can be anything, but it must be ensured that instances representing the 
@@ -212,7 +220,7 @@ class CorrelationClustering():
         Example:
         
             correlations = [(('a','b'), .2), (('b', 'c'), .7), ....]
-        """
+        '''
         self.corr_matrix = corr_matrix
         # sort the points wrt to their absolute correlations
         sorted_data = sorted(correlations, key=lambda corr: abs(corr[1]), reverse=True)
@@ -341,23 +349,83 @@ class CorrelationClustering():
         del self.cluster2data[c]
         
     def strcluster(self, c):
-        return list(map(str, self.cluster2data[c]))
-                
+        return map(str, self.cluster2data[c])
+
+
+class NoisyStringClustering(object):
+    '''
+    This transformer takes a set of strings and performs a clustering
+    based on the edit distance. It transforms databases wrt to the clusters.
+    '''
+
+    def __init__(self, mln, domains, verbose=True):
+        self.mln = mln
+        self.domains = domains
+        self.verbose = verbose
+        self.clusters = {} # maps domain name -> list of clusters
+        self.noisy_domains = {}
+        self.log = getlogger('noisystr')
+
+    def materialize(self, dbs):
+        '''
+        For each noisy domain, (1) if there is a static domain specification,
+        map the values of that domain in all dbs to their closest neighbor
+        in the domain.
+        (2) If there is no static domain declaration, apply SAHN clustering
+        to the values appearing dbs, take the cluster centroids as the values
+        of the domain and map the dbs as in (1).
+        '''
+        fulldomains = mergedom(*[db.domains for db in dbs])
+        for domain in self.domains:
+            if fulldomains.get(domain, None) is None:
+                continue
+            # apply the clustering step
+            values = fulldomains[domain]
+            clusters = SAHN(values)
+            self.clusters[domain] = clusters
+            self.noisy_domains[domain] = [c._computeCentroid()[0] for c in clusters]
+            if self.verbose:
+                self.log.info('  reducing domain %s: %d -> %d values' % (domain, len(values), len(clusters)))
+                self.log.info('   %s', str(self.noisy_domains[domain]))
+        return self.transform_dbs(dbs)
+
+    def transform_dbs(self, dbs):
+        newdbs = []
+        for db in dbs:
+            common_doms = set(db.domains.keys()).intersection(set(self.domains))
+            if len(common_doms) == 0:
+                newdbs.append(db)
+                continue
+            newdb = db.copy()
+            for domain in common_doms:
+                # map the values in the database to the static domain values
+                valmap = dict([(val, computeClosestCluster(val, self.clusters[domain])[1][0]) for val in newdb.domains[domain]])
+                newdb.domains[domain] = valmap.values()
+                # replace the affected evidences
+                for ev in newdb.evidence.keys():
+                    truth = newdb.evidence[ev]
+                    _, pred, params = db.mln.logic.parse_literal(ev)
+                    if domain in self.mln.predicate(pred).argdoms:  # domain is affected by the mapping
+                        newdb.retract(ev)
+                        newargs = [v if domain != self.mln.predicate(pred).argdoms[i] else valmap[v] for i, v in enumerate(params)]
+                        atom = '%s%s(%s)' % ('' if truth else '!', pred, ','.join(newargs))
+                        newdb << atom
+            newdbs.append(newdb)
+        return newdbs
+
             
 if __name__ == '__main__':
-    
-#     s = ['otto', 'otte', 'obama', 'markov logic network', 'markov logic', 'otta', 'markov random field']
-#      
-#     print SAHN(s)
-     
-    from ..mln import readMLNFromFile
-    from ..mln.database import readDBFromFile
-    mln = readMLNFromFile('/home/nyga/code/pracmln/models/object-detection.mln')
-    dbs = readDBFromFile(mln, '/home/nyga/code/pracmln/models/scenes.db')
-    mln.materializeFormulaTemplates(dbs, verbose=True)
-    print(mln.domains['text'])
-     
-    clusters = SAHN(mln.domains['text'])
-             
+    mln = MLN.load('/home/nyga/code/pracmln/examples/object-recognition/object-recognition.pracmln:object-detection.mln')
+    dbs = Database.load(mln, '/home/nyga/code/pracmln/examples/object-recognition/object-recognition.pracmln:scenes-new.db')
+
+    # do some plain clustering on texts
+    s = ['otto', 'otte', 'obama', 'markov logic network', 'markov logic', 'otta', 'markov random field']
+    s = set([val for db in Database.load(mln, '/home/nyga/code/pracmln/examples/object-recognition/object-recognition.pracmln:scenes-new.db') for val in db.domains['text']])
+    clusters = SAHN(s)
     for c in clusters:
-        print(c)
+        print c
+
+    # apply clustering to a set of databases
+    cluster = NoisyStringClustering(mln, ['text'])
+    cluster.materialize(dbs)
+
