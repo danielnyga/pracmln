@@ -30,13 +30,26 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Warray-bounds -Wtype-limits -Wreturn-ty
 ##################
 
 ## System dependencies are found with CMake's conventions
-find_package(PythonLibs $ENV{PYTHONDIST} REQUIRED)
+
+
+message(STATUS $ENV{PYTHONDIST})
+
+if("$ENV{PYTHONDIST}" MATCHES "2.")
+  set(PYTHONVERSION, "2.7")  
+  find_package(Boost REQUIRED COMPONENTS python)
+elseif("$ENV{PYTHONDIS}" MATCHES "3.")
+  set(PYTHONVERSION, "3.5")
+  find_package(Boost REQUIRED COMPONENTS python-py35)
+endif("$ENV{PYTHONDIST}" MATCHES "2.")
+
+find_package(PythonLibs ${PYTHONVERSION} REQUIRED)
 
 if(NOT PYTHONLIBS_FOUND)
   message(ERROR "PythonLibs not found!")
 endif()
 
-find_package(Boost REQUIRED COMPONENTS python-py35)
+
+message(STATUS ${Boost_LIBRARIES})
 
 ##################
 ## Header files ##
