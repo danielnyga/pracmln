@@ -59,7 +59,6 @@ if platform.architecture()[0] == '32bit':
         logger.warning("Note: Psyco (http://psyco.sourceforge.net) was not loaded. On 32bit systems, it is recommended to install it for improved performance.")
 
 
-
 class MLN(object):
     '''
     Represents a Markov logic network.
@@ -80,7 +79,6 @@ class MLN(object):
         logic_str = '%s("%s", self)' % (logic, grammar)
         self.logic = eval(logic_str)
         logger.debug('Creating MLN with %s syntax and %s semantics' % (grammar, logic))
-        
         self._predicates = {} # maps from predicate name to the predicate instance
         self.domains = {}    # maps from domain names to list of values
         self._formulas = []   # list of MLNFormula instances
@@ -91,59 +89,43 @@ class MLN(object):
         self._unique_templvars = []
         self._probreqs = []
         self._materialized = False
-        self.fuzzypreds = [] # for saving fuzzy predicates that have been converted to binary preds
+        self.fuzzypreds = []  # for saving fuzzy predicates that have been converted to binary preds
         if mlnfile is not None:
             MLN.load(mlnfile, logic=logic, grammar=grammar, mln=self)
             return
-        
         self.closedWorldPreds = []
-
         self.formulaGroups = []
         self.templateIdx2GroupIdx = {}
-
         self.posteriorProbReqs = []
-#         self.parameterType = parameterType
-#         self.probabilityFittingInferenceMethod = InferenceMethods.Exact
-#         self.probabilityFittingThreshold = 0.002 # maximum difference between desired and computed probability
-#         self.probabilityFittingMaxSteps = 20 # maximum number of steps to run iterative proportional fitting
-#         self.defaultInferenceMethod = defaultInferenceMethod
-#         self.allSoft = False
         self.watch = StopWatch()
-
 
     @property
     def predicates(self):
         return list(self.iterpreds())
-     
-    
+
     @property
     def formulas(self):
         return list(self._formulas)
-        
 
     @property
     def weights(self):
         return self._weights
-    
-    
+
     @weights.setter
     def weights(self, wts):
         if len(wts) != len(self._formulas):
             raise Exception('Weight vector must have the same length as formula vector.')
         wts = map(lambda w: float('%-10.6f' % float(eval(str(w)))) if type(w) in (float, int) and w is not HARD else w, wts)
         self._weights = wts
-    
-        
+
     @property
     def fixweights(self):
         return self._fixweights
-    
-    
+
     @fixweights.setter
     def fixweights(self, fw):
         self._fixweights = fw
-    
-    
+
     @property
     def probreqs(self):
         return self._probreqs
@@ -151,20 +133,16 @@ class MLN(object):
     @property
     def weighted_formulas(self):
         return [f for f in self._formulas if f.weight is not HARD]
-    
-    
+
     @property
     def prednames(self):
         return [p.name for p in self.predicates]
 
-
     def prior(self, f, p):
         self._probreqs.append(FirstOrderLogic.PriorConstraint(formula=f, p=p))
-    
-        
+
     def posterior(self, f, p):
         self._probreqs.append(FirstOrderLogic.PosteriorConstraint(formula=f, p=p))
-
 
     def copy(self):
         '''
@@ -181,8 +159,7 @@ class MLN(object):
         mln_._probreqs = list(self.probreqs)
         mln_.fuzzypreds = list(self.fuzzypreds)
         return mln_
-    
-    
+
     def predicate(self, predicate):
         '''
         Returns the predicate object with the given predicate name, or declares a new predicate.
@@ -206,7 +183,6 @@ class MLN(object):
         <Predicate: foo(arg0,arg1)>
         
         '''
-
         if isinstance(predicate, Predicate):
             return self.declare_predicate(predicate)
         elif isinstance(predicate, basestring):
@@ -215,16 +191,14 @@ class MLN(object):
             return predicate.asList()
         else:
             raise Exception('Illegal type of argument predicate: %s' % type(predicate))
-        
-        
+
     def iterpreds(self):
         '''
         Yields the predicates defined in this MLN alphabetically ordered.
         '''
         for predname in sorted(self._predicates):
             yield self.predicate(predname)
-    
-    
+
     def update_predicates(self, mln):
         '''
         Merges the predicate definitions of this MLN with the definitions
@@ -234,7 +208,6 @@ class MLN(object):
         '''
         for pred in mln.iterpreds():
             self.declare_predicate(pred)
-    
 
     def declare_predicate(self, predicate):
         '''
@@ -253,7 +226,6 @@ class MLN(object):
                     self.domains[dom] = []
         return self
 
-            
     def formula(self, formula, weight=0., fixweight=False, unique_templvars=None):
         '''
         Adds a formula to this MLN. The respective domains of constants
@@ -285,23 +257,20 @@ class MLN(object):
         self.fixweights.append(fixweight)
         self._unique_templvars.append(list(unique_templvars) if unique_templvars is not None else [])
         return self._formulas[-1]
-    
-    
+
     def _rmformulas(self):
         self._formulas = []
         self.weights = []
         self.fixweights = []
         self._unique_templvars = []
-    
-    
+
     def iterformulas(self):
         '''
         Returns a generator yielding (idx, formula) tuples.
         '''
         for i, f in enumerate(self._formulas):
             yield i, f
-    
-    
+
     def weight(self, idx, weight=None):
         '''
         Returns or sets the weight of the formula with index `idx`.
@@ -310,12 +279,10 @@ class MLN(object):
             self.weights[idx] = weight
         else:
             return self.weights[idx]
-    
-    
+
     def __lshift__(self, _input):
         parse_mln(_input, '.', logic=None, grammar=None, mln=self)
-    
-                
+
     def materialize(self, *dbs):
         '''
         Materializes this MLN with respect to the databases given. This must
@@ -334,14 +301,12 @@ class MLN(object):
         # obtain full domain with all objects
         fulldomain = mergedom(self.domains, *[db.domains for db in dbs])
         logger.debug('full domains: %s' % fulldomain)
-
         mln_ = self.copy()
-
         # collect the admissible formula templates. templates might be not
         # admissible since the domain of a template variable might be empty.
         for ft in list(mln_.formulas):
             domnames = ft.vardoms().values()
-            if any([not domname in fulldomain for domname in domnames]):
+            if any([domname not in fulldomain for domname in domnames]):
                 logger.debug('Discarding formula template %s, since it cannot be grounded (domain(s) %s empty).' % \
                     (fstr(ft), ','.join([d for d in domnames if d not in fulldomain])))
                 mln_.rmf(ft)
@@ -359,14 +324,12 @@ class MLN(object):
             if predicate.name not in predicates_used:
                 logger.debug('Discarding predicate %s, since it is unused.' % predicate.name)
                 remove = True
-            if remove:  del mln_._predicates[predicate.name]
-            
+            if remove: del mln_._predicates[predicate.name]
         # permanently transfer domains of variables that were expanded from templates
         for _, ft in mln_.iterformulas():
             domnames = ft.template_variables().values()
             for domname in domnames:
                 mln_.domains[domname] = fulldomain[domname]
-
         # materialize the formula templates
         mln__ = mln_.copy()
         mln__ ._rmformulas()
@@ -378,7 +341,6 @@ class MLN(object):
                 f.idx = idx
         mln__._materialized = True
         return mln__
-
 
     def constant(self, domain, *values):
         '''
@@ -394,7 +356,6 @@ class MLN(object):
         for value in values:
             if value not in dom: dom.append(value)
         return self
-
 
     def ground(self, db):
         '''
@@ -413,7 +374,6 @@ class MLN(object):
         mrf.set_evidence(evidence, erase=False)
         return mrf
 
-
     def update_domain(self, domain):
         '''
         Combines the existing domain (if any) with the given one.
@@ -423,7 +383,6 @@ class MLN(object):
         for domname in domain: break
         for value in domain[domname]:
             self.constant(domname, value)
-
 
     def learn(self, databases, method=BPLL, **params):
         '''
@@ -487,7 +446,6 @@ class MLN(object):
                 if w != 0: newmln.formula(f, w, fi)
         return newmln
 
-
     def tofile(self, filename):
         '''
         Creates the file with the given filename and writes this MLN into it.
@@ -495,7 +453,6 @@ class MLN(object):
         f = open(filename, 'w+')
         self.write(f, color=False)   
         f.close()
-
 
     def write(self, stream=sys.stdout, color=None):
         '''
@@ -542,7 +499,6 @@ class MLN(object):
                     w = colorize(str(formula.weight), weight_color, color)
                 stream.write("%s  %s\n" % (w, fstr(formula.cstr(color))))
 
-
     def print_formulas(self):
         '''
         Nicely prints the formulas and their weights.
@@ -550,7 +506,6 @@ class MLN(object):
         for f in self.iterFormulasPrintable():
             print f
 
-                
     def iter_formulas_printable(self):
         '''
         Iterate over all formulas, yield nicely formatted strings.
@@ -563,8 +518,7 @@ class MLN(object):
                 yield "%-10.6f\t%s" % (f.weight, fstr(f))
             else:
                 yield "%s\t%s" % (str(f.weight), fstr(f))
-        
-        
+
     @staticmethod
     def load(files, logic='FirstOrderLogic', grammar='PRACGrammar', mln=None):
         '''
