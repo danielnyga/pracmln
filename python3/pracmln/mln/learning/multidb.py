@@ -20,7 +20,7 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-from dnutils import logs, ProgressBar
+from dnutils import logs, ProgressBar, out, first
 
 from .common import AbstractLearner
 import sys
@@ -43,14 +43,14 @@ def _setup_learner(xxx_todo_changeme):
 
 
 class MultipleDatabaseLearner(AbstractLearner):
-    """
+    '''
     Learns from multiple databases using an arbitrary sub-learning method for
     each database, assuming independence between individual databases.
-    """
+    '''
 
 
     def __init__(self, mln_, dbs, method, **params):
-        """
+        '''
         :param dbs:         list of :class:`mln.database.Database` objects to
                             be used for learning.
         :param mln_:        the MLN object to be used for learning
@@ -59,7 +59,7 @@ class MultipleDatabaseLearner(AbstractLearner):
                             :class:`mln.methods.LearningMethods`.
         :param **params:    additional parameters handed over to the base
                             learners.
-        """
+        '''
 
         self.dbs = dbs
         self._params = edict(params)
@@ -88,6 +88,10 @@ class MultipleDatabaseLearner(AbstractLearner):
             finally:
                 pool.terminate()
                 pool.join()
+            # as MLNs and formulas have been copied to the separate processes,
+            # the mln pointers of the formulas now point to the MLNs in these child processes
+            # we have to copy the materialized weight back to our parent process
+            self.mln.weights = list(first(self.learners).mrf.mln.weights)
         else:
             for i, db in enumerate(self.dbs):
                 _, learner = _setup_learner((i, self.mln, db, method, self._params + {'multicore': False}))
@@ -99,17 +103,14 @@ class MultipleDatabaseLearner(AbstractLearner):
             print('set up', self.name)
         self.watch.finish('setup learners')
 
-
     def _iterdbs(self, method):
         for i, db in enumerate(self.dbs):
             yield i, self.mln, db, method, self._params + {
                 'verbose': not self.multicore, 'multicore': False}
 
-
     @property
     def name(self):
         return "MultipleDatabaseLearner [{} x {}]".format(len(self.learners), self.learners[0].name)
-
 
     def _f(self, w):
         # it turned out that it doesn't pay off to evaluate the function  
@@ -132,7 +133,6 @@ class MultipleDatabaseLearner(AbstractLearner):
         else:
             return sum([l._f(w) for l in self.learners])
 
-
     def _grad(self, w):
         grad = numpy.zeros(len(self.mln.formulas), numpy.float64)
         if False:  # self.multicore:
@@ -154,7 +154,6 @@ class MultipleDatabaseLearner(AbstractLearner):
             for learner in self.learners: grad += learner._grad(w)
         return grad
 
-
     def _hessian(self, w):
         N = len(self.mln.formulas)
         hessian = numpy.matrix(numpy.zeros((N, N)))
@@ -173,7 +172,6 @@ class MultipleDatabaseLearner(AbstractLearner):
         else:
             for learner in self.learners: hessian += learner._hessian(w)
         return hessian
-
 
     def _prepare(self):
         self.watch.tag('preparing optimization', verbose=self.verbose)
@@ -199,16 +197,14 @@ class MultipleDatabaseLearner(AbstractLearner):
                 learner._prepare()
                 if self.verbose: bar.inc()
 
-
     def _filter_fixweights(self, v):
-        """
+        '''
         Removes from the vector `v` all elements at indices that correspond to
         a fixed weight formula index.
-        """
+        '''
         if len(v) != len(self.mln.formulas):
             raise Exception('Vector must have same length as formula weights')
         return [v[i] for i in range(len(self.mln.formulas)) if not self.mln.fixweights[i] and self.mln.weights[i] != HARD]
-
 
     def _add_fixweights(self, w):
         i = 0
@@ -221,20 +217,18 @@ class MultipleDatabaseLearner(AbstractLearner):
                 i += 1
         return w_
 
-
     def run(self, **params):
         if 'scipy' not in sys.modules:
             raise Exception("Scipy was not imported! Install numpy and scipy "
                             "if you want to use weight learning.")
-        # initial parameter vector: all zeros or weights from formulas
-        self._w = [0] * len(self.mln.formulas)
-        for f in self.mln.formulas:
-            if self.mln.fixweights[f.idx] or self.use_init_weights or f.ishard:
-                self._w[f.idx] = f.weight
         runs = 0
+        self._w = [0] * len(self.mln.formulas)
         while runs < self.maxrepeat:
             self._prepare()
-
+            # initial parameter vector: all zeros or weights from formulas
+            for f in self.mln.formulas:
+                if self.mln.fixweights[f.idx] or self.use_init_weights or f.ishard:
+                    self._w[f.idx] = f.weight
             self._optimize(**self._params)
             self._cleanup()
             runs += 1
