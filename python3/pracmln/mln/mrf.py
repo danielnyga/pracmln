@@ -59,9 +59,11 @@ class MRF(object):
     :param db:     the database that the MRF shall be grounded with.
     '''
 
-
     def __init__(self, mln, db):
-        self.mln = mln.materialize(db)
+        if not mln._materialized:
+            self.mln = mln.materialize(db)
+        else:
+            self.mln = mln
         self._evidence = []
 #         self.evidenceBackup = {}
         self._variables = {}
@@ -76,12 +78,6 @@ class MRF(object):
                                                         # soft evidence and can be handled in exactly the same way
         # ground members
         self.formulas = list(self.mln.formulas)
-#         self.gndAtoms = {}
-#         self.gndBlockLookup = {}
-#         self.gndBlocks = {}
-#         self.gndAtomsByIdx = {}
-#         self.gndFormulas = []
-#         self.gndAtomOccurrencesInGFs = []
         if isinstance(db, str):
             db = Database.load(self.mln, dbfile=db)
         elif isinstance(db, Database): 
@@ -91,21 +87,9 @@ class MRF(object):
         else:
             raise Exception("Not a valid database argument (type %s)" % (str(type(db))))
         self.db = db
-        
         # materialize formula weights
         self._materialize_weights()
         return
-
-#         self.closedWorldPreds = list(self.mln.closedWorldPreds)
-#         self.posteriorProbReqs = list(self.mln.posteriorProbReqs)
-#         self.predicates = copy.deepcopy(self.mln.predicates)
-#         self.templateIdx2GroupIdx = self.mln.templateIdx2GroupIdx
-#         # grounding
-#         log.info('Loading %s...' % groundingMethod)
-#         groundingMethod = eval('%s(self, db, **params)' % groundingMethod)
-#         self.groundingMethod = groundingMethod
-#         groundingMethod.groundMRF(cwAssumption=cwAssumption, simplify=simplify)
-#         assert len(self.gndAtoms) == len(self.evidence)
 
     @property
     def probreqs(self):
@@ -115,35 +99,29 @@ class MRF(object):
     def variables(self):
         return sorted(list(self._variables.values()), key=lambda v: v.idx)
     
-    
     @property
     def gndatoms(self):
         return list(self._gndatoms.values())
-    
     
     @property
     def evidence(self):
         return self._evidence
 
-    
     @evidence.setter
     def evidence(self, evidence):
         self._evidence = evidence
         self.consistent()
         
-    
     @property
     def predicates(self):
         return self.mln.predicates
     
-
     @property
     def hardformulas(self):
         '''
         Returns a list of all hard formulas in this MRF.
         '''
         return [f for f in self.formulas if f.weight == HARD]
-
 
     def _getPredGroundings(self, predName):
         '''
@@ -186,12 +164,10 @@ class MRF(object):
         idxFirst = self.gndAtoms[gndAtom].idx
         return list(range(idxFirst, idxFirst + numGroundings))
 
-
     def domsize(self, domname):
         if not domname in self.domains:
             raise NoSuchDomainError(domname)
         return len(self.domains[domname])
-
 
     def _materialize_weights(self, verbose=False):
         '''
@@ -199,7 +175,7 @@ class MRF(object):
         '''
         max_weight = 0
         for f in self.formulas:
-            if f.weight is not None and f.weight !=  HARD:
+            if f.weight is not None and f.weight != HARD:
                 w = str(f.weight)
                 variables = re.findall(r'\$\w+', w)
                 for var in variables:
@@ -211,29 +187,24 @@ class MRF(object):
                         raise Exception("Undefined variable(s) referenced in '%s'" % w)
                 w = re.sub(r'domSize\((.*?)\)', r'self.domsize("\1")', w)
                 try:
-                    f.weight = float(eval(w)) 
+                    f.weight = float(eval(w))
                 except:
                     sys.stderr.write("Evaluation error while trying to compute '%s'\n" % w)
                     raise
                 max_weight = max(abs(f.weight), max_weight)
-            
-        
+
     def __getitem__(self, key):
         return self.evidence[self.gndatom(key).idx]
-    
-    
+
     def __setitem__(self, key, value):
         self.set_evidence({key: value}, erase=False)    
-        
-        
+
     def prior(self, f, p):
         self._probreqs.append(FirstOrderLogic.PriorConstraint(formula=f, p=p))
-        
 
     def posterior(self, f, p):
         self._probreqs.append(FirstOrderLogic.PosteriorConstraint(formula=f, p=p))
-    
-         
+
     def set_evidence(self, atomvalues, erase=False, cw=False):
         '''
         Sets the evidence of variables in this MRF.
@@ -297,14 +268,12 @@ class MRF(object):
                     self._evidence[atom.idx] = val
         if cw: self.apply_cw()
                 
-
     def erase(self):
         '''
         Erases all evidence in the MRF.
         '''
         self._evidence = [None] * len(self.gndatoms)
         
-            
     def apply_cw(self, *prednames):
         '''
         Applies the closed world assumption to this MRF.
@@ -319,7 +288,6 @@ class MRF(object):
                 continue
             if v is None: self._evidence[i] = 0
             
-            
     def consistent(self, strict=False):
         '''
         Performs a consistency check on this MRF wrt. to the variable value assignments.
@@ -328,8 +296,7 @@ class MRF(object):
         '''
         for variable in self.variables:
             variable.consistent(self.evidence_dicti(), strict=strict)
-        
-            
+
     def gndatom(self, identifier, *args):
         '''
         Returns the the ground atom instance that is associated with the given identifier, or adds
@@ -367,8 +334,7 @@ class MRF(object):
             else: raise Exception('Illegal identifier type: %s' % type(identifier))
         else:
             return self.new_gndatom(identifier, *args)
-        
-            
+
     def variable(self, identifier):
         '''
         Returns the :class:`mln.mrfvars.MRFVariable` instance of the variable with the name or index `var`,
@@ -384,8 +350,6 @@ class MRF(object):
         elif isinstance(identifier, str):
             return self._variables.get(identifier)
     
-    
-
     def new_gndatom(self, predname, *args):
         '''
         Adds a ground atom to the set (actually it's a dict) of ground atoms. 
@@ -417,11 +381,9 @@ class MRF(object):
         self._variables_by_gndatomidx[gndatom.idx] = variable
         return gndatom
     
-    
     def print_variables(self):
         for var in self.variables:
             print(str(var))
-    
     
     def print_world_atoms(self, world, stream=sys.stdout):
         '''
@@ -432,7 +394,6 @@ class MRF(object):
             vstr = '%.3f' % v if v is not None else '?    '
             stream.write('%s  %s\n' % (vstr, str(gndatom)))
         
-    
     def print_world_vars(self, world, stream=sys.stdout, tb=2):
         '''
         Prints the given world `world` as a readable string of the MRF variables to the given stream.
@@ -443,13 +404,11 @@ class MRF(object):
             for i, v in enumerate(var.evidence_value(world)):
                 vstr = '%.3f' % v if v is not None else '?    '
                 stream.write('  %s  %s\n' % (vstr, var.gndatoms[i])) 
-            
 
     def print_domains(self):
         out('=== MRF DOMAINS ==', tb=2)
         for dom, values in self.domains.items():
             print(dom, '=', ','.join(values)) 
-
 
     def evidence_dicts(self):
         '''
@@ -460,7 +419,6 @@ class MRF(object):
             d[str(self._gndatoms_by_idx[idx])] = tv
         return d
 
-
     def evidence_dicti(self):
         '''
         Returns, from the current evidence list, a dictionary that maps ground atom indices to truth values
@@ -469,7 +427,6 @@ class MRF(object):
         for idx, tv in enumerate(self._evidence):
             d[idx] = tv
         return d
-
 
     def countworlds(self, withevidence=False):
         '''
@@ -486,7 +443,6 @@ class MRF(object):
             worlds *= var.valuecount(ev)
         return worlds
     
-
     def iterworlds(self):
         '''
         Iterates over the possible worlds of this MRF taking into account the evidence vector of truth values.
@@ -495,7 +451,6 @@ class MRF(object):
         '''
         for res in self._iterworlds([v for v in self.variables if v.valuecount(self.evidence) > 1], list(self.evidence), CallByRef(0), self.evidence_dicti()):
             yield res
-
 
     def _iterworlds(self, variables, world, worldidx, evidence):
         if not variables:
@@ -514,7 +469,6 @@ class MRF(object):
                 for res in self._iterworlds(variables[1:], variable.setval(value, world_), worldidx, evidence):
                     yield res 
 
-
     def worlds(self):
         '''
         Iterates over all possible worlds (taking evidence into account).
@@ -523,7 +477,6 @@ class MRF(object):
         '''
         for _, world in self.iterworlds():
             yield world
-
 
     def iterallworlds(self):
         '''
@@ -534,7 +487,6 @@ class MRF(object):
         world = [None] * len(self.evidence)
         for i, w in self._iterworlds(self.variables, world, CallByRef(0), {}):
             yield i, w
-                 
 
     def itergroundings(self, simplify=False, grounding_factory='DefaultGroundingFactory'):
         '''
@@ -547,22 +499,19 @@ class MRF(object):
         grounder = eval('%s(self, simplify=simplify)' % grounding_factory)
         for gndf in grounder.itergroundings():
             yield gndf
-        
 
     def print_evidence_atoms(self, stream=sys.stdout):
         '''
         Prints the evidence truth values of plain ground atoms to the given `stream`.
         '''
         self.print_world_atoms(self.evidence, stream)
-        
-    
+
     def print_evidence_vars(self, stream=sys.stdout):
         '''
         Prints the evidence truth values of the variables of this MRF to the given `stream`.
         '''
         self.print_world_vars(self.evidence, stream, tb=3)    
-    
-    
+
     def getTruthDegreeGivenSoftEvidence(self, gf, world):
         cnf = gf.cnf()
         prod = 1.0
@@ -573,7 +522,6 @@ class MRF(object):
             prod *= self._noisyOr(world, cnf)
         return prod
 
-    
     def _getEvidenceTruthDegreeCW(self, gndAtom, worldValues):
         '''
             gets (soft or hard) evidence as a degree of belief from 0 to 1, making the closed world assumption,
@@ -583,7 +531,6 @@ class MRF(object):
         if se is not None:
             return se if (True == worldValues[gndAtom.idx] or None == worldValues[gndAtom.idx]) else 1.0 - se # TODO allSoft currently unsupported
         return 1.0 if worldValues[gndAtom.idx] else 0.0
-    
 
     def print_gndatoms(self, stream=sys.stdout):
         '''
@@ -594,7 +541,6 @@ class MRF(object):
         for ga in sorted(l):
             stream.write(str(ga) + '\n')
 
-            
     def apply_prob_constraints(self, constraints, method=InferenceMethods.EnumerationAsk, 
                                    thr=1.0e-3, steps=20, fittingMCSATSteps=5000, 
                                    fittingParams=None, given=None, queries=None, 
@@ -721,11 +667,9 @@ class MRF(object):
 
         return (results[len(constraints):], {"steps": min(step, steps), "fittingSteps": fittingStep, "maxdiff": maxdiff, "meandiff": meandiff, "time": time.time() - t_start})
 
-
     def _weights(self):
         ''' returns the weight vector as a list '''
         return [f.weight for f in self.formulas]
-    
 
     def dotfile(self, filename):
         '''
@@ -749,7 +693,6 @@ class MRF(object):
             for atom in list(self.gndatoms.values()):
                 f.write('  ga%d [label="%s"]\n' % (atom.idx, str(atom)))
             f.write("}\n")
-
 
     def graphml(self, filename):
         import graphml  # @UnresolvedImport
