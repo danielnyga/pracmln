@@ -29,7 +29,6 @@ from dnutils.console import barstr
 from common import AbstractLearner
 from collections import defaultdict
 import numpy
-import time
 from pracmln.mln.util import fsum, temporary_evidence
 from numpy.ma.core import sqrt, log
 from pracmln.mln.grounding.default import DefaultGroundingFactory
@@ -51,7 +50,7 @@ class BPLL(AbstractLearner):
     value from the same block.
     This learner is fairly efficient, as it computes f and grad based only
     on a sufficient statistic.
-    '''    
+    '''
     
     def __init__(self, mrf, **params):
         AbstractLearner.__init__(self, mrf, **params)
@@ -59,8 +58,7 @@ class BPLL(AbstractLearner):
         self._stat = None
         self._varidx2fidx = None
         self._lastw = None
-        
-        
+
     def _prepare(self):
         logger.debug("computing statistics...") 
         self._compute_statistics()
@@ -69,7 +67,7 @@ class BPLL(AbstractLearner):
     def _pl(self, varidx, w):
         '''
         Computes the pseudo-likelihoods for the given variable under weights w. 
-        '''        
+        '''
         var = self.mrf.variable(varidx)
         values = var.valuecount()
         gfs = self._varidx2fidx.get(varidx)
@@ -96,22 +94,19 @@ class BPLL(AbstractLearner):
 #         expsums = numpy.sum(numpy.exp(sums))
 #         s = numpy.log(expsums)    
 #         return numpy.exp(sums - s)
-    
-    
+
     def write_pls(self):
         for var in self.mrf.variables:
             print repr(var)
             for i, value in var.itervalues():
                 print '    ', barstr(color='magenta', percent=self._pls[var.idx][i]) + ('*' if var.evidence_value_index() == i else ' '), i, value
-    
-    
+
     def _compute_pls(self, w):
         if self._pls is None or self._lastw is None or self._lastw != list(w):
             self._pls = [self._pl(var.idx, w) for var in self.mrf.variables]
             self._lastw = list(w)
 #             self.write_pls()
-    
-    
+
     def _f(self, w):
         self._compute_pls(w)
         probs = []
@@ -121,7 +116,6 @@ class BPLL(AbstractLearner):
             probs.append(p)
         return fsum(map(log, probs))
 
-   
     def _grad(self, w):
         self._compute_pls(w)
         grad = numpy.zeros(len(self.mrf.formulas), numpy.float64)        
@@ -135,7 +129,6 @@ class BPLL(AbstractLearner):
         self.grad_opt_norm = sqrt(float(fsum(map(lambda x: x * x, grad))))
         return numpy.array(grad)
 
-    
     def _addstat(self, fidx, varidx, validx, inc=1):
         if fidx not in self._stat:
             self._stat[fidx] = {}
@@ -143,8 +136,7 @@ class BPLL(AbstractLearner):
         if varidx not in d:
             d[varidx] = [0] * self.mrf.variable(varidx).valuecount()
         d[varidx][validx] += inc
-        
-    
+
     def _compute_statistics(self):
         '''
         computes the statistics upon which the optimization is based
@@ -179,7 +171,6 @@ class DPLL(BPLL, DiscriminativeLearner):
             probs.append(p)
         return fsum(map(log, probs))
 
-    
     def _grad(self, w, **params):        
         self._compute_pls(w)
         grad = numpy.zeros(len(self.mrf.formulas), numpy.float64)        
@@ -211,4 +202,3 @@ class DBPLL_CG(DPLL):
         for _ in grounder.itergroundings(): pass
         self._stat = grounder._stat
         self._varidx2fidx = grounder._varidx2fidx
-        
