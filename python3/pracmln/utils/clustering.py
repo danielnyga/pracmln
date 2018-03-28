@@ -423,7 +423,7 @@ if __name__ == '__main__':
     s = set([val for db in Database.load(mln, '/home/nyga/code/pracmln/examples/object-recognition/object-recognition.pracmln:scenes-new.db') for val in db.domains['text']])
     clusters = SAHN(s)
     for c in clusters:
-        print c
+        print(c)
 
     # apply clustering to a set of databases
     cluster = NoisyStringClustering(mln, ['text'])
