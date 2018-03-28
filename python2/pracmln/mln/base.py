@@ -24,7 +24,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import pyparsing
-from dnutils import logs, ifnone
+from dnutils import logs, ifnone, out
 
 from pracmln.logic import FirstOrderLogic, FuzzyLogic
 
@@ -115,7 +115,7 @@ class MLN(object):
     def weights(self, wts):
         if len(wts) != len(self._formulas):
             raise Exception('Weight vector must have the same length as formula vector.')
-        wts = map(lambda w: float('%-10.6f' % float(eval(str(w)))) if type(w) in (float, int) and w is not HARD else w, wts)
+        wts = map(lambda w: float('%-10.6f' % float(eval(str(w)))) if type(w) in (float, int) and w not in (HARD, float('inf'), -float('inf')) else w, wts)
         self._weights = wts
 
     @property

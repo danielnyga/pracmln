@@ -114,7 +114,8 @@ class MLN(object):
     def weights(self, wts):
         if len(wts) != len(self._formulas):
             raise Exception('Weight vector must have the same length as formula vector.')
-        wts = [float('%-10.6f' % float(eval(str(w)))) if type(w) in (float, int) and w is not HARD else w for w in wts]
+            wts = map(lambda w: float('%-10.6f' % float(eval(str(w)))) if type(w) in (float, int) and w not in (
+            HARD, float('inf'), -float('inf')) else w, wts)
         self._weights = wts
 
     @property
@@ -241,7 +242,7 @@ class MLN(object):
         :param unique_templvars:    specifies a list of template variables that will create
                                     only unique combinations of expanded formulas
         '''
-        if isinstance(formula, basestring):
+        if type(formula) is str:
             formula = self.logic.parse_formula(formula)
         elif type(formula) is int:
             return self._formulas[formula]
