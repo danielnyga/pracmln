@@ -24,6 +24,7 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 import argparse
 import fnmatch
 import io
@@ -37,16 +38,16 @@ from tkinter.filedialog import asksaveasfilename
 from dnutils import logs, out, ifnone
 from tabulate import tabulate
 
-from . import MLN
-from .mln.base import parse_mln
-from .mln.database import Database, parse_db
-from .mln.learning.common import DiscriminativeLearner
-from .mln.methods import LearningMethods
-from .mln.util import headline, StopWatch
-from .utils import config, locs
-from .utils.config import global_config_filename
-from .utils.project import MLNProject, PRACMLNConfig
-from .utils.widgets import *
+from pracmln import MLN
+from pracmln.mln.base import parse_mln
+from pracmln.mln.database import Database, parse_db
+from pracmln.mln.learning.common import DiscriminativeLearner
+from pracmln.mln.methods import LearningMethods
+from pracmln.mln.util import headline, StopWatch
+from pracmln.utils import config, locs
+from pracmln.utils.config import global_config_filename
+from pracmln.utils.project import MLNProject, PRACMLNConfig
+from pracmln.utils.widgets import *
 import logging #import used in eval, do not remove
 
 

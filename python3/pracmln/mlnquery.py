@@ -35,20 +35,20 @@ from tkinter.filedialog import askopenfilename, asksaveasfilename, StringVar
 
 from dnutils import logs, ifnone, out
 
-from . import ALL
-from .utils.project import MLNProject, PRACMLNConfig, mlnpath
-from .mln.methods import InferenceMethods
-from .utils.widgets import FileEditBar
-from .utils import config, locs
-from .mln.util import parse_queries, headline, StopWatch
-from .utils.config import global_config_filename
-from .mln.base import parse_mln, MLN
-from .mln.database import parse_db, Database
+from pracmln import ALL
+from pracmln.utils.project import MLNProject, PRACMLNConfig, mlnpath
+from pracmln.mln.methods import InferenceMethods
+from pracmln.utils.widgets import FileEditBar
+from pracmln.utils import config, locs
+from pracmln.mln.util import parse_queries, headline, StopWatch
+from pracmln.utils.config import global_config_filename
+from pracmln.mln.base import parse_mln, MLN
+from pracmln.mln.database import parse_db, Database
 from tabulate import tabulate
 from cProfile import Profile
 import pstats
 import io
-# import pracmln
+
 import logging #import used in eval, do not remove
 
 
