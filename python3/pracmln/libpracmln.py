@@ -34,7 +34,7 @@ def createcpplibs():
 
     os.environ["PYTHONDIST"] = "3.5"
 
-    ret = os.system("cmake {}".format(lib_home))
+    ret = os.system("cmake {}".format(lib_home)+" -DCMAKE_INSTALL_PREFIX="+installPath)
     if ret != 0:
         os.chdir(oldwd)
         return None
