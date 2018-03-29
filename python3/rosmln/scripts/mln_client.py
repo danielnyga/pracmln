@@ -13,7 +13,7 @@ def mln_interface_client(query, config=None):
         mln_interface = rospy.ServiceProxy('mln_interface', MLNInterface)
         resp1 = mln_interface(query, config)
         return resp1.response
-    except rospy.ServiceException, e:
+    except rospy.ServiceException as e:
         print('Service call failed: %s'%e)
 
 
