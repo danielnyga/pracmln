@@ -21,7 +21,7 @@ def print_results(results):
     if not results.evidence:
         print('ERROR: Something went wrong...')
     else:
-        print results
+        print(results)
 
 
 if __name__ == '__main__':
