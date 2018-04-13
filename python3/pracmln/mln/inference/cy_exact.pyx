@@ -45,7 +45,7 @@ logger = logs.getlogger(__name__)
 global_enumAsk = None
 
 
-cdef eval_queries(float* world):
+def eval_queries(world):
     '''
     Evaluates the queries given a possible world.
     '''
