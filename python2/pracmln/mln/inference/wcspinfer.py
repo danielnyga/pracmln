@@ -20,7 +20,7 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-from dnutils import logs
+from dnutils import logs, out
 
 from pracmln.mln.util import combinations, dict_union, Interval, temporary_evidence
 from pracmln.mln.inference.infer import Inference
@@ -33,7 +33,6 @@ from pracmln.mln.constants import infty, HARD
 from pracmln.mln.grounding.fastconj import FastConjunctionGrounding
 from pracmln.mln.grounding.default import DefaultGroundingFactory
 from pracmln.mln.errors import SatisfiabilityException, MRFValueException
-import time
 
 
 logger = logs.getlogger(__name__)
@@ -87,6 +86,7 @@ class WCSPConverter(object):
         self.wcsp = WCSP()
         self.wcsp.domsizes = [len(self.domains[i]) for i in self.variables]
         self.multicore = multicore
+        self._weights = None
     
     
     def _createvars(self):
@@ -131,7 +131,9 @@ class WCSPConverter(object):
             if f.weight < 0:
                 f = logic.negate(f)
                 f.weight = -f.weight
-            formulas.append(f.nnf())
+            if not any([isinstance(c, logic.Exist) for c in f.constituents()]):
+                f = f.nnf()
+            formulas.append(f)
         # preprocess the ground formulas
 #         grounder = DefaultGroundingFactory(self.mrf, formulas=formulas, simplify=True, unsatfailure=True, multicore=self.multicore, verbose=self.verbose)
         grounder = FastConjunctionGrounding(self.mrf, simplify=True, unsatfailure=True, formulas=formulas, multicore=self.multicore, verbose=self.verbose, cache=0)
@@ -141,6 +143,7 @@ class WCSPConverter(object):
                     raise SatisfiabilityException('MLN is unsatisfiable: hard constraint %s violated' % self.mrf.mln.formulas[gf.idx])
                 else:# formula is rendered true/false by the evidence -> equal in every possible world 
                     continue
+            # out(gf.weight, gf)
             self.generate_constraint(gf)
         self.mrf.mln.weights = self._weights
         return self.wcsp
@@ -175,7 +178,7 @@ class WCSPConverter(object):
         '''
         logic = self.mrf.mln.logic
         # we can treat conjunctions and disjunctions fairly efficiently
-        defaultProcedure = False
+        default_procedure = False
         conj = logic.islitconj(formula)
         disj = False
         if not conj:
@@ -183,8 +186,8 @@ class WCSPConverter(object):
         if not varindices:
             return None
         if not conj and not disj:
-            defaultProcedure = True
-        if not defaultProcedure:
+            default_procedure = True
+        if not default_procedure:
             assignment = [None] * len(varindices)
             children = list(formula.literals())
             for gndlit in children:
@@ -207,7 +210,7 @@ class WCSPConverter(object):
                     return  
                 tmp_evidence = dict_union(tmp_evidence, {gndatom.idx: val})
                 if variable.valuecount(tmp_evidence) > 1:
-                    defaultProcedure = True
+                    default_procedure = True
                     break
                 # there is only one value remaining
                 for _, value in variable.itervalues(tmp_evidence):
@@ -223,7 +226,7 @@ class WCSPConverter(object):
                     else: # for soft constraints, unsatisfiable formulas and tautologies  can be ignored
                         return None
                 assignment[varindices.index(varidx)] = validx
-            if not defaultProcedure:
+            if not default_procedure:
                 maxtruth = formula.maxtruth(self.mrf.evidence)
                 mintruth = formula.mintruth(self.mrf.evidence)
                 if formula.weight == HARD and (maxtruth in Interval(']0,1[') or mintruth in Interval(']0,1[')):
@@ -245,7 +248,7 @@ class WCSPConverter(object):
                 if len(assignment) != len(varindices):
                     raise MRFValueException('Illegal variable assignments. Variables: %s, Assignment: %s' % (varindices, assignment))
                 return {cost: [tuple(assignment)], defcost: 'else'}
-        if defaultProcedure: 
+        if default_procedure:
             # fallback: go through all combinations of truth assignments
             domains = [self.domains[v] for v in varindices]
             cost2assignments = defaultdict(list)
@@ -325,7 +328,8 @@ class WCSPConverter(object):
         try:
             while len(valIndices) > 0:
                 s, c = wcsp.solve()
-                if s is None: raise
+                if s is None:
+                    raise Exception()
                 val = s[varIdx]
                 atom = self.varIdx2GndAtom[varIdx][val]
                 self.forbidGndAtom(atom, wcsp)
