@@ -260,7 +260,22 @@ class Logic(object):
             const = list(self.literals())
             if oftype is None: return const
             else: return filter(lambda c: isinstance(c, oftype), const)
-            
+
+        def constituents(self, oftype=None, const=None):
+            '''
+            Returns a list that contains all constituents (atomic and non-atomic)
+            of this formula, optionally filtered by ``oftype``.
+            :param otype:
+            :return:
+            '''
+            if const is None:
+                const = []
+            if oftype is None or type(self) is oftype:
+                const.append(self)
+            if hasattr(self, 'children'):
+                for child in self.children:
+                    child.constituents(oftype, const)
+            return const
     
         def template_variants(self):
             '''

@@ -143,7 +143,6 @@ class WCSPConverter(object):
                     raise SatisfiabilityException('MLN is unsatisfiable: hard constraint %s violated' % self.mrf.mln.formulas[gf.idx])
                 else:# formula is rendered true/false by the evidence -> equal in every possible world 
                     continue
-            # out(gf.weight, gf)
             self.generate_constraint(gf)
         self.mrf.mln.weights = self._weights
         return self.wcsp
