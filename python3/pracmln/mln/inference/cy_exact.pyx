@@ -36,7 +36,7 @@ from ...utils.multicore import with_tracing
 from ...logic.fol import FirstOrderLogic
 from ...logic.common import Logic
 from numpy.ma.core import exp
-
+from numpy import zeros
 
 logger = logs.getlogger(__name__)
 
@@ -45,13 +45,13 @@ logger = logs.getlogger(__name__)
 global_enumAsk = None
 
 
-cdef eval_queries(float* world):
+def eval_queries(world):
     '''
     Evaluates the queries given a possible world.
     '''
-    numerators = [0] * len(global_enumAsk.queries)
+    numerators = zeros(len(global_enumAsk.queries)) #numerators = [0] * len(global_enumAsk.queries)
     denominator = 0
-    expsum = 0
+    cdef double expsum = 0
     for gf in global_enumAsk.grounder.itergroundings():
         if global_enumAsk.soft_evidence_formula(gf):
             expsum += gf.noisyor(world) * gf.weight
@@ -67,6 +67,7 @@ cdef eval_queries(float* world):
             expsum += gf(world) * gf.weight
     expsum = exp(expsum)
     # update numerators
+    cdef int i
     for i, query in enumerate(global_enumAsk.queries):
         if query(world):
             numerators[i] += expsum
@@ -115,13 +116,13 @@ class EnumerationAsk(Inference):
         for variable in self.mrf.variables:
             values = variable.valuecount(self.mrf.evidence)
             worlds *= values
-        numerators = [0.0 for i in range(len(self.queries))]
-        denominator = 0.
+        numerators = zeros(len(self.queries))#numerators = [0.0 for i in range(len(self.queries))]
+        cdef double denominator = 0.
         # start summing
         logger.debug("Summing over %d possible worlds..." % worlds)
         if worlds > 500000 and self.verbose:
             print(colorize('!!! %d WORLDS WILL BE ENUMERATED !!!' % worlds, (None, 'red', True), True))
-        k = 0
+        cdef int k = 0 # redundant variable ?
         self._watch.tag('enumerating worlds', verbose=self.verbose)
         global global_enumAsk
         global_enumAsk = self
@@ -132,12 +133,14 @@ class EnumerationAsk(Inference):
             pool = Pool()
             logger.debug('Using multiprocessing on {} core(s)...'.format(pool._processes))
             try:
-                for num, denum in pool.imap(with_tracing(eval_queries), self.mrf.worlds()):
-                    denominator += denum
+                for num, denom in pool.imap(with_tracing(eval_queries), self.mrf.worlds()):
+                    denominator += denom
                     k += 1
-                    for i, v in enumerate(num):
-                        numerators[i] += v
-                    if self.verbose: bar.inc()
+                    numerators += num # assume length is the same - ie arrays have same shape/dimension?
+                    #for i, v in enumerate(num):
+                    #    numerators[i] += v
+                    if self.verbose:
+                        bar.inc()
             except Exception as e:
                 logger.error('Error in child process. Terminating pool...')
                 pool.close()
@@ -150,8 +153,9 @@ class EnumerationAsk(Inference):
                 # compute exp. sum of weights for this world
                 num, denom = eval_queries(world)
                 denominator += denom
-                for i, _ in enumerate(self.queries):
-                    numerators[i] += num[i]
+                numerators += num
+                #for i, _ in enumerate(self.queries):
+                #    numerators[i] += num[i]
                 k += 1
                 if self.verbose:
                     bar.update(float(k) / worlds)
@@ -163,7 +167,8 @@ class EnumerationAsk(Inference):
             raise SatisfiabilityException(
                 'MLN is unsatisfiable. All probability masses returned 0.')
         # normalize answers
-        dist = [float(x) / denominator for x in numerators]
+        dist = numerators / denominator
+        #dist = [float(x) / denominator for x in numerators]
         result = {}
         for q, p in zip(self.queries, dist):
             result[str(q)] = p
