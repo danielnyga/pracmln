@@ -124,7 +124,7 @@ class DefaultGroundingFactory:
         for i, formula in enumerate(self.formulas):
             if self.verbose: bar.update((i+1) / float(len(self.formulas)))
             for gndformula in formula.itergroundings(self.mrf, simplify=simplify):
-                if unsatfailure and gndformula.weight == HARD and gndformula(self.mrf.evidence) != 1:
+                if unsatfailure and gndformula.weight == HARD and gndformula(self.mrf.evidence) == 0:
                     print
                     gndformula.print_structure(self.mrf.evidence)
                     raise SatisfiabilityException('MLN is unsatisfiable due to hard constraint violation %s (see above)' % self.mrf.formulas[gndformula.idx])
