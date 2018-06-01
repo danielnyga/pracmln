@@ -30,3 +30,5 @@ from .mlnlearn import QUERY_PREDS
 from .mlnlearn import EVIDENCE_PREDS
 from .utils.project import mlnpath
 from .utils.project import PRACMLNConfig
+
+print("cython-gsoc import successful")
