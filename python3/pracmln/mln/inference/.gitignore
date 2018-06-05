@@ -1,6 +1,5 @@
 *.pyo
 *.c
 *.html
-setup.py
 build/*
 pracmln/*
