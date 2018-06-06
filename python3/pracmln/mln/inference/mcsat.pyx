@@ -82,7 +82,8 @@ class MCSAT(MCMCInference):
         self.gf2clauseidx = {} # ground formula index -> tuple (idxFirstClause, idxLastClause+1) for use with range
         self.clauses = [] # list of clauses, where each entry is a list of ground literals
         #self.GAoccurrences = {} # ground atom index -> list of clause indices (into self.clauses)
-        i_clause = 0
+        cdef int i_clause = 0
+        cdef int i_gf = 0
         # process all ground formulas
         for i_gf, gf in enumerate(self.gndformulas):
             # get the list of clauses
@@ -90,7 +91,8 @@ class MCSAT(MCMCInference):
                 clauses = [clause for clause in gf.children if not isinstance(clause, Logic.TrueFalse)]
             elif not isinstance(gf, Logic.TrueFalse):
                 clauses = [gf]
-            else: continue
+            else:
+                continue
             self.gf2clauseidx[i_gf] = (i_clause, i_clause + len(clauses))
             # process each clause
             for c in clauses:
@@ -103,7 +105,9 @@ class MCSAT(MCMCInference):
                 # next clause index
                 i_clause += 1
         # add clauses for soft evidence atoms
+        # Q(gsoc): the following code never executes?
         for se in []:#self.softEvidence:
+            print('Q(gsoc): ~un~reachable statement in line 110, mcsat.pyx')
             se["numTrue"] = 0.0
             formula = self.mln.logic.parseFormula(se["expr"])
             se["formula"] = formula.ground(self.mrf, {})
@@ -205,6 +209,7 @@ class MCSAT(MCMCInference):
         # create chains
         chaingroup = MCMCInference.ChainGroup(self)
         self.chaingroup = chaingroup
+        cdef int i
         for i in range(self.chains):
             chain = MCMCInference.Chain(self, self.queries)
             chaingroup.chain(chain)
@@ -264,6 +269,7 @@ class MCSAT(MCMCInference):
                     else:
                         NLC.append(gf)
         # add soft evidence constraints
+        # Q(gsoc): the following code is actually unreachable ...
         if False:# self.softevidence:
             for se in self.softevidence:
                 p = se["numTrue"] / self.step
@@ -295,7 +301,10 @@ class MCSAT(MCMCInference):
     def _prob_constraints_deviation(self):
         if len(self.softevidence) == 0:
             return {}
-        se_mean, se_max, se_max_item = 0.0, -1, None
+        cdef double se_mean = 0.0
+        cdef double se_max = 0
+        se_max_item = None
+        cdef double dev
         for se in self.softevidence:
             dev = abs((se["numTrue"] / self.step) - se["p"])
             se_mean += dev
@@ -379,10 +388,12 @@ class SampleSAT:
                 if not clause.satisfied_in_world(world):
                     skip = True
                     break
-            if skip: continue
+            if skip:
+                continue
             worlds.append(world)
         state = worlds[random.randint(0, len(worlds)-1)]
         return state
+        # Q(gsoc): the following code is actually unreachable ...
         steps = 0
         while self.unsatisfied:
             steps += 1
@@ -397,7 +408,7 @@ class SampleSAT:
     def _walksat_move(self):
         """
         Randomly pick one of the unsatisfied constraints and satisfy it
-        (or at least make one step towards satisfying it
+        (or at least make one step towards satisfying it)
         """
         clauseidx = list(self.unsatisfied)[random.randint(0, len(self.unsatisfied) - 1)]
         # get the literal that makes the fewest other formulas false
@@ -443,22 +454,25 @@ class SampleSAT:
     def _sa_move(self):
         # randomly pick a variable and flip its value
         variables = list(set(self.var2clauses))
-        random.shuffle(variables)
-        var = variables[0]
+        var = random.choice(variables)
         ev = var.evidence_value()
         values = var.valuecount(self.mrf.evidence)
-        for _, v in var.itervalues(self.mrf.evidence): break
+        for _, v in var.itervalues(self.mrf.evidence): break # Q(gsoc): this statement is effectively like a no-op ...
         if values == 1:
             raise Exception('Only one remaining value for variable %s: %s. Please check your evidences.' % (var, v))
         values = [v for _, v in var.itervalues(self.mrf.evidence) if v != ev]
-        val = values[random.randint(0, len(values)-1)]
-        unsat = 0
+        val = random.choice(values)#values[random.randint(0, len(values)-1)]
+        cdef int unsat = 0
         bottleneck_clauses = [c for c in self.var2clauses[var] if c.bottleneck is not None]
         for c in bottleneck_clauses:
             # count the  constraints rendered unsatisfied for this value from the bottleneck clauses
-            uns = 1 if c.turns_false_with(var, val) else 0
+            #cdef int uns
+            #uns = 1 if c.turns_false_with(var, val) else 0
 #             cur = 1 if c.unsatisfied else 0
-            unsat += uns# - cur
+            #unsat += uns# - cur
+            if c.turns_false_with(var, val):
+                unsat += 1
+
         if unsat <= 0: # the flip causes an improvement. take it with p=1.0
             p = 1.
         else:
@@ -601,7 +615,7 @@ class SampleSAT:
                     self.ss._addBottleneck(idxGA, self)
         
         def greedySatisfy(self):
-            c = len(self.trueOnes)
+            cdef int c = len(self.trueOnes)
             satisfied = self._isSatisfied()
             assert not satisfied
             if c < self.cc.count and not satisfied:
@@ -614,7 +628,8 @@ class SampleSAT:
         def flipSatisfies(self, idxGA):
             if self._isSatisfied():
                 return False
-            c = len(self.trueOnes)            
+            cdef int c = len(self.trueOnes)            
+            cdef int c2
             if idxGA in self.trueOnes:
                 c2 = c - 1
             else:

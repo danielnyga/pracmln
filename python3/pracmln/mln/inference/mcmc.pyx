@@ -50,6 +50,7 @@ class MCMCInference(Inference):
         """
         Get a random possible world, taking the evidence into account.
         """
+        # "type" of evidence?
         if evidence is None:
             world = list(self.mrf.evidence)
         else:
@@ -70,6 +71,10 @@ class MCMCInference(Inference):
         Represents the state of a Markov Chain.
         """
         
+        #cdef public int steps
+        #cdef public bint converged
+        #cdef public int lastresult
+        # Q(gsoc): other types?
         
         def __init__(self, infer, queries):
             self.queries = queries
@@ -115,16 +120,13 @@ class MCMCInference(Inference):
         
         
         def soft_evidence_frequency(self, formula):
-            if self.steps == 0: return 0
+            if self.steps == 0:
+                return 0
             return float(self.softev_counts[fstr(formula)]) / self.steps
         
         
         def results(self):
-            results = []
-            for i in range(len(self.queries)):
-                results.append(float(self.truths[i]) / self.steps)
-            return results
-    
+            return self.truths/self.steps
             
     class ChainGroup:
         
@@ -138,16 +140,17 @@ class MCMCInference(Inference):
     
     
         def results(self):
-            chains = float(len(self.chains))
+            cdef double chains = float(len(self.chains))
+            cdef int i
             queries = self.chains[0].queries
             # compute average
-            results = [0.0] * len(queries)
+            results = [0.0] * len(queries) # Q(gsoc): zeros(len(queries))
             for chain in self.chains:
                 cr = chain.results()
                 for i in range(len(queries)):
                     results[i] += cr[i] / chains
             # compute variance
-            var = [0.0 for i in range(len(queries))]
+            var = [0.0] * len(queries)# Q(gsoc): zeros(len(queries))# for i in range(len(queries))]
             for chain in self.chains:
                 cr = chain.results()
                 for i in range(len(self.chains[0].queries)):
@@ -157,7 +160,8 @@ class MCMCInference(Inference):
         
         def avgtruth(self, formula):
             """ returns the fraction of chains in which the given formula is currently true """
-            t = 0.0 
+            # Q(gsoc): t can byped as int?
+            t = 0.0
             for c in self.chains:
                 t += formula(c.state)
             return t / len(self.chains)

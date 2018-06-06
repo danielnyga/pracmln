@@ -80,14 +80,20 @@ class SAMaxWalkSAT(MCMCInference):
     
     
     def _run(self):
-        i = 0 
-        i_max = self.maxsteps
+        cdef int i = 0 
+        cdef int i_max = self.maxsteps
         thr = self.thr
         if self.verbose:
             bar = ProgressBar(steps=i_max, color='green')
+        cdef int sum_before = 0
+        cdef int sum_after = 0
+        cdef bint keep = False
+        cdef int improvement
+        cdef double prob
+        cdef int valuecount
         while i < i_max and self.sum > self.thr:
             # randomly choose a variable to modify
-            var = self.mrf.variables[random.randint(0, len(self.mrf.variables)-1)]
+            var = random.choice(self.mrf.variables)#[random.randint(0, len(self.mrf.variables)-1)]
             evdict = var.value2dict(var.evidence_value(self.mrf.evidence))
             valuecount = var.valuecount(evdict) 
             if valuecount == 1: # this is evidence 
@@ -98,7 +104,7 @@ class SAMaxWalkSAT(MCMCInference):
                 sum_before += (self.hardw if gf.weight == HARD else gf.weight) * (1 - gf(self.state)) 
             # modify the state
             validx = random.randint(0, valuecount - 1)
-            value = [v for _, v in var.itervalues(evdict)][validx]
+            value = [v for _, v in var.itervalues(evdict)][validx] # Q(gsoc): can replace the use of validx with random.choice
             oldstate = list(self.state)
             var.setval(value, self.state)
             # compute the sum after the modification

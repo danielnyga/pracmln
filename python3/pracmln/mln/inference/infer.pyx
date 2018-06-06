@@ -193,12 +193,13 @@ class Inference(object):
     
     
     def write(self, stream=sys.stdout, color=None, sort='prob', group=True, reverse=True):
-        barwidth = 30
+        cdef int barwidth = 30
         if tty(stream) and color is None:
             color = 'yellow'
         if sort not in ('alpha', 'prob'):
             raise Exception('Unknown sorting: %s' % sort)
         results = dict(self.results)
+        cdef bint wrote_results
         if group:
             wrote_results = False
             for var in sorted(self.mrf.variables, key=str):

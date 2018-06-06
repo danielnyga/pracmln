@@ -96,7 +96,7 @@ class WCSPConverter(object):
         self.domains = defaultdict(list) # maps a var index to a list of its MRF variable value tuples
         self.atom2var = {} # maps ground atom indices to their variable index
         self.val2idx = defaultdict(dict)
-        varidx = 0
+        cdef int varidx = 0
         for variable in self.mrf.variables:
             if isinstance(variable, FuzzyVariable): # fuzzy variables are not subject to reasoning
                 continue
@@ -180,15 +180,17 @@ class WCSPConverter(object):
         """
         logic = self.mrf.mln.logic
         # we can treat conjunctions and disjunctions fairly efficiently
-        defaultProcedure = False
+        cdef bint defaultProcedure = False
+        cdef bint disj = False # Q(gsoc): guessing that this variable is boolean
+        cdef bint conj = False # Q(gsoc): guessing that this variable is boolean
         conj = logic.islitconj(formula)
-        disj = False
         if not conj:
             disj = logic.isclause(formula)
         if not varindices:
             return None
         if not conj and not disj:
             defaultProcedure = True
+        cdef long worlds = 1 # Q(gsoc): will long be enough to store all possible worlds?
         if not defaultProcedure:
             assignment = [None] * len(varindices)
             children = list(formula.literals())
@@ -242,7 +244,7 @@ class WCSPConverter(object):
                         defcost = formula.weight
                 else:
                     if formula.weight == HARD:
-                        cost = self.wcsp.top
+                        cost = self.wcsp.top # Q(gsoc): can cost be typed as an int?
                         defcost = 0
                     else:
                         defcost = 0
@@ -250,23 +252,23 @@ class WCSPConverter(object):
                 if len(assignment) != len(varindices):
                     raise MRFValueException('Illegal variable assignments. Variables: %s, Assignment: %s' % (varindices, assignment))
                 return {cost: [tuple(assignment)], defcost: 'else'}
-        if defaultProcedure: 
+        else: 
             # fallback: go through all combinations of truth assignments
             domains = [self.domains[v] for v in varindices]
             cost2assignments = defaultdict(list)
             # compute number of worlds to be examined and print a warning
-            worlds = 1
+            worlds = 1 # Q(gsoc): will long be enough to store all possible worlds?
             for d in domains: worlds *= len(d)
             if worlds > 1000000:
                 logger.warning('!!! WARNING: %d POSSIBLE WORLDS ARE GOING TO BE EVALUATED. KEEP IN SIGHT YOUR MEMORY CONSUMPTION !!!' % worlds)
             for c in combinations(domains):
-                world = [0] * len(self.mrf.gndatoms)
+                world = [0] * len(self.mrf.gndatoms) 
                 assignment = []
                 for varidx, value in zip(varindices, c):
                     world = self.variables[varidx].setval(value, world)
                     assignment.append(self.val2idx[varidx][value])
                 # the MRF feature imposed by this formula 
-                truth = formula(world)
+                truth = formula(world) # Q(gsoc): can world be converted to a numpy array?
                 if truth is None:
                     print('POSSIBLE WORLD:')
                     print('===============')
@@ -282,7 +284,7 @@ class WCSPConverter(object):
                     if truth == 1:
                         cost = 0
                     else:
-                        cost = self.wcsp.top
+                        cost = self.wcsp.top # Q(gsoc): can cost be typed as an int?
                 else:
                     cost = ((1 - truth) * formula.weight)
                 cost2assignments[cost].append(tuple(assignment))
