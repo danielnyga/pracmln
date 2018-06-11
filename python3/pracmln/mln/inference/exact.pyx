@@ -25,7 +25,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 from dnutils import logs, ProgressBar
 
-from .infer import Inference
+from .infer cimport Inference
 from multiprocessing import Pool
 from ..mrfvars import FuzzyVariable
 from ..constants import auto, HARD
@@ -75,7 +75,7 @@ def eval_queries(world):
     return numerators, denominator
 
 
-class EnumerationAsk(Inference):
+cdef class EnumerationAsk(Inference):
     """
     Inference based on enumeration of (only) the worlds compatible with the
     evidence; supports soft evidence (assuming independence)

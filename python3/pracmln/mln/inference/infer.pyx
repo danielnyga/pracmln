@@ -37,7 +37,7 @@ from functools import reduce
 logger = logs.getlogger(__name__)
 
 
-class Inference(object):
+cdef class Inference():
     """
     Represents a super class for all inference methods.
     Also provides some convenience methods for collecting statistics
@@ -161,7 +161,7 @@ class Inference(object):
                 else: # just a predicate name
                     if query not in self.mln.prednames:
                         raise NoSuchPredicateError('Unsupported query: %s is not among the admissible predicates.' % (query))
-                        continue
+                        #continue
                     for gndatom in self.mln.predicate(query).groundatoms(self.mln, self.mrf.domains):
                         equeries.append(self.mln.logic.gnd_lit(self.mrf.gndatom(gndatom), negated=False, mln=self.mln))
                 if len(equeries) - prevLen == 0:

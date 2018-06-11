@@ -46,7 +46,7 @@ from ..logic.fuzzy import FuzzyLogic
 logger = logs.getlogger(__name__)
 
 
-class MRF(object):
+cdef class MRF(object):
     '''
     Represents a ground Markov random field.
 
