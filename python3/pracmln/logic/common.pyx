@@ -46,7 +46,7 @@ def latexsym(sym):
 #         return ' '
     return r'\textit{%s}' % str(sym)
 
-class Logic(object):
+class Logic():
     """
     Abstract factory class for instantiating logical constructs like conjunctions, 
     disjunctions etc. Every specifc logic should implement the methods and return
@@ -78,7 +78,7 @@ class Logic(object):
         
     
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #   
-    class Constraint(object):
+    class Constraint():
         """
         Super class of every constraint.
         """
