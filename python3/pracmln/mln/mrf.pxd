@@ -1,2 +1,4 @@
+from base cimport MLN
+
 cdef class MRF:
-    pass
+    cdef MLN mln
