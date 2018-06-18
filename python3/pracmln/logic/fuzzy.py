@@ -24,6 +24,7 @@
 from .common import Logic
 from functools import reduce
 
+import misc
 
 class FuzzyLogic(Logic):
     """

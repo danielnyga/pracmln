@@ -32,7 +32,26 @@ from ..mln.constants import HARD, predicate_color, inherit, auto
 from collections import defaultdict
 import itertools
 from functools import reduce
-from misc import *
+
+from .misc import Constraint as misc_Constraint
+from .misc import Formula as misc_Formula
+from .misc import ComplexFormula as misc_ComplexFormula
+from .misc import Conjunction as misc_Conjunction
+from .misc import Disjunction as misc_Disjunction
+from .misc import Lit as misc_Lit
+from .misc import LitGroup as misc_LitGroup
+from .misc import GroundLit as misc_GroundLit
+from .misc import GroundAtom as misc_GroundAtom
+from .misc import Equality as misc_Equality
+from .misc import Implication as misc_Implication
+from .misc import Biimplication as misc_Biimplication
+from .misc import Negation as misc_Negation
+from .misc import Exist as misc_Exist
+from .misc import TrueFalse as misc_TrueFalse
+from .misc import NonLogicalConstraint as misc_NonLogicalConstraint
+from .misc import CountConstraint as misc_CountConstraint
+from .misc import GroundCountConstraint as misc_GroundCountConstraint
+
 
 logger = logs.getlogger(__name__)
 
@@ -43,6 +62,10 @@ cdef class Logic():
     an instance of the respective element. They also might override the respective
     implementations and behavior of the logic.
     """
+    
+    Constraint = misc_Constraint
+    NonLogicalConstraint = misc_NonLogicalConstraint
+    Formula = misc_Formula
 
     def __init__(self, grammar, mln):
         """
@@ -390,21 +413,21 @@ cdef class Logic():
 
 
 # this is a little hack to make nested classes pickleable
-Constraint = Logic.Constraint
-Formula = Logic.Formula
-ComplexFormula = Logic.ComplexFormula
-Conjunction = Logic.Conjunction
-Disjunction = Logic.Disjunction
-Lit = Logic.Lit
-LitGroup = Logic.LitGroup
-GroundLit = Logic.GroundLit
-GroundAtom = Logic.GroundAtom
-Equality = Logic.Equality
-Implication = Logic.Implication
-Biimplication = Logic.Biimplication
-Negation = Logic.Negation
-Exist = Logic.Exist
-TrueFalse = Logic.TrueFalse
-NonLogicalConstraint = Logic.NonLogicalConstraint
-CountConstraint = Logic.CountConstraint
-GroundCountConstraint = Logic.GroundCountConstraint
+# Constraint = Logic.Constraint
+# Formula = Logic.Formula
+# ComplexFormula = Logic.ComplexFormula
+# Conjunction = Logic.Conjunction
+# Disjunction = Logic.Disjunction
+# Lit = Logic.Lit
+# LitGroup = Logic.LitGroup
+# GroundLit = Logic.GroundLit
+# GroundAtom = Logic.GroundAtom
+# Equality = Logic.Equality
+# Implication = Logic.Implication
+# Biimplication = Logic.Biimplication
+# Negation = Logic.Negation
+# Exist = Logic.Exist
+# TrueFalse = Logic.TrueFalse
+# NonLogicalConstraint = Logic.NonLogicalConstraint
+# CountConstraint = Logic.CountConstraint
+# GroundCountConstraint = Logic.GroundCountConstraint

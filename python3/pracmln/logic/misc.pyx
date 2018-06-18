@@ -16,7 +16,7 @@ logger = logs.getlogger(__name__)
 def latexsym(sym):
     return r'\textit{%s}' % str(sym)
 
-class Constraint():
+cdef class Constraint():
     """
     Super class of every constraint.
     """
@@ -58,7 +58,7 @@ class Constraint():
     def gndatoms(self, l=None):
         raise Exception("%s does not implement gndatoms" % str(type(self)))
 
-class Formula(Constraint):
+cdef class Formula(Constraint):
     """
     The base class for all logical formulas.
     """
@@ -533,7 +533,7 @@ class Formula(Constraint):
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, str(self))
 
-class ComplexFormula(Formula):
+cdef class ComplexFormula(Formula):
     """
     A formula that has other formulas as subelements (children)
     """
@@ -627,7 +627,7 @@ class ComplexFormula(Formula):
             prednames = child.prednames(prednames)
         return prednames
 
-class Conjunction(ComplexFormula):
+cdef class Conjunction(ComplexFormula):
     """
     Represents a logical conjunction.
     """
@@ -734,7 +734,7 @@ class Conjunction(ComplexFormula):
                 conjuncts.append(c)
         return self.mln.logic.conjunction(conjuncts, mln=self.mln, idx=self.idx)
 
-class Disjunction(ComplexFormula):
+cdef class Disjunction(ComplexFormula):
     """
     Represents a disjunction of formulas.
     """
@@ -847,7 +847,7 @@ class Disjunction(ComplexFormula):
                 disjuncts.append(c)
         return self.mln.logic.disjunction(disjuncts, mln=self.mln, idx=self.idx)
 
-class Lit(Formula):
+cdef class Lit(Formula):
     """
     Represents a literal.
     """
@@ -1022,7 +1022,7 @@ class Lit(Formula):
     def __ne__(self, other):
         return not self == other
 
-class LitGroup(Formula):
+cdef class LitGroup(Formula):
     """
     Represents a group of literals with identical arguments.
     """
@@ -1182,7 +1182,7 @@ class LitGroup(Formula):
     def __ne__(self, other):
         return not self == other
 
-class GroundLit(Formula):
+cdef class GroundLit(Formula):
     """
     Represents a ground literal.
     """
@@ -1325,7 +1325,7 @@ class GroundLit(Formula):
     def __ne__(self, other):
         return not self == other
 
-class GroundAtom:
+cdef class GroundAtom:
     """
     Represents a ground atom.
     """
@@ -1422,7 +1422,7 @@ class GroundAtom:
     def __ne__(self, other):
         return not self == other
 
-class Equality(ComplexFormula):
+cdef class Equality(ComplexFormula):
     """
     Represents (in)equality constraints between two symbols.
     """
@@ -1546,7 +1546,7 @@ class Equality(ComplexFormula):
         if truth != None: return self.mln.logic.true_false(truth, mln=self.mln, idx=self.idx)
         return self.mln.logic.equality(list(self.args), negated=self.negated, mln=self.mln, idx=self.idx)
 
-class Implication(ComplexFormula):
+cdef class Implication(ComplexFormula):
     """
     Represents an implication
     """
@@ -1597,7 +1597,7 @@ class Implication(ComplexFormula):
     def simplify(self, world):
         return self.mln.logic.disjunction([Negation([self.children[0]], mln=self.mln, idx=self.idx), self.children[1]], mln=self.mln, idx=self.idx).simplify(world)
 
-class Biimplication(ComplexFormula):
+cdef class Biimplication(ComplexFormula):
     """
     Represents a bi-implication.
     """
@@ -1655,7 +1655,7 @@ class Biimplication(ComplexFormula):
         c2 = self.mln.logic.disjunction([self.children[0], self.mln.logic.negation([self.children[1]], mln=self.mln)], mln=self.mln)
         return self.mln.logic.conjunction([c1,c2], mln=self.mln, idx=self.idx).simplify(world)
 
-class Negation(ComplexFormula):
+cdef class Negation(ComplexFormula):
     """
     Represents a negation of a complex formula.
     """
@@ -1777,7 +1777,7 @@ class Negation(ComplexFormula):
         else:
             return self.mln.logic.negation([f], mln=self.mln, idx=self.idx)
 
-class Exist(ComplexFormula):
+cdef class Exist(ComplexFormula):
     """
     Existential quantifier.
     """
@@ -1889,7 +1889,7 @@ class Exist(ComplexFormula):
     def truth(self, w):
         raise Exception("'%s' does not implement truth()" % self.__class__.__name__)
 
-class TrueFalse(Formula):
+cdef class TrueFalse(Formula):
     """
     Represents constant truth values.
     """
@@ -1931,7 +1931,7 @@ class TrueFalse(Formula):
     def copy(self, mln=None, idx=inherit):
         return self.mln.logic.true_false(self.value, mln=ifnone(mln, self.mln), idx=self.idx if idx is inherit else idx)
 
-class NonLogicalConstraint(Constraint):
+cdef class NonLogicalConstraint(Constraint):
     """
     A constraint that is not somehow made up of logical connectives and (ground) atoms.
     """
@@ -1946,7 +1946,7 @@ class NonLogicalConstraint(Constraint):
     def negate(self):
         raise Exception("%s does not implement negate()" % str(type(self)))
 
-class CountConstraint(NonLogicalConstraint):
+cdef class CountConstraint(NonLogicalConstraint):
     """
     A constraint that tests the number of relation instances against an integer.
     """
@@ -2007,7 +2007,7 @@ class CountConstraint(NonLogicalConstraint):
             self.literal.getVariables(mln, variables, constants)
         return variables
 
-class GroundCountConstraint(NonLogicalConstraint):
+cdef class GroundCountConstraint(NonLogicalConstraint):
     def __init__(self, gndAtoms, op, count):
         self.gndAtoms = gndAtoms
         self.count = count

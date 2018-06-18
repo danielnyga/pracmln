@@ -26,6 +26,26 @@ from dnutils import ifnone
 from .common import Logic
 from ..mln.util import fstr
 
+from .misc import Constraint as misc_Constraint
+from .misc import Formula as misc_Formula
+from .misc import ComplexFormula as misc_ComplexFormula
+from .misc import Conjunction as misc_Conjunction
+from .misc import Disjunction as misc_Disjunction
+from .misc import Lit as misc_Lit
+from .misc import LitGroup as misc_LitGroup
+from .misc import GroundLit as misc_GroundLit
+from .misc import GroundAtom as misc_GroundAtom
+from .misc import Equality as misc_Equality
+from .misc import Implication as misc_Implication
+from .misc import Biimplication as misc_Biimplication
+from .misc import Negation as misc_Negation
+from .misc import Exist as misc_Exist
+from .misc import TrueFalse as misc_TrueFalse
+from .misc import NonLogicalConstraint as misc_NonLogicalConstraint
+from .misc import CountConstraint as misc_CountConstraint
+from .misc import GroundCountConstraint as misc_GroundCountConstraint
+
+
 
 class FirstOrderLogic(Logic):
     """
@@ -83,31 +103,31 @@ class FirstOrderLogic(Logic):
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
     
 
-    class ComplexFormula(Logic.ComplexFormula, Formula): pass
+    class ComplexFormula(misc_ComplexFormula, Formula): pass
         
         
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
         
-    class Lit(Logic.Lit, Formula): pass
+    class Lit(misc_Lit, Formula): pass
 
 
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class Litgroup(Logic.LitGroup, Formula): pass
+    class Litgroup(misc_LitGroup, Formula): pass
 
 
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
     
     
-    class GroundAtom(Logic.GroundAtom): pass
+    class GroundAtom(misc_GroundAtom): pass
 
         
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
             
-    class GroundLit(Logic.GroundLit, Formula):
+    class GroundLit(misc_GroundLit, Formula):
 
         def noisyor(self, world):
             truth = self(world)
@@ -117,7 +137,7 @@ class FirstOrderLogic(Logic):
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #        
 
     
-    class Disjunction(Logic.Disjunction, ComplexFormula):
+    class Disjunction(misc_Disjunction, ComplexFormula):
         
         def truth(self, world):
             dontKnow = False
@@ -164,7 +184,7 @@ class FirstOrderLogic(Logic):
                 
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
             
-    class Conjunction(Logic.Conjunction, ComplexFormula):
+    class Conjunction(misc_Conjunction, ComplexFormula):
         
         def truth(self, world):
             dontKnow = False
@@ -210,7 +230,7 @@ class FirstOrderLogic(Logic):
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class Implication(Logic.Implication, ComplexFormula):
+    class Implication(misc_Implication, ComplexFormula):
 
         def truth(self, world):
             ant = self.children[0].truth(world)
@@ -225,7 +245,7 @@ class FirstOrderLogic(Logic):
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
         
-    class Biimplication(Logic.Biimplication, ComplexFormula):
+    class Biimplication(misc_Biimplication, ComplexFormula):
 
         def truth(self, world):
             c1 = self.children[0].truth(world)
@@ -238,25 +258,25 @@ class FirstOrderLogic(Logic):
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
         
-    class Negation(Logic.Negation, ComplexFormula): pass
+    class Negation(misc_Negation, ComplexFormula): pass
         
             
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     
-    class Exist(Logic.Exist, ComplexFormula): pass
+    class Exist(misc_Exist, ComplexFormula): pass
      
     
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     
-    class Equality(Logic.Equality, ComplexFormula): pass
+    class Equality(misc_Equality, ComplexFormula): pass
     
             
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class TrueFalse(Logic.TrueFalse, Formula):
+    class TrueFalse(misc_TrueFalse, Formula):
         
         @property
         def value(self):
