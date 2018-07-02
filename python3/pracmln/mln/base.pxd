@@ -1,4 +1,5 @@
 from ..logic.common cimport Logic
 
 cdef class MLN:
-    cdef Logic logic
+    cdef public Logic logic
+    cdef dict __dict__
