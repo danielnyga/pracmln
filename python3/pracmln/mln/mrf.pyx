@@ -40,7 +40,11 @@ from .mrfvars import (MutexVariable, SoftMutexVariable, FuzzyVariable,
 from .util import fstr, logx, mergedom, CallByRef, Interval
 from ..logic import FirstOrderLogic
 from ..logic.common import Logic
+from ..logic.common import GroundAtom as Super_GroundAtom
 from ..logic.fuzzy import FuzzyLogic
+
+#from cpython cimport array
+#import array
 
 
 logger = logs.getlogger(__name__)
@@ -64,7 +68,7 @@ cdef class MRF(object):
             self.mln = mln.materialize(db)
         else:
             self.mln = mln
-        self._evidence = []
+        self._evidence = []#array.array('d', [])#[]
 #         self.evidenceBackup = {}
         self._variables = {}
         self._variables_by_idx = {} # gnd atom idx -> variable
@@ -327,7 +331,7 @@ cdef class MRF(object):
                     return atom
             elif type(identifier) is int:
                 return self._gndatoms_by_idx.get(identifier)
-            elif isinstance(identifier, Logic.GroundAtom):
+            elif isinstance(identifier, Super_GroundAtom):
                 return self._gndatoms.get(str(identifier))
 #                 else:
 #                     return self.new_gndatom(identifier.predname, *identifier.args)
@@ -345,7 +349,7 @@ cdef class MRF(object):
         '''
         if type(identifier) is int:
             return self._variables_by_idx.get(identifier)
-        elif isinstance(identifier, Logic.GroundAtom):
+        elif isinstance(identifier, Super_GroundAtom):
             return self._variables_by_gndatomidx[identifier.idx]
         elif isinstance(identifier, str):
             return self._variables.get(identifier)
