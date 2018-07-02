@@ -1,5 +1,5 @@
 # FIRST-ORDER LOGIC -- PROCESSING
-# 
+#
 # (C) 2013 by Daniel Nyga (nyga@cs.uni-bremen.de)
 # (C) 2007-2012 by Dominik Jain
 #
@@ -24,27 +24,25 @@
 from dnutils import ifnone
 
 from .common import Logic
+from .common import Constraint as Super_Constraint
+from .common import Formula as Super_Formula
+from .common import ComplexFormula as Super_ComplexFormula
+from .common import Conjunction as Super_Conjunction
+from .common import Disjunction as Super_Disjunction
+from .common import Lit as Super_Lit
+from .common import LitGroup as Super_LitGroup
+from .common import GroundLit as Super_GroundLit
+from .common import GroundAtom as Super_GroundAtom
+from .common import Equality as Super_Equality
+from .common import Implication as Super_Implication
+from .common import Biimplication as Super_Biimplication
+from .common import Negation as Super_Negation
+from .common import Exist as Super_Exist
+from .common import TrueFalse as Super_TrueFalse
+from .common import NonLogicalConstraint as Super_NonLogicalConstraint
+from .common import CountConstraint as Super_CountConstraint
+from .common import GroundCountConstraint as Super_GroundCountConstraint
 from ..mln.util import fstr
-
-from .misc import Constraint as misc_Constraint
-from .misc import Formula as misc_Formula
-from .misc import ComplexFormula as misc_ComplexFormula
-from .misc import Conjunction as misc_Conjunction
-from .misc import Disjunction as misc_Disjunction
-from .misc import Lit as misc_Lit
-from .misc import LitGroup as misc_LitGroup
-from .misc import GroundLit as misc_GroundLit
-from .misc import GroundAtom as misc_GroundAtom
-from .misc import Equality as misc_Equality
-from .misc import Implication as misc_Implication
-from .misc import Biimplication as misc_Biimplication
-from .misc import Negation as misc_Negation
-from .misc import Exist as misc_Exist
-from .misc import TrueFalse as misc_TrueFalse
-from .misc import NonLogicalConstraint as misc_NonLogicalConstraint
-from .misc import CountConstraint as misc_CountConstraint
-from .misc import GroundCountConstraint as misc_GroundCountConstraint
-
 
 
 class FirstOrderLogic(Logic):
@@ -52,24 +50,24 @@ class FirstOrderLogic(Logic):
     Factory class for first-order logic.
     """
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class Constraint(Logic.Constraint): pass
-        
-    
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    class Constraint(Super_Constraint): pass
 
-    
-    class Formula(Logic.Formula, Constraint): 
-        
+
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
+    class Formula(Super_Formula, Constraint):
+
         def noisyor(self, world):
             """
             Computes the noisy-or distribution of this formula.
             """
             return self.cnf().noisyor(world)
-            
-            
+
+
         def _getEvidenceTruthDegreeCW(self, gndAtom, worldValues):
             """
                 gets (soft or hard) evidence as a degree of belief from 0 to 1, making the closed world assumption,
@@ -79,7 +77,7 @@ class FirstOrderLogic(Logic):
             if se is not None:
                 return se if (True == worldValues[gndAtom.idx] or None == worldValues[gndAtom.idx]) else 1.0 - se # TODO allSoft currently unsupported
             return 1.0 if worldValues[gndAtom.idx] else 0.0
-    
+
 
         def _noisyOr(self, mln, worldValues, disj):
             if isinstance(disj, FirstOrderLogic.GroundLit):
@@ -92,53 +90,53 @@ class FirstOrderLogic(Logic):
             for lit in lits:
                 p = mln._getEvidenceTruthDegreeCW(lit.gndAtom, worldValues)
                 if not lit.negated:
-                    factor = p 
+                    factor = p
                 else:
                     factor = 1.0 - p
                 prod *= 1.0 - factor
             return 1.0 - prod
 
-        
-
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-    
-
-    class ComplexFormula(misc_ComplexFormula, Formula): pass
-        
-        
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
-        
-    class Lit(misc_Lit, Formula): pass
 
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class Litgroup(misc_LitGroup, Formula): pass
+    class ComplexFormula(Super_ComplexFormula, Formula): pass
 
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-    
-    
-    class GroundAtom(misc_GroundAtom): pass
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
-        
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
-            
-    class GroundLit(misc_GroundLit, Formula):
+    class Lit(Super_Lit, Formula): pass
+
+
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
+    class Litgroup(Super_LitGroup, Formula): pass
+
+
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
+    class GroundAtom(Super_GroundAtom): pass
+
+
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
+    class GroundLit(Super_GroundLit, Formula):
 
         def noisyor(self, world):
             truth = self(world)
             if self.negated: truth = 1. - truth
             return truth
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #        
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
-    
-    class Disjunction(misc_Disjunction, ComplexFormula):
-        
+
+    class Disjunction(Super_Disjunction, ComplexFormula):
+
         def truth(self, world):
             dontKnow = False
             for child in self.children:
@@ -152,7 +150,7 @@ class FirstOrderLogic(Logic):
             else:
                 return 0
 
-        
+
         def simplify(self, world):
             sf_children = []
             for child in self.children:
@@ -168,24 +166,24 @@ class FirstOrderLogic(Logic):
                 return self.mln.logic.disjunction(sf_children, mln=self.mln, idx=self.idx)
             else:
                 return self.mln.logic.true_false(0, mln=self.mln, idx=self.idx)
-            
 
-        def noisyor(self, world):     
+
+        def noisyor(self, world):
             prod = 1.0
             for lit in self.children:
                 p = ifnone(lit(world), 1)
                 if not lit.negated:
-                    factor = p 
+                    factor = p
                 else:
                     factor = 1.0 - p
                 prod *= 1.0 - factor
             return 1.0 - prod
 
-                
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-            
-    class Conjunction(misc_Conjunction, ComplexFormula):
-        
+
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+    class Conjunction(Super_Conjunction, ComplexFormula):
+
         def truth(self, world):
             dontKnow = False
             for child in self.children:
@@ -198,7 +196,7 @@ class FirstOrderLogic(Logic):
                 return None
             else:
                 return 1.
-            
+
 
         def simplify(self, world):
             sf_children = []
@@ -215,8 +213,8 @@ class FirstOrderLogic(Logic):
                 return self.mln.logic.conjunction(sf_children, mln=self.mln, idx=self.idx)
             else:
                 return self.mln.logic.true_false(1, mln=self.mln, idx=self.idx)
-            
-            
+
+
         def noisyor(self, world):
             cnf = self.cnf()
             prod = 1.0
@@ -227,10 +225,10 @@ class FirstOrderLogic(Logic):
                 prod *= cnf.noisyor(world)
             return prod
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class Implication(misc_Implication, ComplexFormula):
+    class Implication(Super_Implication, ComplexFormula):
 
         def truth(self, world):
             ant = self.children[0].truth(world)
@@ -242,10 +240,10 @@ class FirstOrderLogic(Logic):
             return 0
 
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
-        
-    class Biimplication(misc_Biimplication, ComplexFormula):
+
+    class Biimplication(Super_Biimplication, ComplexFormula):
 
         def truth(self, world):
             c1 = self.children[0].truth(world)
@@ -253,133 +251,133 @@ class FirstOrderLogic(Logic):
             if c1 is None or c2 is None:
                 return None
             return 1 if (c1 == c2) else 0
-            
-
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
-        
-    class Negation(misc_Negation, ComplexFormula): pass
-        
-            
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
-    
-    class Exist(misc_Exist, ComplexFormula): pass
-     
-    
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
-    
-    class Equality(misc_Equality, ComplexFormula): pass
-    
-            
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class TrueFalse(misc_TrueFalse, Formula):
-        
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
+    class Negation(Super_Negation, ComplexFormula): pass
+
+
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
+    class Exist(Super_Exist, ComplexFormula): pass
+
+
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
+    class Equality(Super_Equality, ComplexFormula): pass
+
+
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
+    class TrueFalse(Super_TrueFalse, Formula):
+
         @property
         def value(self):
             return self._value
-        
-        
+
+
         @value.setter
         def value(self, truth):
             if not truth == 0 and not truth == 1:
                 raise Exception('Truth values in first-order logic cannot be %s' % truth)
             self._value = truth
-        
-        
+
+
         def __str__(self):
             return str(True if self.value == 1 else False)
-        
-        
+
+
         def noisyor(self, world):
             return self(world)
-    
-    
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
-    
+
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
     class ProbabilityConstraint(object):
         """
         Base class for representing a prior/posterior probability constraint (soft evidence)
         on a logical expression.
         """
-        
+
         def __init__(self, formula, p):
             self.formula = formula
             self.p = p
-            
+
         def __repr__(self):
             return str(self)
-            
-
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class PriorConstraint(ProbabilityConstraint): 
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
+    class PriorConstraint(ProbabilityConstraint):
         """
         Class representing a prior probability.
         """
 
         def __str__(self):
             return 'P(%s) = %.2f' % (fstr(self.formula), self.p)
-            
-        
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
-        
-    class PosteriorConstraint(ProbabilityConstraint): 
+
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
+    class PosteriorConstraint(ProbabilityConstraint):
         """
         Class representing a posterior probability.
         """
-        
+
         def __str__(self):
             return 'P(%s|E) = %.2f' % (fstr(self.formula), self.p)
-        
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
-    
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+
+
     def conjunction(self, *args, **kwargs):
         return FirstOrderLogic.Conjunction(*args, **kwargs)
-    
+
     def disjunction(self, *args, **kwargs):
         return FirstOrderLogic.Disjunction(*args, **kwargs)
-    
+
     def negation(self, *args, **kwargs):
         return FirstOrderLogic.Negation(*args, **kwargs)
-    
+
     def implication(self, *args, **kwargs):
         return FirstOrderLogic.Implication(*args, **kwargs)
-    
+
     def biimplication(self, *args, **kwargs):
         return FirstOrderLogic.Biimplication(*args, **kwargs)
-    
+
     def equality(self, *args, **kwargs):
         return FirstOrderLogic.Equality(*args, **kwargs)
-     
+
     def exist(self, *args, **kwargs):
         return FirstOrderLogic.Exist(*args, **kwargs)
-    
+
     def gnd_atom(self, *args, **kwargs):
         return FirstOrderLogic.GroundAtom(*args, **kwargs)
-    
+
     def lit(self, *args, **kwargs):
         return FirstOrderLogic.Lit(*args, **kwargs)
-    
+
     def litgroup(self, *args, **kwargs):
         return FirstOrderLogic.LitGroup(*args, **kwargs)
 
     def gnd_lit(self, *args, **kwargs):
         return FirstOrderLogic.GroundLit(*args, **kwargs)
-    
+
     def count_constraint(self, *args, **kwargs):
         return FirstOrderLogic.CountConstraint(*args, **kwargs)
-    
+
     def true_false(self, *args, **kwargs):
         return FirstOrderLogic.TrueFalse(*args, **kwargs)
-    
+
 
 # this is a little hack to make nested classes pickleable
 Constraint = FirstOrderLogic.Constraint
@@ -396,6 +394,7 @@ Biimplication = FirstOrderLogic.Biimplication
 Negation = FirstOrderLogic.Negation
 Exist = FirstOrderLogic.Exist
 TrueFalse = FirstOrderLogic.TrueFalse
-NonLogicalConstraint = FirstOrderLogic.NonLogicalConstraint
-CountConstraint = FirstOrderLogic.CountConstraint
-GroundCountConstraint = FirstOrderLogic.GroundCountConstraint
+# the following attributes no longer exist (!): 
+# NonLogicalConstraint = FirstOrderLogic.NonLogicalConstraint
+# CountConstraint = FirstOrderLogic.CountConstraint
+# GroundCountConstraint = FirstOrderLogic.GroundCountConstraint

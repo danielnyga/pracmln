@@ -21,10 +21,28 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 from .common import Logic
+from .common import Constraint as Super_Constraint
+from .common import Formula as Super_Formula
+from .common import ComplexFormula as Super_ComplexFormula
+from .common import Conjunction as Super_Conjunction
+from .common import Disjunction as Super_Disjunction
+from .common import Lit as Super_Lit
+from .common import LitGroup as Super_LitGroup
+from .common import GroundLit as Super_GroundLit
+from .common import GroundAtom as Super_GroundAtom
+from .common import Equality as Super_Equality
+from .common import Implication as Super_Implication
+from .common import Biimplication as Super_Biimplication
+from .common import Negation as Super_Negation
+from .common import Exist as Super_Exist
+from .common import TrueFalse as Super_TrueFalse
+from .common import NonLogicalConstraint as Super_NonLogicalConstraint
+from .common import CountConstraint as Super_CountConstraint
+from .common import GroundCountConstraint as Super_GroundCountConstraint
 from functools import reduce
 
-import misc
 
 class FuzzyLogic(Logic):
     """
@@ -54,55 +72,55 @@ class FuzzyLogic(Logic):
         return reduce(lambda x, y: None if x is None or y is None else max(x, y), args)
     
     
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
     
     
-    class Constraint(Logic.Constraint): pass
+    class Constraint(Super_Constraint): pass
     
     
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class Formula(Logic.Formula): pass
+    class Formula(Super_Formula): pass
     
     
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class ComplexFormula(Logic.Formula): pass
+    class ComplexFormula(Super_Formula): pass
 
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class Lit(Logic.Lit): pass
+    class Lit(Super_Lit): pass
 
     
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class LitGroup(Logic.LitGroup): pass
+    class LitGroup(Super_LitGroup): pass
 
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
     
     
-    class GroundLit(Logic.GroundLit): pass
+    class GroundLit(Super_GroundLit): pass
         
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class GroundAtom(Logic.GroundAtom):
+    class GroundAtom(Super_GroundAtom):
         
         def truth(self, world):
             return world[self.idx]
         
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     
-    class Negation(Logic.Negation, ComplexFormula):
+    class Negation(Super_Negation, ComplexFormula):
         
         def truth(self, world):
             val = self.children[0].truth(world)
@@ -111,16 +129,16 @@ class FuzzyLogic(Logic):
         
         def simplify(self, world):
             f = self.children[0].simplify(world)
-            if isinstance(f, Logic.TrueFalse):
+            if isinstance(f, Super_TrueFalse):
                 return f.invert()
             else:
                 return self.mln.logic.negation([f], mln=self.mln, idx=self.idx)
     
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
     
     
-    class Conjunction(Logic.Conjunction, ComplexFormula):
+    class Conjunction(Super_Conjunction, ComplexFormula):
         
         
         def truth(self, world):
@@ -133,7 +151,7 @@ class FuzzyLogic(Logic):
             minTruth = None
             for child_ in self.children:
                 child = child_.simplify(world)
-                if isinstance(child, Logic.TrueFalse):
+                if isinstance(child, Super_TrueFalse):
                     truth = child.truth()
                     if truth == 0:
                         return self.mln.logic.true_false(0., mln=self.mln, idx=self.idx)
@@ -151,10 +169,10 @@ class FuzzyLogic(Logic):
                 assert False # should be unreachable
     
     
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     
-    class Disjunction(Logic.Disjunction, ComplexFormula):
+    class Disjunction(Super_Disjunction, ComplexFormula):
         
         
         def truth(self, world):
@@ -166,7 +184,7 @@ class FuzzyLogic(Logic):
             maxTruth = None
             for child in self.children:
                 child = child.simplify(world)
-                if isinstance(child, Logic.TrueFalse):
+                if isinstance(child, Super_TrueFalse):
                     truth = child.truth()
                     if truth == 1:
                         return self.mln.logic.true_false(1., mln=self.mln, idx=self.idx)
@@ -184,10 +202,10 @@ class FuzzyLogic(Logic):
                 assert False
             
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class Implication(Logic.Implication, ComplexFormula):
+    class Implication(Super_Implication, ComplexFormula):
         
         def truth(self, world):
             ant = self.children[0].truth(world)
@@ -198,10 +216,10 @@ class FuzzyLogic(Logic):
                                                self.children[1]], mln=self.mln, idx=self.idx).simplify(world)
         
         
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class Biimplication(Logic.Biimplication, ComplexFormula):
+    class Biimplication(Super_Biimplication, ComplexFormula):
         
         def truth(self, world):
             return FuzzyLogic.min_undef(self.children[0].truth(world), self.children[1].truth(world))
@@ -212,10 +230,10 @@ class FuzzyLogic(Logic):
             return self.mln.logic.conjunction([c1,c2], mln=self.mln, idx=self.idx).simplify(world)
         
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
         
-    class Equality(Logic.Equality):
+    class Equality(Super_Equality):
         
         def truth(self, world=None):
             if any(map(self.mln.logic.isvar, self.args)):
@@ -229,10 +247,10 @@ class FuzzyLogic(Logic):
             return self.mln.logic.equality(list(self.args), negated=self.negated, mln=self.mln, idx=self.idx)
 
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
         
-    class TrueFalse(Formula, Logic.TrueFalse):
+    class TrueFalse(Formula, Super_TrueFalse):
         
         # def __init__(self, truth, mln, idx=None):
         #     if not (truth >= 0. and truth <= 1.):
@@ -259,14 +277,14 @@ class FuzzyLogic(Logic):
             return self.mln.logic.true_false(1. - self.value, idx=self.idx, mln=self.mln)
     
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
-    class Exist(Logic.Exist, Logic.ComplexFormula):
+    class Exist(Super_Exist, Super_ComplexFormula):
         pass
 
 
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 
     def conjunction(self, *args, **kwargs):
@@ -336,7 +354,8 @@ Biimplication = FuzzyLogic.Biimplication
 Negation = FuzzyLogic.Negation
 Exist = FuzzyLogic.Exist
 TrueFalse = FuzzyLogic.TrueFalse
-NonLogicalConstraint = FuzzyLogic.NonLogicalConstraint
-CountConstraint = FuzzyLogic.CountConstraint
-GroundCountConstraint = FuzzyLogic.GroundCountConstraint
+# the following attributes no longer exist (!): 
+# NonLogicalConstraint = FuzzyLogic.NonLogicalConstraint
+# CountConstraint = FuzzyLogic.CountConstraint
+# GroundCountConstraint = FuzzyLogic.GroundCountConstraint
 
