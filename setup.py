@@ -3,8 +3,11 @@ import os
 from distutils.core import setup
 
 import _version
-import pip
-pip.main(['install', 'appdirs'])
+try:
+    from pip import main as pipmain
+except:
+    from pip._internal import main as pipmain
+pipmain(['install', 'appdirs'])
 # from setuptools.command import build_py
 
 
