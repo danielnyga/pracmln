@@ -32,7 +32,8 @@ from ..mrfvars import FuzzyVariable
 from ..util import (combinations, dict_union, Interval, temporary_evidence)
 from ...wcsp import Constraint, WCSP
 from ...logic.common import Logic
-
+from ...logic.common import TrueFalse as Logic_TrueFalse
+from ...logic.common import GroundAtom as Logic_GroundAtom
 
 logger = logs.getlogger(__name__)
 
@@ -134,7 +135,7 @@ class WCSPConverter(object):
 #         grounder = DefaultGroundingFactory(self.mrf, formulas=formulas, simplify=True, unsatfailure=True, multicore=self.multicore, verbose=self.verbose)
         grounder = FastConjunctionGrounding(self.mrf, simplify=True, unsatfailure=True, formulas=formulas, multicore=self.multicore, verbose=self.verbose, cache=0)
         for gf in grounder.itergroundings():
-            if isinstance(gf, Logic.TrueFalse):
+            if isinstance(gf, Logic_TrueFalse):
                 if gf.weight == HARD and gf.truth() == 0:
                     raise SatisfiabilityException('MLN is unsatisfiable: hard constraint %s violated' % self.mrf.mln.formulas[gf.idx])
                 else:# formula is rendered true/false by the evidence -> equal in every possible world 
@@ -196,7 +197,7 @@ class WCSPConverter(object):
             children = list(formula.literals())
             for gndlit in children:
                 # constants are handled in the maxtruth/mintruth calls below
-                if isinstance(gndlit, Logic.TrueFalse): continue
+                if isinstance(gndlit, Logic_TrueFalse): continue
                 # get the value of the gndlit that renders the formula true (conj) or false (disj):
                 # for a conjunction, the literal must be true,
                 # for a disjunction, it must be false.
@@ -318,7 +319,7 @@ class WCSPConverter(object):
         if isinstance(gndAtom, str):
             gndAtom = self.mrf.gndAtoms[gndAtom]
         
-        if not isinstance(gndAtom, Logic.GroundAtom):
+        if not isinstance(gndAtom, Logic_GroundAtom):
             raise Exception('Argument must be a ground atom')
         
         varIdx = self.gndAtom2VarIndex[gndAtom]

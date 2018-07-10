@@ -247,9 +247,12 @@ cdef class MLN(object):
         elif type(formula) is int:
             return self._formulas[formula]
         cdef dict constants = {}
+        #cdef list constants = []
+        #print("CONSTANTS is a {}".format(type(constants)))
         formula.vardoms(None, constants)
-        for domain, constants in constants.items():
-            for c in constants: self.constant(domain, c)
+        #print("CONSTANTS is a {}\n".format(type(constants)))
+        for domain, constantslist in constants.items():
+            for c in constantslist: self.constant(domain, c)
         formula.mln = self
         formula.idx = len(self._formulas)
         self._formulas.append(formula)

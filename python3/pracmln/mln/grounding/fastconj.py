@@ -31,6 +31,12 @@ from ..util import dict_union, rndbatches, cumsum
 from ..errors import SatisfiabilityException
 from ..constants import HARD
 from ...logic.common import Logic
+from ...logic.common import TrueFalse as Logic_TrueFalse
+from ...logic.common import Lit as Logic_Lit
+from ...logic.common import GroundLit as Logic_GroundLit
+from ...logic.common import Equality as Logic_Equality
+from ...logic.common import Conjunction as Logic_Conjunction
+from ...logic.common import Disjunction as Logic_Disjunction
 from ...logic.fuzzy import FuzzyLogic
 from ...utils.multicore import with_tracing
 from collections import defaultdict
@@ -70,21 +76,21 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
 
 
     def _conjsort(self, e):
-        if isinstance(e, Logic.Equality):
+        if isinstance(e, Logic_Equality):
             return 0.5
-        elif isinstance(e, Logic.TrueFalse):
+        elif isinstance(e, Logic_TrueFalse):
             return 1
-        elif isinstance(e, Logic.GroundLit):
+        elif isinstance(e, Logic_GroundLit):
             if self.mrf.evidence[e.gndatom.idx] is not None:
                 return 2
             elif type(self.mrf.mln.predicate(e.gndatom.predname)) in (FunctionalPredicate, SoftFunctionalPredicate):
                 return 3
             else:
                 return 4
-        elif isinstance(e, Logic.Lit) and type(
+        elif isinstance(e, Logic_Lit) and type(
                 self.mrf.mln.predicate(e.predname)) in (FunctionalPredicate, SoftFunctionalPredicate, FuzzyPredicate):
             return 5
-        elif isinstance(e, Logic.Lit):
+        elif isinstance(e, Logic_Lit):
             return 6
         else:
             return 7
@@ -120,27 +126,27 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
 
 
         for child in children:
-            if isinstance(child, Logic.Equality):
+            if isinstance(child, Logic_Equality):
                 # replace the vardoms method in this equality instance by
                 # our customized one
                 setattr(child, 'vardoms', types.MethodType(eqvardoms, child))
         lits = sorted(children, key=self._conjsort)
-        truthpivot, pivotfct = (1, FuzzyLogic.min_undef) if isinstance(formula, Logic.Conjunction) else ((0, FuzzyLogic.max_undef) if isinstance(formula, Logic.Disjunction) else (None, None))
+        truthpivot, pivotfct = (1, FuzzyLogic.min_undef) if isinstance(formula, Logic_Conjunction) else ((0, FuzzyLogic.max_undef) if isinstance(formula, Logic_Disjunction) else (None, None))
         for gf in self._itergroundings_fast(formula, lits, 0, pivotfct, truthpivot, {}):
             yield gf
 
 
     def _itergroundings_fast(self, formula, constituents, cidx, pivotfct, truthpivot, assignment, level=0):
-        if truthpivot == 0 and (isinstance(formula, Logic.Conjunction) or self.mrf.mln.logic.islit(formula)):
+        if truthpivot == 0 and (isinstance(formula, Logic_Conjunction) or self.mrf.mln.logic.islit(formula)):
             if formula.weight == HARD:
                 raise SatisfiabilityException('MLN is unsatisfiable given evidence due to hard constraint violation: {}'.format(str(formula)))
             return
-        if truthpivot == 1 and (isinstance(formula, Logic.Disjunction) or self.mrf.mln.logic.islit(formula)):
+        if truthpivot == 1 and (isinstance(formula, Logic_Disjunction) or self.mrf.mln.logic.islit(formula)):
             return
         if cidx == len(constituents):
             # we have reached the end of the formula constituents
             gf = formula.ground(self.mrf, assignment, simplify=True)
-            if isinstance(gf, Logic.TrueFalse):
+            if isinstance(gf, Logic_TrueFalse):
                 return
             yield gf
             return

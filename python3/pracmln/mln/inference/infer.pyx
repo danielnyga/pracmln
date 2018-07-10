@@ -57,6 +57,7 @@ cdef class Inference():
     
     def __init__(self, mrf, queries=ALL, **params):
         self.mrf = mrf
+        #print(self.mrf)
         self.mln = mrf.mln 
         self._params = edict(params)
         if not queries:

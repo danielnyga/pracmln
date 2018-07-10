@@ -33,6 +33,7 @@ from .mcmc import MCMCInference
 from ..constants import ALL
 from ..grounding.fastconj import FastConjunctionGrounding
 from ...logic.common import Logic
+from ...logic.common import TrueFalse as Logic_TrueFalse
 from numpy import zeros
 
 
@@ -43,7 +44,8 @@ class GibbsSampler(MCMCInference):
         self.var2gf = defaultdict(set)
         grounder = FastConjunctionGrounding(mrf, simplify=True, unsatfailure=True, cache=None)
         for gf in grounder.itergroundings():
-            if isinstance(gf, Logic.TrueFalse): continue
+            if isinstance(gf, Logic_TrueFalse):
+                continue
             vars_ = set([self.mrf.variable(a).idx for a in gf.gndatoms()])
             for v in vars_: self.var2gf[v].add(gf)
     

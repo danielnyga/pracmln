@@ -31,6 +31,8 @@ from ..constants import HARD
 from ..errors import SatisfiabilityException
 from ...utils.undo import Ref, Number, List, ListDict, Boolean
 from ...logic.common import Logic
+from ...logic.common import Equality as Logic_Equality
+from ...logic.common import Formula as Logic_Formula
 from ...utils.multicore import with_tracing, checkmem
 
 import types
@@ -105,7 +107,7 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
             return v
 
         for child in children:
-            if isinstance(child, Logic.Equality):
+            if isinstance(child, Logic_Equality):
                 setattr(child, 'vardoms', types.MethodType(eqvardoms, child))
         lits = sorted(children, key=self._conjsort)
         for gf in self._itergroundings_fast(formula, lits, 0, assignment={}, variables=[]):
@@ -126,7 +128,7 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
             # check if it violates a hard constraint
             if formula.weight == HARD and gnd(self.mrf.evidence) < 1:
                 raise SatisfiabilityException('MLN is unsatisfiable by evidence due to hard constraint violation {} (see above)'.format(global_bpll_grounding.mrf.formulas[formula.idx]))
-            if isinstance(gnd, Logic.Equality):
+            if isinstance(gnd, Logic_Equality):
                 # if an equality grounding is false in a conjunction, we can
                 # stop since the  conjunction cannot be rendered true in any
                 # grounding that follows
@@ -375,7 +377,7 @@ class SmartGroundingFactory(object):
         """
         self.mrf = mrf
         self.costs = .0
-        if isinstance(formula, Logic.Formula):
+        if isinstance(formula, Logic_Formula):
             self.formula = formula
             self.root = FormulaGrounding(formula, mrf)
         elif isinstance(formula, FormulaGrounding):
@@ -533,7 +535,7 @@ class SmartGroundingFactory(object):
         """
         Returns None if the literal and the atom do not match.
         """
-        if type(lit) is Logic.Equality or \
+        if type(lit) is Logic_Equality or \
                         lit.predName != atom.predName:
             return None
         assignment = {}

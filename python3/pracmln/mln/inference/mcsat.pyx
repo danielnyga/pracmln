@@ -35,6 +35,9 @@ from ..constants import ALL, HARD
 from ..grounding.fastconj import FastConjunctionGrounding
 from ..util import item
 from ...logic.common import Logic
+from ...logic.common import TrueFalse as Logic_TrueFalse
+from ...logic.common import GroundCountConstraint as Logic_GroundCountConstraint
+from ...logic.common import Conjunction as Logic_Conjunction
 
 
 logger = logs.getlogger(__name__)
@@ -73,7 +76,7 @@ class MCSAT(MCMCInference):
         grounder = FastConjunctionGrounding(self.mrf, formulas=self.formulas, simplify=True, verbose=self.verbose)
         self.gndformulas = []
         for gf in grounder.itergroundings():
-            if isinstance(gf, Logic.TrueFalse): continue
+            if isinstance(gf, Logic_TrueFalse): continue
             self.gndformulas.append(gf.cnf())
         self._watch.tags.update(grounder.watch.tags)
 #         self.gndformulas, self.formulas = Logic.cnf(grounder.itergroundings(), self.mln.formulas, self.mln.logic, allpos=True)
@@ -87,9 +90,9 @@ class MCSAT(MCMCInference):
         # process all ground formulas
         for i_gf, gf in enumerate(self.gndformulas):
             # get the list of clauses
-            if isinstance(gf, Logic.Conjunction):
-                clauses = [clause for clause in gf.children if not isinstance(clause, Logic.TrueFalse)]
-            elif not isinstance(gf, Logic.TrueFalse):
+            if isinstance(gf, Logic_Conjunction):
+                clauses = [clause for clause in gf.children if not isinstance(clause, Logic_TrueFalse)]
+            elif not isinstance(gf, Logic_TrueFalse):
                 clauses = [gf]
             else:
                 continue
@@ -129,7 +132,7 @@ class MCSAT(MCMCInference):
             
     def _formula_clauses(self, f):
         # get the list of clauses
-        if isinstance(f, Logic.Conjunction):
+        if isinstance(f, Logic_Conjunction):
             lc = f.children
         else:
             lc = [f]
@@ -369,7 +372,7 @@ class SampleSAT:
 #             stop('clause', 'v'.join(map(str, self.infer.clauses[cidx])), 'is', 'unsatisfied' if clause.unsatisfied else 'satisfied')
         # instantiate non-logical constraints
         for nlc in nlcs:
-            if isinstance(nlc, Logic.GroundCountConstraint): # count constraint
+            if isinstance(nlc, Logic_GroundCountConstraint): # count constraint
                 SampleSAT._CountConstraint(self, nlc)
             else:
                 raise Exception("SampleSAT cannot handle constraints of type '%s'" % str(type(nlc)))
@@ -499,7 +502,7 @@ class SampleSAT:
             self.truelits = set()
             self.atomidx2lits = defaultdict(set)
             for lit in lits:
-                if isinstance(lit, Logic.TrueFalse): continue
+                if isinstance(lit, Logic_TrueFalse): continue
                 atomidx = lit.gndatom.idx
                 self.atomidx2lits[atomidx].add(0 if lit.negated else 1)
                 if lit(world) == 1:

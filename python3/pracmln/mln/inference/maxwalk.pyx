@@ -33,6 +33,7 @@ from .mcmc import MCMCInference
 from ..constants import HARD, ALL
 from ..grounding.fastconj import FastConjunctionGrounding
 from ...logic.common import Logic
+from ...logic.common import TrueFalse as Logic_TrueFalse
 
 
 class SAMaxWalkSAT(MCMCInference):
@@ -58,7 +59,7 @@ class SAMaxWalkSAT(MCMCInference):
                 formulas.append(f_.nnf())
         grounder = FastConjunctionGrounding(mrf, formulas=formulas, simplify=True, unsatfailure=True)
         for gf in grounder.itergroundings():
-            if isinstance(gf, Logic.TrueFalse): continue
+            if isinstance(gf, Logic_TrueFalse): continue
             vars_ = set([self.mrf.variable(a).idx for a in gf.gndatoms()])
             for v in vars_: self.var2gf[v].add(gf)
             self.sum += (self.hardw if gf.weight == HARD else gf.weight) * (1 - gf(self.state))
