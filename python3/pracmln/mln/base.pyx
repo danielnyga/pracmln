@@ -47,6 +47,10 @@ from .learning.bpll import BPLL
 from ..utils.project import mlnpath
 from importlib import util as imputil
 
+#from cpython cimport array
+#import array
+
+
 logger = logs.getlogger(__name__)
 
 
@@ -82,7 +86,7 @@ cdef class MLN(object):
         self.domains = {}    # maps from domain names to list of values
         self._formulas = []   # list of MLNFormula instances
         self.domain_decls = []
-        self.weights = []
+        self.weights = [] #array.array('d', [])
         self.fixweights = []
         self.vars = {}
         self._unique_templvars = []
@@ -108,6 +112,7 @@ cdef class MLN(object):
         
     @property
     def weights(self):
+        #print('_weight is {} of type {}'.format(self._weights, type(self._weights)))
         return self._weights
     
     @weights.setter
@@ -256,6 +261,8 @@ cdef class MLN(object):
         formula.mln = self
         formula.idx = len(self._formulas)
         self._formulas.append(formula)
+        #print('accessing weights = {}'.format(self.weights))
+        #print('append(weight) - weight is {} of type {}'.format(weight, type(weight)))
         self.weights.append(weight)
         self.fixweights.append(fixweight)
         self._unique_templvars.append(list(unique_templvars) if unique_templvars is not None else [])

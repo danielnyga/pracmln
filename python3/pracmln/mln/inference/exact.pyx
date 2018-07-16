@@ -104,8 +104,8 @@ cdef class EnumerationAsk(Inference):
         """
         # check consistency with hard constraints:
         self._watch.tag('check hard constraints', verbose=self.verbose)
-        hcgrounder = FastConjunctionGrounding(self.mrf, simplify=False, unsatfailure=True, 
-                                              formulas=[f for f in self.mrf.formulas if f.weight == HARD], 
+        hcgrounder = FastConjunctionGrounding(self.mrf, simplify=False, unsatfailure=True,
+                                              formulas=[f for f in self.mrf.formulas if f.weight == HARD],
                                               **(self._params + {'multicore': False, 'verbose': False}))
         for gf in hcgrounder.itergroundings():
             if isinstance(gf, Logic.TrueFalse) and gf.truth() == .0:
@@ -175,6 +175,7 @@ cdef class EnumerationAsk(Inference):
         return result
 
     def soft_evidence_formula(self, gf):
+        #print('result={}'.format(gf.gndatoms()))
         truths = [a.truth(self.mrf.evidence) for a in gf.gndatoms()]
         if None in truths:
             return False

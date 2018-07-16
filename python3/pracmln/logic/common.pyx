@@ -169,6 +169,7 @@ cdef class Formula(Constraint):
         return self.weight == HARD
 
 
+    # Q(gsoc): the following code is never called
     def contains_gndatom(self, gndatomidx):
         """
         Checks if this formula contains the ground atom with the given index.
@@ -193,17 +194,20 @@ cdef class Formula(Constraint):
             child.gndatom_indices(l)
         return l
 
-
+    # Q(gsoc): needs speedup ...
     def gndatoms(self, l=None):
         """
         Returns a list of all ground atoms that are contained
         in this formula.
         """
         if l is None: l = []
+        #print('\nFormula:gndatoms - (common.pyx-203) l = {}'.format(l))
         if not hasattr(self, "children"):
             return l
+        #print('Formula:gndatoms - (common.pyx-205) self.children = {}, is of type = {}, type of child[0] = {}'.format(self.children, type(self.children), type(self.children[0])))
         for child in self.children:
             child.gndatoms(l)
+        #print('Formula:gndatoms - (common.pyx-209) l = {}, type of l[0] = {}'.format(l, type(l[0])))
         return l
 
 
@@ -1244,28 +1248,34 @@ cdef class GroundLit(Formula):
 
     @property
     def gndatom(self):
+        #print('retrieving gndatom {} of type {}'.format(self._gndatom, type(self._gndatom)))
         return self._gndatom
 
 
     @gndatom.setter
     def gndatom(self, gndatom):
         self._gndatom = gndatom
+        #print('setting gndatom {} of type {}'.format(self._gndatom, type(self._gndatom)))
 
 
     @property
     def negated(self):
+        #print('retrieving negated {} of type {}'.format(self._negated, type(self._negated)))
         return self._negated
 
 
     @negated.setter
     def negated(self, negate):
         self._negated = negate
+        #print('setting negated {} of type {}'.format(self._negated, type(self._negated)))
 
 
+    # Q(gsoc): is this property ever used?
     @property
     def predname(self):
         return self.gndatom.predname
 
+    # Q(gsoc): is this property ever used?
     @property
     def args(self):
         return self.gndatom.args
@@ -1327,6 +1337,7 @@ cdef class GroundLit(Formula):
     def gndatoms(self, l=None):
         if l == None: l = []
         if not self.gndatom in l: l.append(self.gndatom)
+        #print('GroundLit:gndatoms(common.pyx-1331) len={}'.format(len(l)))
         return l
 
 
@@ -1380,9 +1391,13 @@ cdef class GroundAtom:
 
     def __init__(self, predname, args, mln, idx=None):
         self.predname = predname
+        #print("self.predname is {} of type {}".format(self.predname, type(self.predname)))
         self.args = args
+        #print("self.args is {} of type {}".format(self.args, type(self.args)))
         self.idx = idx
+        #print("self.idx is {} of type {}".format(self.idx, type(self.idx)))
         self.mln = mln
+        #print("self.mln is {} of type {}".format(self.mln, type(self.mln)))
 
 
     @property
@@ -1435,6 +1450,7 @@ cdef class GroundAtom:
         return '<GroundAtom: %s>' % str(self)
 
 
+    # Q(gsoc): needs speedup ...
     def __str__(self):
         return "%s(%s)" % (self.predname, ",".join(self.args))
 
@@ -1946,8 +1962,10 @@ cdef class TrueFalse(Formula):
         Formula.__init__(self, mln, idx)
         self.value = truth
 
+    # Q(gsoc): where is this property used?
     @property
     def value(self):
+        #print('getting value {} of type {}'.format(self._value, type(self._value)))
         return self._value
 
     def cstr(self, color=False):
@@ -2157,7 +2175,7 @@ cdef class Logic():
     disjunctions etc. Every specifc logic should implement the methods and return
     an instance of the respective element. They also might override the respective
     implementations and behavior of the logic.
-    """    
+    """
 
     def __init__(self, grammar, mln):
         """
@@ -2176,7 +2194,7 @@ cdef class Logic():
         #self.Conjunction = Conjunction(mln) # children = ?
         #self.Disjunction = Disjunction(mln) # children = ?
         #self.Lit = Lit()
-        
+
 
     def __getstate__(self):
         d = self.__dict__.copy()
