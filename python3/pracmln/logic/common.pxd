@@ -1,38 +1,64 @@
+from ..mln.base cimport MLN
+
+
 
 cdef class Constraint():
-    pass
+    cdef dict __dict__
+
 cdef class Formula(Constraint):
+    cdef MLN _mln
     pass
+
 cdef class ComplexFormula(Formula):
     pass
+
 cdef class Conjunction(ComplexFormula):
     pass
+
 cdef class Disjunction(ComplexFormula):
     pass
+
 cdef class Lit(Formula):
-    pass
+    cdef int _negated
+    cdef str _predname
+
 cdef class LitGroup(Formula):
-    pass
+    cdef int _negated
+    cdef str _predname
+
 cdef class GroundLit(Formula):
-    pass
+    cdef GroundAtom _gndatom
+    cdef int _negated
+
 cdef class GroundAtom:
-    pass
+    cdef str _predname
+    cdef MLN mln
+    cdef dict __dict__
+
 cdef class Equality(ComplexFormula):
-    pass
+    cdef int _negated
+
 cdef class Implication(ComplexFormula):
     pass
+
 cdef class Biimplication(ComplexFormula):
     pass
+
 cdef class Negation(ComplexFormula):
-    cdef dict __dict__
+    pass
+
 cdef class Exist(ComplexFormula):
     pass
+
 cdef class TrueFalse(Formula):
     pass
+
 cdef class NonLogicalConstraint(Constraint):
     pass
+
 cdef class CountConstraint(NonLogicalConstraint):
     pass
+
 cdef class GroundCountConstraint(NonLogicalConstraint):
     pass
 
