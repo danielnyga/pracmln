@@ -25,6 +25,9 @@ from dnutils import ifnone
 from .errors import MRFValueException
 from .util import Interval
 
+import array
+#import inspect
+
 class MRFVariable(object):
     """
     Represents a (mutually exclusive) block of ground atoms.
@@ -186,6 +189,8 @@ class MRFVariable(object):
         """
         if type(evidence) is list:
             evidence = dict([(i, v) for i, v in enumerate(evidence)])
+        if type(evidence) is array.array:
+            evidence = dict([(i, v) for i, v in enumerate(evidence)])
         for tup in self._itervalues(evidence):
             yield self.valueidx(tup), tup
     
@@ -303,6 +308,9 @@ class BinaryVariable(MRFVariable):
             evidence = {}
         if len(self.gndatoms) != 1: raise Exception('Illegal number of ground atoms in the variable %s' % repr(self))
         gndatom = self.gndatoms[0]
+        #curframe = inspect.currentframe()
+        #calframe = inspect.getouterframes(curframe, 2)
+        #print('evidence is {} of type {} - called by {}'.format(evidence, type(evidence), calframe[1][3]))
         if evidence.get(gndatom.idx) is not None and evidence.get(gndatom.idx) in (0,1):
             yield (evidence[gndatom.idx],)
             return
