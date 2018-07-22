@@ -175,13 +175,13 @@ def avg(*a):
     return sum(map(float, a)) / len(a)
 
 
-class CallByRef(object):
+cdef class CallByRef(object):
     '''
     Convenience class for treating any kind of variable as an object that can be
     manipulated in-place by a call-by-reference, in particular for primitive data types such as numbers.
     '''
     
-    def __init__(self, value):
+    def __init__(self, int value):
         self.value = value
         
 INC = 1
