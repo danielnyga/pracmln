@@ -13,10 +13,12 @@ cdef class ComplexFormula(Formula):
     pass
 
 cdef class Conjunction(ComplexFormula):
-    pass
+    cpdef int maxtruth(self, world)
+    cpdef int mintruth(self, world)
 
 cdef class Disjunction(ComplexFormula):
-    pass
+    cpdef int maxtruth(self, world)
+    cpdef int mintruth(self, world)
 
 cdef class Lit(Formula):
     cdef int _negated
@@ -29,14 +31,26 @@ cdef class LitGroup(Formula):
 cdef class GroundLit(Formula):
     cdef GroundAtom _gndatom
     cdef int _negated
-
-cdef class GroundAtom:
+    cpdef truth(self, list world)
+    cpdef mintruth(self, list world)
+    cpdef maxtruth(self, list world)
+        
+cdef class GroundAtom():
     cdef str _predname
     cdef MLN mln
+    #cdef int _idx
     cdef dict __dict__
+    cpdef truth(self, list world)
+    cpdef mintruth(self, list world)
+    cpdef maxtruth(self, list world)
 
 cdef class Equality(ComplexFormula):
     cdef int _negated
+    cdef str _argsA
+    cdef str _argsB
+    cpdef truth(self, world=*)
+    cpdef int maxtruth(self, world)
+    cpdef int mintruth(self, world)
 
 cdef class Implication(ComplexFormula):
     pass
@@ -51,7 +65,10 @@ cdef class Exist(ComplexFormula):
     pass
 
 cdef class TrueFalse(Formula):
-    pass
+    cdef float _value
+    cpdef float truth(self, world=*)
+    cpdef mintruth(self, world=*)
+    cpdef maxtruth(self, world=*)
 
 cdef class NonLogicalConstraint(Constraint):
     pass

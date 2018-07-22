@@ -712,8 +712,8 @@ cdef class Conjunction(ComplexFormula):
         return ' \land '.join([('(%s)' % c.latex()) if isinstance(c, ComplexFormula) else c.latex() for c in self.children])
 
 
-    def maxtruth(self, world):
-        mintruth = 1
+    cpdef int maxtruth(self, world):
+        cdef int mintruth = 1
         for c in self.children:
             truth = c.truth(world)
             if truth is None: continue
@@ -721,8 +721,8 @@ cdef class Conjunction(ComplexFormula):
         return mintruth
 
 
-    def mintruth(self, world):
-        mintruth = 1
+    cpdef int mintruth(self, world):
+        cdef int mintruth = 1
         for c in self.children:
             truth = c.truth(world)
             if truth is None: return 0
@@ -823,8 +823,8 @@ cdef class Disjunction(ComplexFormula):
     def latex(self):
         return ' \lor '.join([('(%s)' % c.latex()) if isinstance(c, ComplexFormula) else c.latex() for c in self.children])
 
-    def maxtruth(self, world):
-        maxtruth = 0
+    cpdef int maxtruth(self, world):
+        cdef maxtruth = 0
         for c in self.children:
             truth = c.truth(world)
             if truth is None: return 1
@@ -832,8 +832,8 @@ cdef class Disjunction(ComplexFormula):
         return maxtruth
 
 
-    def mintruth(self, world):
-        maxtruth = 0
+    cpdef int mintruth(self, world):
+        cdef maxtruth = 0
         for c in self.children:
             truth = c.truth(world)
             if truth is None: continue
@@ -1281,23 +1281,35 @@ cdef class GroundLit(Formula):
         return self.gndatom.args
 
 
-    def truth(self, world):
+    #cdef float truth(self, list world):
+    cpdef truth(self, list world):
+        #print('\nworld is of type {} and world has length {}'.format(type(world), len(world)))
+        #for wi in world:
+        #    print('\twi is of type {} and is {}'.format(type(wi), wi))
+        #cdef float tv = self.gndatom.truth(world)
         tv = self.gndatom.truth(world)
-        if tv is None: return None
-        if self.negated: return (1. - tv)
+        #print('tv is of type {} and tv is {}'.format(type(tv), tv))
+        if tv is None:
+            return None
+        if self.negated:
+            return (1. - tv)
         return tv
 
 
-    def mintruth(self, world):
+    cpdef mintruth(self, list world):
         truth = self.truth(world)
-        if truth is None: return 0
-        else: return truth
+        if truth is None:
+            return 0
+        else:
+            return truth
 
 
-    def maxtruth(self, world):
+    cpdef maxtruth(self, list world):
         truth = self.truth(world)
-        if truth is None: return 1
-        else: return truth
+        if truth is None:
+            return 1
+        else:
+            return truth
 
 
     def __str__(self):
@@ -1384,7 +1396,7 @@ cdef class GroundLit(Formula):
     def __ne__(self, other):
         return not self == other
 
-cdef class GroundAtom:
+cdef class GroundAtom():
     """
     Represents a ground atom.
     """
@@ -1427,23 +1439,28 @@ cdef class GroundAtom:
 
     @idx.setter
     def idx(self, idx):
-        self._idx = idx
+      #print('idx is of type {} and has value {}'.format(type(idx), idx))
+      self._idx = idx
 
 
-    def truth(self, world):
+    cpdef truth(self, list world):
         return world[self.idx]
 
 
-    def mintruth(self, world):
+    cpdef mintruth(self, list world):
         truth = self.truth(world)
-        if truth is None: return 0
-        else: return truth
+        if truth is None:
+            return 0
+        else:
+            return truth
 
 
-    def maxtruth(self, world):
+    cpdef maxtruth(self, list world):
         truth = self.truth(world)
-        if truth is None: return 1
-        else: return truth
+        if truth is None:
+            return 1
+        else:
+            return truth
 
 
     def __repr__(self):
@@ -1500,14 +1517,17 @@ cdef class Equality(ComplexFormula):
 
     @property
     def args(self):
-        return self._args
+        return [self._argsA, self._argsB]
+        #return self._args
 
 
     @args.setter
     def args(self, args):
         if len(args) != 2:
-            raise Exception('Illegal number of aeguments of equality: %d' % len(args))
-        self._args = args
+            raise Exception('Illegal number of arguments of equality: %d' % len(args))
+        #self._args = args
+        self._argsA = args[0]
+        self._argsB = args[1]
 
 
     @property
@@ -1586,23 +1606,29 @@ cdef class Equality(ComplexFormula):
         return prednames
 
 
-    def truth(self, world=None):
+    cpdef truth(self, world=None):
+        #print('\nargs type={} , args={}'.format(type(self.args), self.args))
+        #print('negated type={} , negated={}'.format(type(self.negated), self.negated))
         if any(map(self.mln.logic.isvar, self.args)):
             return None
-        equals = 1 if (self.args[0] == self.args[1]) else 0
+        cdef int equals
+        equals = 1 if (self._argsA == self._argsB) else 0
+        #print('equals is of type {} and has value {}'.format(type(equals), equals))
         return (1 - equals) if self.negated else equals
 
+    cpdef int maxtruth(self, world):
+        if any(map(self.mln.logic.isvar, self.args)):
+            return 1
+        cdef int equals
+        equals = 1 if (self._argsA == self._argsB) else 0
+        return (1 - equals) if self.negated else equals
 
-    def maxtruth(self, world):
-        truth = self.truth(world)
-        if truth is None: return 1
-        else: return truth
-
-
-    def mintruth(self, world):
-        truth = self.truth(world)
-        if truth is None: return 0
-        else: return truth
+    cpdef int mintruth(self, world):
+        if any(map(self.mln.logic.isvar, self.args)):
+            return 0
+        cdef int equals
+        equals = 1 if (self._argsA == self._argsB) else 0
+        return (1 - equals) if self.negated else equals
 
 
     def simplify(self, world):
@@ -1962,22 +1988,29 @@ cdef class TrueFalse(Formula):
         Formula.__init__(self, mln, idx)
         self.value = truth
 
-    # Q(gsoc): where is this property used?
+    # Q(gsoc): where is this property used? GenericSystemTest doesn't lead to any print outputs
     @property
     def value(self):
         #print('getting value {} of type {}'.format(self._value, type(self._value)))
         return self._value
 
+    # Q(gsoc): is this addition semantically correct?
+    @value.setter
+    def value(self, value):
+        self._value = value
+        #print('setting value {} of type {}'.format(self._value, type(self._value)))
+
     def cstr(self, color=False):
         return str(self)
 
-    def truth(self, world=None):
+    cpdef float truth(self, world=None):
+        #print('getting value type {} = {}'.format(type(self.value), self.value))
         return self.value
 
-    def mintruth(self, world=None):
+    cpdef mintruth(self, world=None):
         return self.truth
 
-    def maxtruth(self, world=None):
+    cpdef maxtruth(self, world=None):
         return self.truth
 
     def invert(self):
