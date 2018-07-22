@@ -43,6 +43,8 @@ from ..logic.common import Logic
 from ..logic.common import GroundAtom as Super_GroundAtom
 from ..logic.fuzzy import FuzzyLogic
 
+from util cimport CallByRef
+from mrfvars cimport MRFVariable
 #from cpython cimport array
 #import array
 
@@ -58,7 +60,7 @@ cdef class MRF(object):
     :member _gndatoms_indices:     dict mapping ground atom index to Logic.GroundAtom object
     :member _evidence:             vector of evidence truth values of all ground atoms
     :member _variables:            dict mapping variable names to their :class:`mln.mrfvars.MRFVariable` instance.
-    
+
     :param mln:    the MLN tied to this MRF.
     :param db:     the database that the MRF shall be grounded with.
     '''
@@ -74,17 +76,17 @@ cdef class MRF(object):
         self._variables_by_idx = {} # gnd atom idx -> variable
         self._variables_by_gndatomidx = {} # gnd atom idx
         self._gndatoms = {}
-        self._gndatoms_by_idx = {} 
+        self._gndatoms_by_idx = {}
         # get combined domain
         self.domains = mergedom(self.mln.domains, db.domains)
-#         self.softEvidence = list(mln.posteriorProbReqs) # constraints on posterior 
-                                                        # probabilities are nothing but 
+#         self.softEvidence = list(mln.posteriorProbReqs) # constraints on posterior
+                                                        # probabilities are nothing but
                                                         # soft evidence and can be handled in exactly the same way
         # ground members
         self.formulas = list(self.mln.formulas)
         if isinstance(db, str):
             db = Database.load(self.mln, dbfile=db)
-        elif isinstance(db, Database): 
+        elif isinstance(db, Database):
             pass
         elif db is None:
             db = Database(self.mln)
@@ -102,11 +104,11 @@ cdef class MRF(object):
     @property
     def variables(self):
         return sorted(list(self._variables.values()), key=lambda v: v.idx)
-    
+
     @property
     def gndatoms(self):
         return list(self._gndatoms.values())
-    
+
     @property
     def evidence(self):
         return self._evidence
@@ -115,11 +117,11 @@ cdef class MRF(object):
     def evidence(self, evidence):
         self._evidence = evidence
         self.consistent()
-        
+
     @property
     def predicates(self):
         return self.mln.predicates
-    
+
     @property
     def hardformulas(self):
         '''
@@ -201,7 +203,7 @@ cdef class MRF(object):
         return self.evidence[self.gndatom(key).idx]
 
     def __setitem__(self, key, value):
-        self.set_evidence({key: value}, erase=False)    
+        self.set_evidence({key: value}, erase=False)
 
     def prior(self, f, p):
         self._probreqs.append(FirstOrderLogic.PriorConstraint(formula=f, p=p))
@@ -212,7 +214,7 @@ cdef class MRF(object):
     def set_evidence(self, atomvalues, erase=False, cw=False):
         '''
         Sets the evidence of variables in this MRF.
-        
+
         If erase is `True`, for every ground atom appearing in atomvalues, the truth values of all ground
         ground atom in the respective MRF variable are erased before the evidences
         are set. All other ground atoms stay untouched.
@@ -246,12 +248,12 @@ cdef class MRF(object):
                 # unset all atoms in this variable
                 for atom in var.gndatoms:
                     self._evidence[atom.idx] = None
-        
+
         for key, value in atomvalues.items():
             gndatom = self.gndatom(key)
             var = self.variable(gndatom)
             # create a template with admissible truth values for all
-            # ground atoms in this variable 
+            # ground atoms in this variable
             values = [-1] * len(var.gndatoms)
             if isinstance(var, FuzzyVariable):
                 self._evidence[gndatom.idx] = value
@@ -271,19 +273,19 @@ cdef class MRF(object):
                 elif curval is None and val is not None:
                     self._evidence[atom.idx] = val
         if cw: self.apply_cw()
-                
+
     def erase(self):
         '''
         Erases all evidence in the MRF.
         '''
         self._evidence = [None] * len(self.gndatoms)
-        
+
     def apply_cw(self, *prednames):
         '''
         Applies the closed world assumption to this MRF.
-        
+
         Sets all evidences to 0 if they don't have truth value yet.
-        
+
         :param prednames:     a list of predicate names the cw assumption shall be applied to.
                               If empty, it is applied to all predicates.
         '''
@@ -291,11 +293,11 @@ cdef class MRF(object):
             if prednames and self.gndatom(i).predname not in prednames:
                 continue
             if v is None: self._evidence[i] = 0
-            
+
     def consistent(self, strict=False):
         '''
         Performs a consistency check on this MRF wrt. to the variable value assignments.
-        
+
         Raises an MRFValueException if the MRF is inconsistent.
         '''
         for variable in self.variables:
@@ -305,11 +307,11 @@ cdef class MRF(object):
         '''
         Returns the the ground atom instance that is associated with the given identifier, or adds
         a new ground atom.
-        
+
         :param identifier:    Either the string representation of the ground atom or its index (int)
         :returns:             the :class:`logic.common.Logic.GroundAtom` instance or None, if the ground
                               atom doesn't exist.
-        
+
         :Example:
         >>> mrf = MRF(mln)
         >>> mrf.gndatom('foo', 'x', 'y') # add the ground atom 'foo(x,y)'
@@ -343,9 +345,9 @@ cdef class MRF(object):
         '''
         Returns the :class:`mln.mrfvars.MRFVariable` instance of the variable with the name or index `var`,
         or None, if no such variable exists.
-        
+
         :param identifier:    (string/int/:class:`logic.common.Logic.GroundAtom`) the name or index of the variable,
-                              or the instance of a ground atom that is part of the desired variable. 
+                              or the instance of a ground atom that is part of the desired variable.
         '''
         if type(identifier) is int:
             return self._variables_by_idx.get(identifier)
@@ -353,14 +355,14 @@ cdef class MRF(object):
             return self._variables_by_gndatomidx[identifier.idx]
         elif isinstance(identifier, str):
             return self._variables.get(identifier)
-    
+
     def new_gndatom(self, predname, *args):
         '''
-        Adds a ground atom to the set (actually it's a dict) of ground atoms. 
-        
+        Adds a ground atom to the set (actually it's a dict) of ground atoms.
+
         If the ground atom is already in the MRF it does nothing but returning the existing
         ground atom instance. Also updates/adds the variables of the MRF.
-        
+
         :param predname:    the predicate name of the ground atom
         :param *args:       the list of predicate arguments `logic.common.Logic.GroundAtom` object
         '''
@@ -379,16 +381,16 @@ cdef class MRF(object):
         variable = self.variable(varname)
         if variable is None:
             variable = predicate.tovariable(self, varname)
-            self._variables[variable.name] = variable
-            self._variables_by_idx[variable.idx] = variable
-        variable.gndatoms.append(gndatom)
+            self._variables[variable.name] = variable # name declared public just because of this line?
+            self._variables_by_idx[variable.idx] = variable # idx declared public just because of this line?
+        variable.gndatoms.append(gndatom) # declared public just because of this one usage?
         self._variables_by_gndatomidx[gndatom.idx] = variable
         return gndatom
-    
+
     def print_variables(self):
         for var in self.variables:
             print(str(var))
-    
+
     def print_world_atoms(self, world, stream=sys.stdout):
         '''
         Prints the given world `world` as a readable string of the plain gnd atoms to the given stream.
@@ -397,7 +399,7 @@ cdef class MRF(object):
             v = world[gndatom.idx]
             vstr = '%.3f' % v if v is not None else '?    '
             stream.write('%s  %s\n' % (vstr, str(gndatom)))
-        
+
     def print_world_vars(self, world, stream=sys.stdout, tb=2):
         '''
         Prints the given world `world` as a readable string of the MRF variables to the given stream.
@@ -407,12 +409,12 @@ cdef class MRF(object):
             stream.write(repr(var) + '\n')
             for i, v in enumerate(var.evidence_value(world)):
                 vstr = '%.3f' % v if v is not None else '?    '
-                stream.write('  %s  %s\n' % (vstr, var.gndatoms[i])) 
+                stream.write('  %s  %s\n' % (vstr, var.gndatoms[i]))
 
     def print_domains(self):
         out('=== MRF DOMAINS ==', tb=2)
         for dom, values in self.domains.items():
-            print(dom, '=', ','.join(values)) 
+            print(dom, '=', ','.join(values))
 
     def evidence_dicts(self):
         '''
@@ -435,10 +437,10 @@ cdef class MRF(object):
     def countworlds(self, withevidence=False):
         '''
         Computes the number of possible worlds this MRF can take.
-        
+
         :param withevidence:    (bool) if True, takes into account the evidence which is currently set in the MRF.
                                 if False, computes the total number of possible worlds.
-        
+
         .. note:: this method does not enumerate the possible worlds.
         '''
         worlds = 1
@@ -446,37 +448,47 @@ cdef class MRF(object):
         for var in self.variables:
             worlds *= var.valuecount(ev)
         return worlds
-    
+
     def iterworlds(self):
         '''
         Iterates over the possible worlds of this MRF taking into account the evidence vector of truth values.
-        
+
         :returns:    a generator of (idx, possible world) tuples.
         '''
         for res in self._iterworlds([v for v in self.variables if v.valuecount(self.evidence) > 1], list(self.evidence), CallByRef(0), self.evidence_dicti()):
             yield res
 
-    def _iterworlds(self, variables, world, worldidx, evidence):
+    def _iterworlds(self, list variables, list world, CallByRef worldidx, dict evidence):
+        #print('\n\nself is {} of type {}'.format(self, type(self)))
+        #print('variables is {} of type {}'.format(variables, type(variables)))
+        #for vari  in variables:
+        #    print('\tvari is {} of type {}'.format(vari, type(vari)))
+        #print('world is {} of type {}'.format(world, type(world)))
+        #print('worldidx is {} of type {}'.format(worldidx, type(worldidx)))
+        #print('worldidx.value of type {}'.format(type(worldidx.value)))
+        #print('evidence is {} of type {}'.format(evidence, type(evidence)))
         if not variables:
             yield worldidx.value, world
             worldidx.value += 1
             return
-        variable = variables[0]
+        cdef MRFVariable variable = variables[0]
+        cdef list world_
+        cdef tuple value
         if isinstance(variable, FuzzyVariable):
             world_ = list(world)
             value = variable.evidence_value(evidence)
             for res in self._iterworlds(variables[1:], variable.setval(value, world_), worldidx, evidence):
-                yield res 
+                yield res
         else:
             for _, value in variable.itervalues(evidence):
                 world_ = list(world)
                 for res in self._iterworlds(variables[1:], variable.setval(value, world_), worldidx, evidence):
-                    yield res 
+                    yield res
 
     def worlds(self):
         '''
         Iterates over all possible worlds (taking evidence into account).
-        
+
         :returns:    a generator of possible worlds.
         '''
         for _, world in self.iterworlds():
@@ -485,7 +497,7 @@ cdef class MRF(object):
     def iterallworlds(self):
         '''
         Iterates over all possible worlds (without) taking evidence into account).
-        
+
         :returns:    a generator of possible worlds.
         '''
         world = [None] * len(self.evidence)
@@ -495,9 +507,9 @@ cdef class MRF(object):
     def itergroundings(self, simplify=False, grounding_factory='DefaultGroundingFactory'):
         '''
         Iterates over all groundings of all formulas of this MRF.
-        
+
         :param simplify:  if True, the ground formulas are simplified wrt to the evidence in the MRF.
-        :param grounding_factory: the grounding factory to be used.  
+        :param grounding_factory: the grounding factory to be used.
         :returns:         a generator yielding ground formulas
         '''
         grounder = eval('%s(self, simplify=simplify)' % grounding_factory)
@@ -514,7 +526,7 @@ cdef class MRF(object):
         '''
         Prints the evidence truth values of the variables of this MRF to the given `stream`.
         '''
-        self.print_world_vars(self.evidence, stream, tb=3)    
+        self.print_world_vars(self.evidence, stream, tb=3)
 
     def getTruthDegreeGivenSoftEvidence(self, gf, world):
         cnf = gf.cnf()
@@ -545,12 +557,12 @@ cdef class MRF(object):
         for ga in sorted(l):
             stream.write(str(ga) + '\n')
 
-    def apply_prob_constraints(self, constraints, method=InferenceMethods.EnumerationAsk, 
-                                   thr=1.0e-3, steps=20, fittingMCSATSteps=5000, 
-                                   fittingParams=None, given=None, queries=None, 
+    def apply_prob_constraints(self, constraints, method=InferenceMethods.EnumerationAsk,
+                                   thr=1.0e-3, steps=20, fittingMCSATSteps=5000,
+                                   fittingParams=None, given=None, queries=None,
                                    maxThreshold=None, greedy=False, probabilityFittingResultFileName=None, **args):
         '''
-        Applies the given probability constraints (if any), dynamically 
+        Applies the given probability constraints (if any), dynamically
         modifying weights of the underlying MLN by applying iterative proportional fitting
 
         :param constraints: list of constraints
