@@ -38,6 +38,9 @@ from ...logic.common import Logic
 from numpy.ma.core import exp
 from numpy import zeros
 
+from cpython cimport array
+import array
+
 logger = logs.getlogger(__name__)
 
 # this readonly global is for multiprocessing to exploit copy-on-write
@@ -49,9 +52,10 @@ def eval_queries(world):
     '''
     Evaluates the queries given a possible world.
     '''
-    numerators = zeros(len(global_enumAsk.queries)) #numerators = [0] * len(global_enumAsk.queries)
-    denominator = 0
+    numerators = array.array('d', [0] * len(global_enumAsk.queries)) # zeros(len(global_enumAsk.queries)) #numerators = [0] * len(global_enumAsk.queries)
+    cdef double denominator = 0
     cdef double expsum = 0
+    cdef double truth
     for gf in global_enumAsk.grounder.itergroundings():
         if global_enumAsk.soft_evidence_formula(gf):
             expsum += gf.noisyor(world) * gf.weight
@@ -64,7 +68,7 @@ def eval_queries(world):
                     continue
                 else:
                     return numerators, 0
-            expsum += gf(world) * gf.weight
+            expsum += truth * gf.weight
     expsum = exp(expsum)
     # update numerators
     cdef int i
