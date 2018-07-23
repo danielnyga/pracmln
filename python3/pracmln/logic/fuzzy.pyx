@@ -199,7 +199,7 @@ cdef class Exist(Super_Exist):
 
 
 
-class FuzzyLogic(Logic):
+cdef class FuzzyLogic(Logic):
     """
     Implementation of fuzzy logic for MLNs.
     """

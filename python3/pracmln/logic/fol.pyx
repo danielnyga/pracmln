@@ -292,7 +292,7 @@ cdef class PosteriorConstraint(ProbabilityConstraint):
 
 
 
-class FirstOrderLogic(Logic):
+cdef class FirstOrderLogic(Logic):
     """
     Factory class for first-order logic.
     """

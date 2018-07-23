@@ -74,3 +74,6 @@ cdef class PriorConstraint(ProbabilityConstraint):
 cdef class PosteriorConstraint(ProbabilityConstraint):
     pass
 
+
+cdef class FirstOrderLogic(Logic):
+    pass

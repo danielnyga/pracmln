@@ -65,3 +65,6 @@ cdef class TrueFalse(Super_TrueFalse):
 cdef class Exist(Super_Exist):
     pass
 
+
+cdef class FuzzyLogic(Logic):
+    pass

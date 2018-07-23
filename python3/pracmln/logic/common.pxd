@@ -80,7 +80,7 @@ cdef class GroundCountConstraint(NonLogicalConstraint):
     pass
 
 cdef class Logic:
-    pass
+    cdef dict __dict__
     #cdef class Constraint():
     #    pass
 
