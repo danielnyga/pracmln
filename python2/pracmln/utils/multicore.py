@@ -8,10 +8,6 @@ from pracmln.mln.errors import OutOfMemoryError
 import psutil
 
 
-
-class CtrlCException(Exception): pass
-
-
 class with_tracing(object):
     '''
     Wrapper class for functions intended to be executed in parallel
@@ -20,15 +16,14 @@ class with_tracing(object):
     
     def __init__(self, func):
         self.func = func
-        
+
     def __call__(self, *args, **kwargs):
         signal.signal(signal.SIGINT, signal_handler)
         try:
             result = self.func(*args,**kwargs)
             return result
-        except CtrlCException: pass
-#             traceback.print_exc()
-#             sys.exit(0)
+        except KeyboardInterrupt:
+            pass
         except Exception, e:
             traceback.print_exc()
             raise e
@@ -36,15 +31,15 @@ class with_tracing(object):
 
 def signal_handler(signal, frame):
     sys.stderr.write('Terminating process %s.\n' % os.getpid())
-    raise CtrlCException()
+    raise KeyboardInterrupt()
     sys.exit(0)
+
 
 class _methodcaller:
     '''
     Convenience class for calling a method of an object in a worker pool  
     '''
-    
-    
+
     def __init__(self, method, sideeffects=False):
         self.method = method
         self.sideeffects = sideeffects
@@ -66,6 +61,7 @@ class _methodcaller:
 def checkmem():
     if float(psutil.virtual_memory().percent) > 75.:
         raise OutOfMemoryError('Aborting due to excessive memory consumption.')
+
 
 def make_memsafe():
     if sys.platform.startswith('linux'):
@@ -98,7 +94,3 @@ if __name__ == '__main__':
         return x*x
     pool = multiprocessing.Pool(processes=4)              # start 4 worker processes
     print(pool.map(with_tracing(f), list(range(10))))          # prints "[0, 1, 4,..., 81]"
-    
-    
-   
-            

@@ -21,7 +21,7 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-from dnutils import logs
+from dnutils import logs, out
 from dnutils.console import barstr
 
 from pracmln.logic.common import Logic
@@ -87,8 +87,8 @@ class Inference(object):
             for q in self.queries:
                 qpreds.update(q.prednames())
             for gndatom in self.mrf.gndatoms:
-                if isinstance(self.mln.predicate(gndatom.predname), FunctionalPredicate) \
-                        or isinstance(self.mln.predicate(gndatom.predname), SoftFunctionalPredicate):
+                if isinstance(self.mln.predicate(gndatom.predname), FunctionalPredicate)\
+                        and not isinstance(self.mln.predicate(gndatom.predname), SoftFunctionalPredicate):
                     continue
                 if gndatom.predname not in qpreds and self.mrf.evidence[gndatom.idx] is None:
                     self.mrf.evidence[gndatom.idx] = 0
