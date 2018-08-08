@@ -178,9 +178,17 @@ cdef class EnumerationAsk(Inference):
             result[str(q)] = p
         return result
 
-    def soft_evidence_formula(self, gf):
+    cpdef bint soft_evidence_formula(self, gf):
         #print('result={}'.format(gf.gndatoms()))
-        truths = [a.truth(self.mrf.evidence) for a in gf.gndatoms()]
-        if None in truths:
-            return False
-        return isinstance(self.mrf.mln.logic, FirstOrderLogic) and any([t in Interval('(0,1)') for t in truths])
+        # Q(gsoc): does truths ever have non None values?
+        cdef array.array truths = array.array('d', [-1] * len(gf.gndatoms()))
+        cdef int i = 0
+        for i, a in enumerate(gf.gndatoms()):
+            result = a.truth(self.mrf.evidence)
+            if result is None:
+                return False
+            truths[i] = result
+        #truths = [a.truth(self.mrf.evidence) for a in gf.gndatoms()]
+        #if None in truths:
+        #    return False
+        return isinstance(self.mrf.mln.logic, FirstOrderLogic) and any([ ( t>0 and t<1 ) for t in truths])
