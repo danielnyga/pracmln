@@ -4,6 +4,7 @@ from ..mln.base cimport MLN
 
 cdef class Constraint():
     cdef dict __dict__
+    cpdef gndatoms(self, l=*)
 
 cdef class Formula(Constraint):
     cdef MLN _mln

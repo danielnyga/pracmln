@@ -103,7 +103,7 @@ cdef class Constraint():
     def idx_gndatoms(self, l=None):
         raise Exception("%s does not implement idxgndatoms" % str(type(self)))
 
-    def gndatoms(self, l=None):
+    cpdef gndatoms(self, l=None):
         raise Exception("%s does not implement gndatoms" % str(type(self)))
 
 cdef class Formula(Constraint):
@@ -195,7 +195,7 @@ cdef class Formula(Constraint):
         return l
 
     # Q(gsoc): needs speedup ...
-    def gndatoms(self, l=None):
+    cpdef gndatoms(self, l=None):
         """
         Returns a list of all ground atoms that are contained
         in this formula.
@@ -1347,7 +1347,7 @@ cdef class GroundLit(Formula):
         return l
 
 
-    def gndatoms(self, l=None):
+    cpdef gndatoms(self, l=None):
         if l == None: l = []
         if not self.gndatom in l: l.append(self.gndatom)
         #print('GroundLit:gndatoms(common.pyx-1331) len={}'.format(len(l)))
@@ -1499,7 +1499,8 @@ cdef class GroundAtom():
 
 
     def __eq__(self, other):
-        return str(self) == str(other)
+        return (self.predname == other.predname) and (self.args == other.args)
+        #return str(self) == str(other)
 
     def __ne__(self, other):
         return not self == other
