@@ -67,8 +67,8 @@ def crash(*args, **kwargs):
 def flip(value):
     '''
     Flips the given binary value to its complement.
-    
-    Works with ints and booleans. 
+
+    Works with ints and booleans.
     '''
     if type(value) is bool:
         return True if value is False else False
@@ -87,11 +87,11 @@ def batches(i, size):
     batch = []
     for e in i:
         batch.append(e)
-        if len(batch) == size: 
+        if len(batch) == size:
             yield batch
             batch = []
     if batch: yield batch
-    
+
 
 def rndbatches(i, size):
     i = list(i)
@@ -120,7 +120,7 @@ def stripComments(text):
 def parse_queries(mln, query_str):
     '''
     Parses a list of comma-separated query strings.
-    
+
     Admissible queries are all kinds of formulas or just predicate names.
     Returns a list of the queries.
     '''
@@ -139,7 +139,7 @@ def parse_queries(mln, query_str):
                 prednames = [lit.predname for lit in literals]
                 query_preds.update(prednames)
             except:
-                # not a formula, must be a pure predicate name 
+                # not a formula, must be a pure predicate name
                 query_preds.add(s)
             queries.append(q)
             q = ''
@@ -156,8 +156,8 @@ def predicate_declaration_string(predName, domains, blocks):
 
 
 def getPredicateList(filename):
-    ''' 
-    Gets the set of predicate names from an MLN file 
+    '''
+    Gets the set of predicate names from an MLN file
     '''
     content = open(filename, "r").read() + "\n"
     content = stripComments(content)
@@ -180,16 +180,16 @@ cdef class CallByRef(object):
     Convenience class for treating any kind of variable as an object that can be
     manipulated in-place by a call-by-reference, in particular for primitive data types such as numbers.
     '''
-    
+
     def __init__(self, int value):
         self.value = value
-        
+
 INC = 1
 EXC = 2
 
 
 class Interval:
-    
+
     def __init__(self, interval):
         tokens = re.findall(r'(\(|\[|\])([-+]?\d*\.\d+|\d+),([-+]?\d*\.\d+|\d+)(\)|\]|\[)', interval.strip())[0]
         if tokens[0] in ('(', ']'):
@@ -198,26 +198,26 @@ class Interval:
             self.left = INC
         else:
             raise Exception('Illegal interval: {}'.format(interval))
-        if tokens[3] in (')', '['): 
+        if tokens[3] in (')', '['):
             self.right = EXC
         elif tokens[3] == ']':
             self.right = INC
         else:
             raise Exception('Illegal interval: {}'.format(interval))
-        self.start = float(tokens[1]) 
+        self.start = float(tokens[1])
         self.end = float(tokens[2])
-        
+
     def __contains__(self, x):
         return (self.start <= x if self.left == INC else self.start < x) and (self.end >= x if self.right == INC else self.end > x)
-        
-    
+
+
 def elapsedtime(start, end=None):
     '''
     Compute the elapsed time of the interval `start` to `end`.
-    
-    Returns a pair (t,s) where t is the time in seconds elapsed thus 
+
+    Returns a pair (t,s) where t is the time in seconds elapsed thus
     far (since construction) and s is a readable string representation thereof.
-    
+
     :param start:    the starting point of the time interval.
     :param end:      the end point of the time interval. If `None`, the current time is taken.
     '''
@@ -226,8 +226,8 @@ def elapsedtime(start, end=None):
     else:
         elapsed = time.time() - start
     return elapsed_time_str(elapsed)
-    
-    
+
+
 def elapsed_time_str(elapsed):
     hours = int(elapsed / 3600)
     elapsed -= hours * 3600
@@ -248,7 +248,7 @@ def balancedParentheses(s):
                 return False
             cnt -= 1
     return cnt == 0
-  
+
 def fstr(f):
     s = str(f)
     while s[0] == '(' and s[ -1] == ')':
@@ -276,7 +276,7 @@ def tty(stream):
     return isatty and isatty()
 
 BOLD = (None, None, True)
-            
+
 def headline(s):
     line = ''.ljust(len(s), '=')
     return '{}\n{}\n{}'.format(colorize(line, BOLD, True), colorize(s, BOLD, True), colorize(line, BOLD, True))
@@ -291,7 +291,7 @@ def gradGaussianZeroMean(x, sigma):
 
 
 def mergedom(*domains):
-    ''' 
+    '''
     Returning a new domains dictionary that contains the elements of all the given domains
     '''
     fullDomain = {}
@@ -332,31 +332,31 @@ def colorize(message, format, color=False):
 
 
 class StopWatchTag:
-    
+
     def __init__(self, label, starttime, stoptime=None):
         self.label = label
         self.starttime = starttime
         self.stoptime = stoptime
-        
+
     @property
     def elapsedtime(self):
-        return ifnone(self.stoptime, time.time()) - self.starttime 
-    
+        return ifnone(self.stoptime, time.time()) - self.starttime
+
     @property
     def finished(self):
         return self.stoptime is not None
-    
+
 
 class StopWatch(object):
     '''
     Simple tagging of time spans.
     '''
-    
-    
+
+
     def __init__(self):
         self.tags = {}
-    
-        
+
+
     def tag(self, label, verbose=True):
         if verbose:
             print('{}...'.format(label))
@@ -367,8 +367,8 @@ class StopWatch(object):
         else:
             tag.starttime = now
         self.tags[label] = tag
-    
-    
+
+
     def finish(self, label=None):
         now = time.time()
         if label is None:
@@ -380,15 +380,15 @@ class StopWatch(object):
                 raise Exception('Unknown tag: {}'.format(label))
             tag.stoptime = now
 
-    
+
     def __getitem__(self, key):
         return self.tags.get(key)
 
-    
+
     def reset(self):
         self.tags = {}
 
-        
+
     def printSteps(self):
         for tag in sorted(list(self.tags.values()), key=lambda ta: ta.starttime):
             if tag.finished:
@@ -409,7 +409,7 @@ def _combinations(domains, comb):
     for v in domains[0]:
         for ret in _combinations(domains[1:], comb + [v]):
             yield ret
-            
+
 def deprecated(func):
     '''
     This is a decorator which can be used to mark functions
@@ -423,14 +423,14 @@ def deprecated(func):
     newFunc.__doc__ = func.__doc__
     newFunc.__dict__.update(func.__dict__)
     return newFunc
-            
+
 def unifyDicts(d1, d2):
     '''
     Adds all key-value pairs from d2 to d1.
     '''
     for key in d2:
         d1[key] = d2[key]
-        
+
 def dict_union(d1, d2):
     '''
     Returns a new dict containing all items from d1 and d2. Entries in d1 are
@@ -452,13 +452,13 @@ def dict_subset(subset, superset):
 
 
 class edict(dict):
-    
+
     def __add__(self, d):
         return dict_union(self, d)
-    
+
     def __radd__(self, d):
         return self + d
-    
+
     def __sub__(self, d):
         if type(d) in (dict, defaultdict):
             ret = dict(self)
@@ -468,13 +468,13 @@ class edict(dict):
             ret = dict(self)
             del ret[d]
         return ret
-    
-    
+
+
 class eset(set):
-    
+
     def __add__(self, s):
         return set(self).union(s)
-    
+
 
 def item(s):
     '''
@@ -490,42 +490,42 @@ class temporary_evidence:
     Context guard class for enabling convenient handling of temporary evidence in
     MRFs using the python `with` statement. This guarantees that the evidence
     is set back to the original whatever happens in the `with` block.
-    
+
     :Example:
-    
+
     >> with temporary_evidence(mrf, [0, 0, 0, 1, 0, None, None]) as mrf_:
     '''
-    
-    
+
+
     def __init__(self, mrf, evidence=None):
         self.mrf = mrf
         self.evidence_backup = list(mrf.evidence)
         if evidence is not None:
-            self.mrf.evidence = evidence 
-        
+            self.mrf.evidence = evidence
+
     def __enter__(self):
         return self.mrf
-    
+
     def __exit__(self, exception_type, exception_value, tb):
         if exception_type is not None:
             traceback.print_exc()
             raise exception_type(exception_value)
         self.mrf.evidence = self.evidence_backup
         return True
-        
-        
-        
 
 
-    
+
+
+
+
 if __name__ == '__main__':
-    
+
     l = [1,2,3]
     upto = 2
     out(ifnone(upto, len(l)))
     out(l[:ifnone(upto, len(l))])
     out(cumsum(l,1))
-    
+
 #     d = edict({1:2,2:3,'hi':'world'})
 #     print d
 #     print d + {'bla': 'blub'}
@@ -533,4 +533,4 @@ if __name__ == '__main__':
 #     print d - 1
 #     print d - {'hi': 'bla'}
 #     print d
-#     
+#

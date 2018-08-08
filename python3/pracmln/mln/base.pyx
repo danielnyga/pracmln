@@ -65,10 +65,10 @@ if platform.architecture()[0] == '32bit':
 cdef class MLN(object):
     '''
     Represents a Markov logic network.
-    
+
     :member formulas:    a list of :class:`logic.common.Formula` objects representing the formulas of the MLN.
     :member predicates:  a dict mapping predicate names to :class:`mlnpreds.Predicate` objects.
-    
+
     :param logic:        (string) the type of logic to be used in this MLN. Possible values
                          are `FirstOrderLogic` and `FuzzyLogic`.
     :param grammar:      (string) the syntax to be used. Possible grammars are
@@ -105,16 +105,16 @@ cdef class MLN(object):
     @property
     def predicates(self):
         return list(self.iterpreds())
-     
+
     @property
     def formulas(self):
         return list(self._formulas)
-        
+
     @property
     def weights(self):
         #print('_weight is {} of type {}'.format(self._weights, type(self._weights)))
         return self._weights
-    
+
     @weights.setter
     def weights(self, wts):
         if len(wts) != len(self._formulas):
@@ -134,7 +134,7 @@ cdef class MLN(object):
     @property
     def probreqs(self):
         return self._probreqs
-    
+
     @property
     def weighted_formulas(self):
         return [f for f in self._formulas if f.weight is not HARD]
@@ -168,25 +168,25 @@ cdef class MLN(object):
     def predicate(self, predicate):
         '''
         Returns the predicate object with the given predicate name, or declares a new predicate.
-        
-        If predicate is a string, this method returns the predicate object 
+
+        If predicate is a string, this method returns the predicate object
         assiciated to the given predicate name. If it is a predicate instance, it declares the
-        new predicate in this MLN and returns the MLN instance. In the latter case, this is 
+        new predicate in this MLN and returns the MLN instance. In the latter case, this is
         equivalent to `MLN.declare_predicate()`.
-        
+
         :param predicate:    name of the predicate to be returned or a `Predicate` instance
                              specifying the predicate to be declared.
         :returns:            the Predicate object or None if there is no predicate with this name.
                              If a new predicate is declared, returns this MLN instance.
-                             
+
         :Example:
-        
+
         >>> mln = MLN()
         >>> mln.predicate(Predicate(foo, [arg0, arg1]))
                .predicate(Predicate(bar, [arg1, arg2])) # this declares predicates foo and bar
         >>> mln.predicate('foo')
         <Predicate: foo(arg0,arg1)>
-        
+
         '''
         if isinstance(predicate, Predicate):
             return self.declare_predicate(predicate)
@@ -196,29 +196,29 @@ cdef class MLN(object):
             return predicate.asList()
         else:
             raise Exception('Illegal type of argument predicate: %s' % type(predicate))
-        
+
     def iterpreds(self):
         '''
         Yields the predicates defined in this MLN alphabetically ordered.
         '''
         for predname in sorted(self._predicates):
             yield self.predicate(predname)
-    
+
     def update_predicates(self, mln):
         '''
         Merges the predicate definitions of this MLN with the definitions
         of the given one.
-        
+
         :param mln:     an instance of an MLN object.
         '''
         for pred in mln.iterpreds():
             self.declare_predicate(pred)
-    
+
     def declare_predicate(self, predicate):
         '''
         Adds a predicate declaration to the MLN:
-        
-        :param predicate:      an instance of a Predicate or one of its subclasses 
+
+        :param predicate:      an instance of a Predicate or one of its subclasses
                                specifying a predicate declaration.
         '''
         pred = self._predicates.get(predicate.name)
@@ -237,7 +237,7 @@ cdef class MLN(object):
         are updated, if necessary. If `formula` is an integer, returns the formula
         with the respective index or the formula object that has been created from
         formula. The formula will be automatically tied to this MLN.
-        
+
         :param formula:             a `Logic.Formula` object or a formula string
         :param weight:              an optional weight. May be a mathematical expression
                                     as a string (e.g. log(0.1)), real-valued number
@@ -273,15 +273,15 @@ cdef class MLN(object):
         self.weights = []
         self.fixweights = []
         self._unique_templvars = []
-    
+
     def iterformulas(self):
         '''
         Returns a generator yielding (idx, formula) tuples.
         '''
         for i, f in enumerate(self._formulas):
             yield i, f
-    
-    def weight(self, idx, weight=None):
+
+    cpdef weight(self, int idx, weight=None):
         '''
         Returns or sets the weight of the formula with index `idx`.
         '''
@@ -297,9 +297,9 @@ cdef class MLN(object):
         '''
         Materializes this MLN with respect to the databases given. This must
         be called before learning or inference can take place.
-        
+
         Returns a new MLN instance containing expanded formula templates and
-        materialized weights. Normally, this method should not be called from the outside. 
+        materialized weights. Normally, this method should not be called from the outside.
         Also takes into account whether or not particular domain values or predictaes
         are actually used in the data, i.e. if a predicate is not used in any
         of the databases, all formulas that make use of this predicate are ignored.
@@ -354,9 +354,9 @@ cdef class MLN(object):
     def constant(self, domain, *values):
         '''
         Adds to the MLN a constant domain value to the domain specified.
-        
+
         If the domain doesn't exist, it is created.
-        
+
         :param domain:    (string) the name of the domain the given value shall be added to.
         :param values:     (string) the values to be added.
         '''
@@ -369,7 +369,7 @@ cdef class MLN(object):
     def ground(self, db):
         '''
         Creates and returns a ground Markov Random Field for the given database.
-        
+
         :param db:         database filename (string) or Database object
         :param cw:         if the closed-world assumption shall be applied (to all predicates)
         :param cwpreds:    a list of predicate names the closed-world assumption shall be applied.
@@ -386,7 +386,7 @@ cdef class MLN(object):
     def update_domain(self, domain):
         '''
         Combines the existing domain (if any) with the given one.
-        
+
         :param domain: a dictionary with domain Name to list of string constants to add
         '''
         for domname in domain: break
@@ -397,11 +397,11 @@ cdef class MLN(object):
         '''
         Triggers the learning parameter learning process for a given set of databases.
         Returns a new MLN object with the learned parameters.
-        
+
         :param databases:     list of :class:`mln.database.Database` objects or filenames
         '''
         verbose = params.get('verbose', False)
-        
+
         # get a list of database objects
         if not databases:
             raise Exception('At least one database is needed for learning.')
@@ -445,7 +445,7 @@ cdef class MLN(object):
             fittingParams.update(params)
             print("fitting with params ", fittingParams)
             self._fitProbabilityConstraints(self.probreqs, **fittingParams)
-        
+
         if params.get('ignore_zero_weight_formulas', False):
             formulas = list(newmln.formulas)
             weights = list(newmln.weights)
@@ -460,29 +460,29 @@ cdef class MLN(object):
         Creates the file with the given filename and writes this MLN into it.
         '''
         f = open(filename, 'w+')
-        self.write(f, color=False)   
+        self.write(f, color=False)
         f.close()
 
     def write(self, stream=sys.stdout, color=None):
         '''
         Writes the MLN to the given stream.
-        
+
         The default stream is `sys.stdout`. In order to print the MLN to the console, a simple
         call of `mln.write()` is sufficient. If color is not specified (is None), then the
-        output to the console will be colored and uncolored for every other stream. 
-        
+        output to the console will be colored and uncolored for every other stream.
+
         :param stream:        the stream to write the MLN to.
         :param color:         whether or not output should be colorized.
         '''
         if color is None:
-            if stream != sys.stdout: 
+            if stream != sys.stdout:
                 color = False
             else: color = True
         if 'learnwts_message' in dir(self):
             stream.write("/*\n%s*/\n\n" % self.learnwts_message)
         # domain declarations
         if self.domain_decls: stream.write(colorize("// domain declarations\n", comment_color, color))
-        for d in self.domain_decls: 
+        for d in self.domain_decls:
             stream.write("%s\n" % d)
         stream.write('\n')
         # variable definitions
@@ -527,12 +527,12 @@ cdef class MLN(object):
                 yield "%-10.6f\t%s" % (f.weight, fstr(f))
             else:
                 yield "%s\t%s" % (str(f.weight), fstr(f))
-        
+
     @staticmethod
     def load(files, logic='FirstOrderLogic', grammar='PRACGrammar', mln=None):
         '''
         Reads an MLN object from a file or a set of files.
-        
+
         :param files:     one or more :class:`pracmln.mlnpath` strings. If multiple file names are given,
                           the contents of all files will be concatenated.
         :param logic:     (string) the type of logic to be used. Either `FirstOrderLogic` or `FuzzyLogic`.
@@ -547,7 +547,7 @@ cdef class MLN(object):
             for f in files:
                 if isinstance(f, str):
                     p = mlnpath(f)
-                    if p.project is not None: 
+                    if p.project is not None:
                         projectpath = p.projectloc
                     text += p.content
                 elif isinstance(f, mlnpath):
@@ -565,7 +565,7 @@ def parse_mln(text, searchpaths=['.'], projectpath=None, logic='FirstOrderLogic'
     dirs = [os.path.abspath(os.path.expandvars(os.path.expanduser(p))) for p in searchpaths]
     formulatemplates = []
     text = str(text)
-    if text == "": 
+    if text == "":
         raise MLNParsingError("No MLN content to construct model from was given; must specify either file/list of files or content string!")
     # replace some meta-directives in comments
     text = re.compile(r'//\s*<group>\s*$', re.MULTILINE).sub("#group", text)
@@ -615,7 +615,7 @@ def parse_mln(text, searchpaths=['.'], projectpath=None, logic='FirstOrderLogic'
                 m = re.match(r'"(?P<filename>.+)"', filename)
                 if m is not None:
                     filename = m.group('filename')
-                    # if the path is relative, look for the respective file 
+                    # if the path is relative, look for the respective file
                     # relatively to all paths specified. Take the first file matching.
                     if not mlnpath(filename).exists:
                         includefilename = None
@@ -639,7 +639,7 @@ def parse_mln(text, searchpaths=['.'], projectpath=None, logic='FirstOrderLogic'
                     includefilename = ':'.join([projectpath, filename])
                 logger.debug('Including file: "%s"' % includefilename)
                 p = mlnpath(includefilename)
-                parse_mln(text=mlnpath(includefilename).content, searchpaths=[p.resolve_path()]+dirs, 
+                parse_mln(text=mlnpath(includefilename).content, searchpaths=[p.resolve_path()]+dirs,
                           projectpath=ifnone(p.project, projectpath, lambda x: '/'.join(p.path+[x])),
                           logic=logic, grammar=grammar, mln=mln)
                 continue
@@ -670,7 +670,7 @@ def parse_mln(text, searchpaths=['.'], projectpath=None, logic='FirstOrderLogic'
                     domName, constants = parse
                     domName = str(domName)
                     constants = list(map(str, constants))
-                    if domName in mln.domains: 
+                    if domName in mln.domains:
                         logger.debug("Domain redefinition: Domain '%s' is being updated with values %s." % (domName, str(constants)))
                     if domName not in mln.domains:
                         mln.domains[domName] = []
@@ -697,7 +697,7 @@ def parse_mln(text, searchpaths=['.'], projectpath=None, logic='FirstOrderLogic'
                 if m is None:
                     raise MLNParsingError("Variable assigment malformed: %s" % line)
                 mln.vars[m.group(1)] = "%s" % m.group(2).strip()
-                continue                        
+                continue
             # predicate decl or formula with weight
             else:
                 isHard = False
@@ -720,7 +720,7 @@ def parse_mln(text, searchpaths=['.'], projectpath=None, logic='FirstOrderLogic'
                     for i, dom in enumerate(argdoms):
                         if dom[-1] in ('!', '?'):
                             if mutex is not None:
-                                raise Exception('More than one arguments are specified as (soft-)functional') 
+                                raise Exception('More than one arguments are specified as (soft-)functional')
                             if fuzzy: raise Exception('(Soft-)functional predicates must not be fuzzy.')
                             mutex = i
                         if dom[-1] == '?': softmutex = True
@@ -736,7 +736,7 @@ def parse_mln(text, searchpaths=['.'], projectpath=None, logic='FirstOrderLogic'
                         fuzzy = False
                     else:
                         pred = Predicate(predname, argdoms)
-                        if pseudofuzzy: 
+                        if pseudofuzzy:
                             mln.fuzzypreds.append(predname)
                             pseudofuzzy = False
                     mln.predicate(pred)
@@ -785,11 +785,9 @@ def parse_mln(text, searchpaths=['.'], projectpath=None, logic='FirstOrderLogic'
         f.vardoms(None, c_constants)
         for domain, constants in c_constants.items():
             for c in constants: mln.constant(domain, c)
-    
+
     # save data on formula templates for materialization
 #     mln.uniqueFormulaExpansions = uniqueFormulaExpansions
     mln.templateIdx2GroupIdx = templateIdx2GroupIdx
 #     mln.fixedWeightTemplateIndices = fixedWeightTemplateIndices
     return mln
-
-

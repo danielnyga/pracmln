@@ -36,7 +36,7 @@ from ...utils.multicore import with_tracing
 from ...logic.fol import FirstOrderLogic
 from ...logic.common import Logic
 from numpy.ma.core import exp
-from numpy import zeros
+#from numpy import zeros
 
 from cpython cimport array
 import array
@@ -48,7 +48,7 @@ logger = logs.getlogger(__name__)
 global_enumAsk = None
 
 
-def eval_queries(world):
+cpdef eval_queries(world):
     '''
     Evaluates the queries given a possible world.
     '''
@@ -62,7 +62,9 @@ def eval_queries(world):
         else:
             truth = gf(world)
             if gf.weight == HARD:
-                if truth in Interval(']0,1['):
+                #if truth in Interval(']0,1['):
+                #if truth in Interval('(0,1)'):
+                if truth > 0 and truth < 1:
                     raise Exception('No real-valued degrees of truth are allowed in hard constraints.')
                 if truth == 1:
                     continue
@@ -96,7 +98,7 @@ cdef class EnumerationAsk(Inference):
             variable.consistent(self.mrf.evidence, strict=isinstance(variable, FuzzyVariable))
 
 
-    def _run(self):
+    cpdef _run(self):
         """
         verbose: whether to print results (or anything at all, in fact)
         details: (given that verbose is true) whether to output additional
@@ -116,21 +118,22 @@ cdef class EnumerationAsk(Inference):
                 raise SatisfiabilityException('MLN is unsatisfiable due to hard constraint violation by evidence: {} ({})'.format(str(gf), str(self.mln.formula(gf.idx))))
         self._watch.finish('check hard constraints')
         # compute number of possible worlds
-        worlds = 1
+        cdef int worlds = 1
+        cdef int values
         for variable in self.mrf.variables:
             values = variable.valuecount(self.mrf.evidence)
             worlds *= values
-        numerators = zeros(len(self.queries))#numerators = [0.0 for i in range(len(self.queries))]
+        numerators = array.array('d', [0] * len(self.queries))#zeros(len(self.queries))#numerators = [0.0 for i in range(len(self.queries))]
         cdef double denominator = 0.
         # start summing
         logger.debug("Summing over %d possible worlds..." % worlds)
         if worlds > 500000 and self.verbose:
             print(colorize('!!! %d WORLDS WILL BE ENUMERATED !!!' % worlds, (None, 'red', True), True))
-        cdef int k = 0 # redundant variable ?
+        cdef int k = 0
         self._watch.tag('enumerating worlds', verbose=self.verbose)
         global global_enumAsk
         global_enumAsk = self
-        bar = None
+        bar = None # ???
         if self.verbose:
             bar = ProgressBar(steps=worlds, color='green')
         if self.multicore:
@@ -140,9 +143,9 @@ cdef class EnumerationAsk(Inference):
                 for num, denom in pool.imap(with_tracing(eval_queries), self.mrf.worlds()):
                     denominator += denom
                     k += 1
-                    numerators += num # assume length is the same - ie arrays have same shape/dimension?
-                    #for i, v in enumerate(num):
-                    #    numerators[i] += v
+                    #numerators += num # assume length is the same - ie arrays have same shape/dimension?
+                    for i, v in enumerate(num):
+                        numerators[i] += v
                     if self.verbose:
                         bar.inc()
             except Exception as e:
@@ -157,9 +160,10 @@ cdef class EnumerationAsk(Inference):
                 # compute exp. sum of weights for this world
                 num, denom = eval_queries(world)
                 denominator += denom
-                numerators += num
+                #numerators += num
                 #for i, _ in enumerate(self.queries):
-                #    numerators[i] += num[i]
+                for i in range(len(self.queries)):
+                    numerators[i] += num[i]
                 k += 1
                 if self.verbose:
                     bar.update(float(k) / worlds)
@@ -171,8 +175,9 @@ cdef class EnumerationAsk(Inference):
             raise SatisfiabilityException(
                 'MLN is unsatisfiable. All probability masses returned 0.')
         # normalize answers
-        dist = numerators / denominator
-        #dist = [float(x) / denominator for x in numerators]
+        #dist = numerators / denominator
+
+        cdef array.array dist = array.array('d', [float(x) / denominator for x in numerators])
         result = {}
         for q, p in zip(self.queries, dist):
             result[str(q)] = p

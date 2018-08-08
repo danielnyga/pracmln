@@ -7,6 +7,7 @@ cdef class Constraint():
 
 cdef class Formula(Constraint):
     cdef MLN _mln
+    #cdef public list children
     pass
 
 cdef class ComplexFormula(Formula):
@@ -34,7 +35,7 @@ cdef class GroundLit(Formula):
     cpdef truth(self, list world)
     cpdef mintruth(self, list world)
     cpdef maxtruth(self, list world)
-        
+
 cdef class GroundAtom():
     cdef str _predname
     cdef MLN mln
@@ -59,6 +60,7 @@ cdef class Biimplication(ComplexFormula):
     pass
 
 cdef class Negation(ComplexFormula):
+    cpdef truth(self, list world)
     pass
 
 cdef class Exist(ComplexFormula):
@@ -83,4 +85,3 @@ cdef class Logic:
     cdef dict __dict__
     #cdef class Constraint():
     #    pass
-

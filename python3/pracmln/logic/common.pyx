@@ -146,7 +146,7 @@ cdef class Formula(Constraint):
 
     @mln.setter
     def mln(self, mln):
-        if hasattr(self, 'children'):
+        if hasattr(self, 'children'):# and self.children is not None:
             for child in self.children:
                 child.mln = mln
         self._mln = mln
@@ -158,7 +158,7 @@ cdef class Formula(Constraint):
 
 
     @weight.setter
-    def weight(self, w):
+    def weight(self, double w):
         if self.idx is None:
             raise Exception('%s does not have an index' % str(self))
         self.mln.weight(self.idx, w)
@@ -1243,6 +1243,7 @@ cdef class GroundLit(Formula):
     def __init__(self, gndatom, negated, mln, idx=None):
         Formula.__init__(self, mln, idx)
         self.gndatom = gndatom
+        #print('type={}, gndatom={}'.format(type(gndatom), gndatom))
         self.negated = negated
 
 
@@ -1785,7 +1786,7 @@ cdef class Negation(ComplexFormula):
         return r'\lnot (%s)' % self.children[0].latex()
 
 
-    def truth(self, world):
+    cpdef truth(self, list world):
         childValue = self.children[0].truth(world)
         if childValue is None:
             return None
