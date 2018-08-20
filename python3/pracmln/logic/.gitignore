@@ -1,4 +1,4 @@
-mini-test.py
+common.py
 *.pyo
 *.c
 *.html

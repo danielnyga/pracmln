@@ -37,7 +37,7 @@ from functools import reduce
 logger = logs.getlogger(__name__)
 
 
-class Inference(object):
+cdef class Inference():
     """
     Represents a super class for all inference methods.
     Also provides some convenience methods for collecting statistics
@@ -57,6 +57,7 @@ class Inference(object):
     
     def __init__(self, mrf, queries=ALL, **params):
         self.mrf = mrf
+        #print(self.mrf)
         self.mln = mrf.mln 
         self._params = edict(params)
         if not queries:
@@ -161,7 +162,7 @@ class Inference(object):
                 else: # just a predicate name
                     if query not in self.mln.prednames:
                         raise NoSuchPredicateError('Unsupported query: %s is not among the admissible predicates.' % (query))
-                        continue
+                        #continue
                     for gndatom in self.mln.predicate(query).groundatoms(self.mln, self.mrf.domains):
                         equeries.append(self.mln.logic.gnd_lit(self.mrf.gndatom(gndatom), negated=False, mln=self.mln))
                 if len(equeries) - prevLen == 0:
@@ -193,12 +194,13 @@ class Inference(object):
     
     
     def write(self, stream=sys.stdout, color=None, sort='prob', group=True, reverse=True):
-        barwidth = 30
+        cdef int barwidth = 30
         if tty(stream) and color is None:
             color = 'yellow'
         if sort not in ('alpha', 'prob'):
             raise Exception('Unknown sorting: %s' % sort)
         results = dict(self.results)
+        cdef bint wrote_results
         if group:
             wrote_results = False
             for var in sorted(self.mrf.variables, key=str):

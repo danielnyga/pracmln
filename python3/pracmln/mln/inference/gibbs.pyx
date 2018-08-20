@@ -33,6 +33,8 @@ from .mcmc import MCMCInference
 from ..constants import ALL
 from ..grounding.fastconj import FastConjunctionGrounding
 from ...logic.common import Logic
+from ...logic.common import TrueFalse as Logic_TrueFalse
+from numpy import zeros
 
 
 class GibbsSampler(MCMCInference):
@@ -42,7 +44,8 @@ class GibbsSampler(MCMCInference):
         self.var2gf = defaultdict(set)
         grounder = FastConjunctionGrounding(mrf, simplify=True, unsatfailure=True, cache=None)
         for gf in grounder.itergroundings():
-            if isinstance(gf, Logic.TrueFalse): continue
+            if isinstance(gf, Logic_TrueFalse):
+                continue
             vars_ = set([self.mrf.variable(a).idx for a in gf.gndatoms()])
             for v in vars_: self.var2gf[v].add(gf)
     
@@ -62,7 +65,8 @@ class GibbsSampler(MCMCInference):
             mrf = infer.mrf
             
         def _valueprobs(self, var, world):
-            sums = [0] * var.valuecount()
+            sums = [0] * var.valuecount() # Q(gsoc): TODO [can be turned into NumPy array, but seem to be breaking the logic right now]
+            cdef int i
             for gf in self.infer.var2gf[var.idx]:
                 possible_values = []
                 for i, value in var.itervalues(self.infer.mrf.evidence):
@@ -103,7 +107,7 @@ class GibbsSampler(MCMCInference):
 #                         elif p < belief and expsums[0] > 0:
 #                             idx = 0
                 # sample value
-                if idx is None:
+                if idx is None: # Q(gsoc): redundant test, idx was just set =None on line 97...
                     r = random.uniform(0, 1)                    
                     idx = 0
                     s = probs[0]
@@ -128,6 +132,7 @@ class GibbsSampler(MCMCInference):
 #             self.softEvidence = softEvidence
         # initialize chains
         chains = MCMCInference.ChainGroup(self)
+        cdef int i
         for i in range(self.chains):
             chain = GibbsSampler.Chain(self, self.queries)
             chains.chain(chain)
@@ -135,8 +140,8 @@ class GibbsSampler(MCMCInference):
 #                 chain.setSoftEvidence(self.softEvidence)
         # do Gibbs sampling
 #         if verbose and details: print "sampling..."
-        converged = 0
-        steps = 0
+        cdef int converged = 0
+        cdef int steps = 0
         if self.verbose:
             bar = ProgressBar(color='green', steps=self.maxsteps)
         while converged != self.chains and steps < self.maxsteps:

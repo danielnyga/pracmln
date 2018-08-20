@@ -29,6 +29,8 @@ from ..util import fsum, dict_union, temporary_evidence
 from numpy.ma.core import log, sqrt
 import numpy
 from ...logic.common import Logic
+from ...logic.common import Equality as Logic_Equality
+from ...logic.common import GroundAtom as Logic_GroundAtom
 from ..constants import HARD
 from ..errors import SatisfiabilityException
 
@@ -121,7 +123,7 @@ class CLL(AbstractLearner):
             # equality constraints are evaluated first
             isconj = self.mrf.mln.logic.islitconj(formula)
             if isconj:
-                literals = sorted(literals, key=lambda l: -1 if isinstance(l, Logic.Equality) else 1)
+                literals = sorted(literals, key=lambda l: -1 if isinstance(l, Logic_Equality) else 1)
             self._compute_stat_rec(literals, [], {}, formula, isconj=isconj)
     
     
@@ -137,7 +139,7 @@ class CLL(AbstractLearner):
             part2gndlits = defaultdict(list)
             part_with_f_lit = None
             for gndlit in gndliterals:
-                if isinstance(gndlit, Logic.Equality) or hasattr(self, 'qpreds') and gndlit.gndatom.predname not in self.qpreds: continue
+                if isinstance(gndlit, Logic_Equality) or hasattr(self, 'qpreds') and gndlit.gndatom.predname not in self.qpreds: continue
                 part = self.atomidx2partition[gndlit.gndatom.idx]
                 part2gndlits[part].append(gndlit)
                 if gndlit(self.mrf.evidence) == 0:
@@ -187,7 +189,7 @@ class CLL(AbstractLearner):
         lit = literals[0]
         # ground the literal with the existing assignments
         gndlit = lit.ground(self.mrf, var_assign, partial=True)
-        for assign in Logic.iter_eq_varassignments(gndlit, formula, self.mrf) if isinstance(gndlit, Logic.Equality) else gndlit.itervargroundings(self.mrf):
+        for assign in Logic.iter_eq_varassignments(gndlit, formula, self.mrf) if isinstance(gndlit, Logic_Equality) else gndlit.itervargroundings(self.mrf):
             # copy the arguments to avoid side effects
             # if f_gndlit_parts is None: f_gndlit_parts = set()
             # else: f_gndlit_parts = set(f_gndlit_parts)
@@ -197,7 +199,7 @@ class CLL(AbstractLearner):
             gndlit_ = gndlit.ground(self.mrf, assign)
             truth = gndlit_(self.mrf.evidence)
             # treatment of equality constraints
-            if isinstance(gndlit_, Logic.Equality):
+            if isinstance(gndlit_, Logic_Equality):
                 if isconj:
                     if truth == 1:
                         self._compute_stat_rec(literals[1:], gndliterals, dict_union(var_assign, assign), formula, f_gndlit_parts, processed, isconj)
@@ -309,7 +311,7 @@ class CLL(AbstractLearner):
             Returns True iff the given ground atom or ground atom index is part of
             this partition.
             """
-            if isinstance(atom, Logic.GroundAtom):
+            if isinstance(atom, Logic_GroundAtom):
                 return atom in self.gndatoms
             elif type(atom) is int:
                 return self.mrf.gndatom(atom) in self 
