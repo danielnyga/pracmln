@@ -1,5 +1,8 @@
 import os
 
+import random
+random.seed(0)
+
 from pracmln import MLN, Database
 from pracmln import query, learn
 from pracmln.mlnlearn import EVIDENCE_PREDS
@@ -12,55 +15,88 @@ mln = MLN(mlnfile=('%s:wts.pybpll.smoking-train-smoking.mln' % p),
           grammar='StandardGrammar')
 db = Database(mln, dbfile='%s:smoking-test-smaller.db' % p)
 
+expected_result = {'Friends(Ann,Ann)': 0.5, 'Friends(Bob,Bob)': 0.5, 'Cancer(Ann)': 1.0, 'Friends(Bob,Ann)': 0.376, 'Smokes(Bob)': 0.245, 'Smokes(Ann)': 0.437, 'Friends(Ann,Bob)': 0.0, 'Cancer(Bob)': 0.0}
+
+
 def test_inference_smokers_EnumerationAsk_singlecore():
     global p
     global mln
     global db
+    global expected_result
+    delta = 0.05
     print('=== INFERENCE TEST: EnumerationAsk ===')
-    query(queries='Cancer,Smokes,Friends',
+    r = query(queries='Cancer,Smokes,Friends',
           method='EnumerationAsk',
           mln=mln,
           db=db,
           verbose=False,
           multicore=False).run()
+    #print(r.results)
+    for k, v in r.results.items():
+        assert(abs(expected_result[k]-v) < delta)
 
 def test_inference_smokers_MCSAT_singlecore():
     global p
     global mln
     global db
+    global expected_result
+    delta = 0.1
     print('=== INFERENCE TEST: MC-SAT ===')
-    query(queries='Cancer,Smokes,Friends',
+    r = query(queries='Cancer,Smokes,Friends',
           method='MC-SAT',
           mln=mln,
           db=db,
           verbose=False,
           multicore=False).run()
+    #print(r.results)
+    for k, v in r.results.items():
+        assert(abs(expected_result[k]-v) < delta)
 
 def test_inference_smokers_WCSP_singlecore():
     global p
     global mln
     global db
+    global expected_result
+    delta = 0.6
     print('=== INFERENCE TEST: WCSPInference ===')
-    query(queries='Cancer,Smokes,Friends',
+    r = query(queries='Cancer,Smokes,Friends',
           method='WCSPInference',
           mln=mln,
           db=db,
           verbose=False,
           multicore=False).run()
+    #print(r.results)
+    for k, v in r.results.items():
+        assert(abs(expected_result[k]-v) < delta)
 
 # output not getting redirected to output file
 def test_inference_smokers_Gibbs_singlecore():#(capsys):
     global p
     global mln
     global db
+    global expected_result
+    delta = 0.6
     print('=== INFERENCE TEST: GibbsSampler ===')
-    query(queries='Cancer,Smokes,Friends',
+    r = query(queries='Cancer,Smokes,Friends',
           method='GibbsSampler',
           mln=mln,
           db=db,
           #output_filename="output.txt",
-          verbose=True,
+          verbose=False,
           multicore=False).run()
+    #print(r)
+    #r.write_elapsed_time()
+    #r.write()
+    #print(r.results)
+    #print(r.results)
+    for k, v in r.results.items():
+        assert(abs(expected_result[k]-v) < delta)
+        
+    #print(type(r.results))
+    #print(expected_result)
+    #print(type(expected_result))
+    #assert(r.results == expected_result)
+    
     #out, err = capsys.readouterr()
     #sys.stdout.write(out)
     #sys.stderr.write(err)
@@ -79,47 +115,88 @@ def test_inference_smokers_EnumerationAsk_multicore():
     global p
     global mln
     global db
+    global expected_result
+    delta = 0.05
     print('=== INFERENCE TEST: EnumerationAsk ===')
-    query(queries='Cancer,Smokes,Friends',
+    r = query(queries='Cancer,Smokes,Friends',
           method='EnumerationAsk',
           mln=mln,
           db=db,
           verbose=False,
           multicore=True).run()
+    #print(r.results)
+    for k, v in r.results.items():
+        assert(abs(expected_result[k]-v) < delta)
 
 def test_inference_smokers_MCSAT_multicore():
     global p
     global mln
     global db
+    global expected_result
+    delta = 0.1
     print('=== INFERENCE TEST: MC-SAT ===')
-    query(queries='Cancer,Smokes,Friends',
+    r = query(queries='Cancer,Smokes,Friends',
           method='MC-SAT',
           mln=mln,
           db=db,
           verbose=False,
           multicore=True).run()
+    #print(r.results)
+    for k, v in r.results.items():
+        assert(abs(expected_result[k]-v) < delta)
 
 def test_inference_smokers_WCSP_multicore():
     global p
     global mln
     global db
+    global expected_result
+    delta = 0.6
     print('=== INFERENCE TEST: WCSPInference ===')
-    query(queries='Cancer,Smokes,Friends',
+    r = query(queries='Cancer,Smokes,Friends',
           method='WCSPInference',
           mln=mln,
           db=db,
           verbose=False,
           multicore=True).run()
+    #print(r.results)
+    for k, v in r.results.items():
+        assert(abs(expected_result[k]-v) < delta)
 
 def test_inference_smokers_Gibbs_multicore():
     global p
     global mln
     global db
+    global expected_result
+    delta = 0.6
     print('=== INFERENCE TEST: GibbsSampler ===')
-    query(queries='Cancer,Smokes,Friends',
+    r = query(queries='Cancer,Smokes,Friends',
           method='GibbsSampler',
           mln=mln,
           db=db,
-          verbose=True,
+          verbose=False,
           multicore=True).run()
+    #print(r.results)
+    for k, v in r.results.items():
+        assert(abs(expected_result[k]-v) < delta)
+
+def main():
+    test_inference_smokers_EnumerationAsk_singlecore()
+    test_inference_smokers_MCSAT_singlecore()
+    test_inference_smokers_WCSP_singlecore()
+    test_inference_smokers_Gibbs_singlecore()
+    test_inference_smokers_EnumerationAsk_multicore()
+    test_inference_smokers_MCSAT_multicore()
+    test_inference_smokers_WCSP_multicore()
+    test_inference_smokers_Gibbs_multicore()
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+
+
+
+
 
