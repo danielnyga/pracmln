@@ -198,7 +198,7 @@ class MCSAT(MCMCInference):
         logger.debug("CNF KB:")
         for gf in self.gndformulas:
             logger.debug("%7.3f  %s" % (gf.weight, str(gf)))
-        print()
+        #print()
         # set the random seed if it was given
         if self.rndseed is not None:
             random.seed(self.rndseed)
