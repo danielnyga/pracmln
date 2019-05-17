@@ -41,7 +41,7 @@ from .util import fstr, logx, mergedom, CallByRef, Interval
 from ..logic import FirstOrderLogic
 from ..logic.common import Logic
 from ..logic.fuzzy import FuzzyLogic
-
+from .grounding import *
 
 logger = logs.getlogger(__name__)
 
