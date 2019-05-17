@@ -3,9 +3,14 @@ import os
 from distutils.core import setup
 
 import _version
-import pip
-pip.main(['install', 'appdirs'])
-# from setuptools.command import build_py
+
+try:
+    from pip import main as pipmain
+except ImportError:
+    from pip._internal import main as pipmain
+
+
+pipmain(['install', 'appdirs'])
 
 
 __basedir__ = _version.__basedir__
