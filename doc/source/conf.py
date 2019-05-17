@@ -15,7 +15,9 @@ import sys
 import os
 import datetime
 import pip
-pip.main(['install', 'sphinx', 'sphinx_bootstrap_theme', 'sphinxcontrib-bibtex'])
+from pip._internal import main as pipmain
+
+pipmain(['install', 'sphinx', 'sphinx_bootstrap_theme', 'sphinxcontrib-bibtex'])
 
 import sphinx_bootstrap_theme
 
