@@ -39,6 +39,8 @@ as a Python module (`pracmln`) that you can use to work with MLNs in
 your own Python scripts. For an introduction into using `pracmln` in
 your own scripts, see :doc:`apidoc`.
 
+
+
 Release notes
 ^^^^^^^^^^^^^
 
@@ -62,6 +64,26 @@ Release notes
     * *Feature*: literal groups for formula expansion (see :ref:`sec-litgroups`)
     * *Fix*: existentially quantified formulas evaluate to false when they cannot be grounded
     * *Fix*: cleanup of process pools in multicore mode
+
+Citing
+^^^^^^
+
+When you publish research work that makes use of `pracmln`, we
+gratefully appreciate if a reference to `pracmln` can be found
+in your work in the following way:
+
+* Nyga, D., Picklum, M., Beetz, M., et al., *pracmln -- Markov logic networks in Python*,
+  `<http://www.pracmln.org>`_, Online; accessed |today|.
+
+The following Bibtex entry can be used for documents based on LaTeX: ::
+
+    @Misc{,
+        author =    {Daniel Nyga and Mareike Picklum and Michael Beetz and others},
+        title =     {{pracmln} -- Markov logic networks in {Python}},
+        year =      {2013--},
+        url = "http://www.pracmln.org/",
+        note = {[Online; accessed <date>]}
+    }
 
 
 Contents
