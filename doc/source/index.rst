@@ -43,6 +43,10 @@ your own scripts, see :doc:`apidoc`.
 
 Release notes
 ^^^^^^^^^^^^^
+  * Release 1.2.4 (17.05.2019)
+
+    * Fixed installation issues with ``pip``
+    * Minor fixes.
 
   * Release 1.2.2 (18.12.2017)
 
