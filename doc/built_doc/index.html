@@ -1,0 +1,426 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About &#8212; pracmln 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Feature Overview" href="features.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+  
+  <script src="_static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.geom.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.layout.min.js"></script>
+
+    
+        <div class="container">
+
+<div class="teaser-background">
+    <div class="teasercontent">
+        <div class="titletext">
+            <h1 class="teaser-headline" >Markov Logic<br>Networks<br>in Python</h1>
+        </div>
+
+        <div class="pcviz">
+            <div class="pcvizscreen">
+                <div id="chart" style="width: 600px; height: 200px;">
+                    <script type="text/javascript" src="_static/js/mrfgraph.js"></script>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>
+        We are happy to announce Version 1.2 of pracmln!
+    </p>
+    <p>
+        <a href="http://pracmln.open-ease.org" class="btn btn-neutral float-left" title="Try out!" accesskey="n">Try out online! <span class="fa fa-arrow-circle-right"></span></a>
+    </p>
+</div>
+</div>
+    
+    
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#"><span><img src="_static/pracmln-brightondark-transp.png"></span>
+          pracmln</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Feature Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools for Statistical Relation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnquerytool.html">MLN Query-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnlearningtool.html">MLN-Learning-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learningmethods.html">Learning Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inferencemethods.html">Inference Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mln_syntax.html">MLN Syntax and Semantics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlntutorial.html">Tutorial: Learning and Inference in Markov Logic Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API-Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">About</a><ul>
+<li><a class="reference internal" href="#release-notes">Release notes</a></li>
+<li><a class="reference internal" href="#citing">Citing</a></li>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#credits">Credits</a><ul>
+<li><a class="reference internal" href="#lead-developer">Lead Developer</a></li>
+<li><a class="reference internal" href="#contributors">Contributors</a></li>
+<li><a class="reference internal" href="#former-contributors-from-probcog">Former Contributors (from ProbCog)</a></li>
+<li><a class="reference internal" href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#publications">Publications</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="features.html" title="Next Chapter: Feature Overview"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Feature Overview &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/index.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="about">
+<h1>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h1>
+<p>pracmln is a toolbox for statistical relational learning and
+reasoning and as such also includes tools for standard graphical
+models. pracmln is a statistical relational learning and reasoning
+system that supports efficient learning and inference in relational
+domains. pracmln has started as a fork of the <em>ProbCog</em> toolbox and
+has been extended by latest developments in learning and reasoning
+by the Institute for Artificial Intelligence at the University of
+Bremen, Germany.</p>
+<p>pracmln was designed with the particular needs of technical systems
+in mind. Our methods are geared towards practical applicability and
+can easily be integrated into other applications. The tools for
+relational data collection and transformation facilitate
+data-driven knowledge engineering, and the availability of
+graphical tools makes both learning or inference sessions a
+user-friendly experience. Scripting support enables automation, and
+for easy integration into robotics applications, we provide a
+client-server library implemented using the widely used <a class="reference external" href="http://www.ros.org/">ROS (Robot
+Operating System)</a> middleware.</p>
+<ul class="simple">
+<li><p>Markov logic networks (MLNs): learning and inference Fuzzy-MLN
+reasoning, probabilistic reasoning about concept taxonomies.</p></li>
+<li><p>Logic: representation, propositionalization,
+stochastic SAT sampling, weighted SAT solving, etc.</p></li>
+</ul>
+<p>This package consists of an implementation of Markov logic networks
+as a Python module (<cite>pracmln</cite>) that you can use to work with MLNs in
+your own Python scripts. For an introduction into using <cite>pracmln</cite> in
+your own scripts, see <a class="reference internal" href="apidoc.html"><span class="doc">API-Specification</span></a>.</p>
+<div class="section" id="release-notes">
+<h2>Release notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Release 1.2.4 (17.05.2019)</p>
+<ul>
+<li><p>Fixed installation issues with <code class="docutils literal notranslate"><span class="pre">pip</span></code></p></li>
+<li><p>Minor fixes.</p></li>
+</ul>
+</li>
+<li><p>Release 1.2.2 (18.12.2017)</p>
+<ul>
+<li><p>Support for Python 2 and Python 3</p></li>
+<li><p>Release a <code class="docutils literal notranslate"><span class="pre">pip</span></code>-compliant package</p></li>
+<li><p>Minor fixes</p></li>
+</ul>
+</li>
+<li><p>Release 1.1.2 (14.03.2017)</p>
+<ul>
+<li><p><em>Fix</em>: Patches for using toulbar2 on Windows platforms</p></li>
+</ul>
+</li>
+<li><p>Release 1.1.1 (13.03.2017)</p>
+<ul>
+<li><p><em>Fix</em>: Patches for Windows support</p></li>
+</ul>
+</li>
+<li><p>Release 1.1.0 (13.06.2016)</p>
+<ul>
+<li><p><em>Fix</em>: <a class="reference internal" href="installation.html#sec-cppbindings"><span class="std std-ref">C++ bindings</span></a></p></li>
+<li><p><em>Feature</em>: literal groups for formula expansion (see <a class="reference internal" href="mln_syntax.html#sec-litgroups"><span class="std std-ref">Grouping Literals</span></a>)</p></li>
+<li><p><em>Fix</em>: existentially quantified formulas evaluate to false when they cannot be grounded</p></li>
+<li><p><em>Fix</em>: cleanup of process pools in multicore mode</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="citing">
+<h2>Citing<a class="headerlink" href="#citing" title="Permalink to this headline">¶</a></h2>
+<p>When you publish research work that makes use of <cite>pracmln</cite>, we
+gratefully appreciate if a reference to <cite>pracmln</cite> can be found
+in your work in the following way:</p>
+<ul class="simple">
+<li><p>Nyga, D., Picklum, M., Beetz, M., et al., <em>pracmln – Markov logic networks in Python</em>,
+<a class="reference external" href="http://www.pracmln.org">http://www.pracmln.org</a>, Online; accessed Nov 19, 2020.</p></li>
+</ul>
+<p>The following Bibtex entry can be used for documents based on LaTeX:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Misc</span><span class="p">{,</span>
+    <span class="n">author</span> <span class="o">=</span>    <span class="p">{</span><span class="n">Daniel</span> <span class="n">Nyga</span> <span class="ow">and</span> <span class="n">Mareike</span> <span class="n">Picklum</span> <span class="ow">and</span> <span class="n">Michael</span> <span class="n">Beetz</span> <span class="ow">and</span> <span class="n">others</span><span class="p">},</span>
+    <span class="n">title</span> <span class="o">=</span>     <span class="p">{{</span><span class="n">pracmln</span><span class="p">}</span> <span class="o">--</span> <span class="n">Markov</span> <span class="n">logic</span> <span class="n">networks</span> <span class="ow">in</span> <span class="p">{</span><span class="n">Python</span><span class="p">}},</span>
+    <span class="n">year</span> <span class="o">=</span>      <span class="p">{</span><span class="mi">2013</span><span class="o">--</span><span class="p">},</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://www.pracmln.org/&quot;</span><span class="p">,</span>
+    <span class="n">note</span> <span class="o">=</span> <span class="p">{[</span><span class="n">Online</span><span class="p">;</span> <span class="n">accessed</span> <span class="o">&lt;</span><span class="n">date</span><span class="o">&gt;</span><span class="p">]}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Feature Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="features.html#markov-logic-networks-in-python">Markov Logic Networks in Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#compatibility">Compatibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#source-code">Source Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#c-bindings">C++ bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools for Statistical Relation Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tools.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools.html#graphical-tools-and-editors">Graphical Tools and Editors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools.html#integrated-editors">Integrated Editors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mlnquerytool.html">MLN Query-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnlearningtool.html">MLN-Learning-Tool</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlnlearningtool.html#parameters">Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="learningmethods.html">Learning Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="learningmethods.html#general-parameters">General Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="learningmethods.html#generative-learning-methods">Generative Learning Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="learningmethods.html#discriminative-learning-methods">Discriminative Learning Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="learningmethods.html#optimization-techniques">Optimization Techniques</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="inferencemethods.html">Inference Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="inferencemethods.html#full-posterior-distributions">Full posterior distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inferencemethods.html#most-probable-explanation-mpe">Most Probable Explanation (MPE)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mln_syntax.html">MLN Syntax and Semantics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mln_syntax.html#file-formats">File Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mln_syntax.html#mln-files">MLN Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mln_syntax.html#predicate-declarations">Predicate declarations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mln_syntax.html#rules-for-mutual-exclusiveness-and-exhaustiveness">Rules for mutual exclusiveness and exhaustiveness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mln_syntax.html#formula-templates">Formula templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mln_syntax.html#probability-constraints-on-formulas">Probability constraints on formulas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mln_syntax.html#inlcuding-external-files">Inlcuding External Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mln_syntax.html#database-evidence-files">Database/Evidence files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mlntutorial.html">Tutorial: Learning and Inference in Markov Logic Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlntutorial.html#the-smoking-scenario">The Smoking Scenario</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mlntutorial.html#learning">Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mlntutorial.html#inference">Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="evaluation.html#module-pracmln.utils.eval">Confusion Matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluation.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API-Specification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apidoc.html#mlns">MLNs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidoc.html#databases">Databases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidoc.html#reasoning">Reasoning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidoc.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#server-methods">Server methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#example-client">Example client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#messages">Messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#services">Services</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="lead-developer">
+<h3>Lead Developer<a class="headerlink" href="#lead-developer" title="Permalink to this headline">¶</a></h3>
+<p>Daniel Nyga (<a class="reference external" href="mailto:nyga&#37;&#52;&#48;cs&#46;uni-bremen&#46;de">nyga<span>&#64;</span>cs<span>&#46;</span>uni-bremen<span>&#46;</span>de</a>)</p>
+</div>
+<div class="section" id="contributors">
+<h3>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Mareike Picklum</p></li>
+<li><p>Ferenc Balint-Benczedi</p></li>
+<li><p>Thiemo Wiedemeyer</p></li>
+<li><p>Valentine Chiwome</p></li>
+</ul>
+</div>
+<div class="section" id="former-contributors-from-probcog">
+<h3>Former Contributors (from ProbCog)<a class="headerlink" href="#former-contributors-from-probcog" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Dominik Jain</p></li>
+<li><p>Stefan Waldherr</p></li>
+<li><p>Klaus von Gleissenthall</p></li>
+<li><p>Andreas Barthels</p></li>
+<li><p>Ralf Wernicke</p></li>
+<li><p>Gregor Wylezich</p></li>
+<li><p>Martin Schuster</p></li>
+<li><p>Philipp Meyer</p></li>
+</ul>
+</div>
+<div class="section" id="acknowledgments">
+<h3>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permalink to this headline">¶</a></h3>
+<p>This work is supported in part by the EU FP7 projects <a class="reference external" href="http://www.robohow.org">RoboHow</a> (grant number 288533) and <a class="reference external" href="http://www.acat-project.eu">ACAT</a> (grant number
+600578):</p>
+<a class="reference external image-reference" href="http://www.robohow.eu"><img alt="_images/robohow-logo.png" src="_images/robohow-logo.png" style="height: 70px;" /></a>
+<a class="reference external image-reference" href="http://www.acat-project.eu"><img alt="_images/acat-logo.png" src="_images/acat-logo.png" style="height: 70px;" /></a>
+<a class="reference external image-reference" href="http://ec.europa.eu/research/fp7/index_en.cfm"><img alt="_images/fp7-logo.png" src="_images/fp7-logo.png" style="height: 70px;" /></a>
+</div>
+</div>
+<div class="section" id="publications">
+<h2>Publications<a class="headerlink" href="#publications" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" id="bibtex-bibliography-index-0" start="1">
+<li><p>Dominik Jain. Knowledge Engineering with Markov Logic Networks: A Review. In <em>DKB 2011: Proceedings of the Third Workshop on Dynamics of Knowledge and Belief</em>. 2011.</p></li>
+<li><p>Dominik Jain and Michael Beetz. Soft Evidential Update via Markov Chain Monte Carlo Inference. In <em>KI 2010: Advances in Artificial Intelligence, 33rd Annual German Conference on AI</em>, volume 6359 of Lecture Notes in Computer Science, 280–290. Springer, 2010.</p></li>
+<li><p>Dominik Jain, Paul Maier, and Gregor Wylezich. Markov Logic as a Modelling Language for Weighted Constraint Satisfaction Problems. In <em>Eighth International Workshop on Constraint Modelling and Reformulation, in conjunction with CP2009</em>. 2009.</p></li>
+<li><p>Gheorghe Lisca, Daniel Nyga, Ferenc Bálint-Benczédi, Hagen Langer, and Michael Beetz. Towards Robots Conducting Chemical Experiments. In <em>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)</em>. Hamburg, Germany, 2015.</p></li>
+<li><p>Daniel Nyga. <em>Interpretation of Natural-language Robot Instructions: Probabilistic Knowledge Representation, Learning, and Reasoning</em>. PhD thesis, University of Bremen, 2017. URL: <a class="reference external" href="http://nbn-resolving.de/urn:nbn:de:gbv:46-00105882-13">http://nbn-resolving.de/urn:nbn:de:gbv:46-00105882-13</a>.</p></li>
+<li><p>Daniel Nyga, Ferenc Balint-Benczedi, and Michael Beetz. PR2 Looking at Things: Ensemble Learning for Unstructured Information Processing with Markov Logic Networks. In <em>IEEE International Conference on Robotics and Automation (ICRA)</em>. Hong Kong, China, May 31-June 7 2014.</p></li>
+<li><p>Daniel Nyga and Michael Beetz. Everything Robots Always Wanted to Know about Housework (But were afraid to ask). In <em>2012 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)</em>. Vilamoura, Portugal, October, 7–12 2012.</p></li>
+<li><p>Daniel Nyga and Michael Beetz. Cloud-based Probabilistic Knowledge Services for Instruction Interpretation. In <em>International Symposium of Robotics Research (ISRR)</em>. Sestri Levante (Genoa), Italy, 2015.</p></li>
+<li><p>Daniel Nyga and Michael Beetz. Reasoning about Unmodelled Concepts – Incorporating Class Taxonomies in Probabilistic Relational Models. In <em>Arxiv.org</em>. 2015. <span>Preprint: <a class="reference external" href="#"></a></span>http://arxiv.org/abs/1504.05411.</p></li>
+<li><p>Daniel Nyga, Mareike Picklum, and Michael Beetz. What No Robot Has Seen Before – Probabilistic Interpretation of Natural-language Object Descriptions. In <em>International Conference on Robotics and Automation (ICRA)</em>. Singapore, 2017. Accepted for publication.</p></li>
+<li><p>Daniel Nyga, Mareike Picklum, Sebastian Koralewski, and Michael Beetz. Instruction Completion through Instance-based Learning and Semantic Analogical Reasoning. In <em>International Conference on Robotics and Automation (ICRA)</em>. Singapore, 2017. Accepted for publication.</p></li>
+</ol>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Daniel Nyga.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

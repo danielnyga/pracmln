@@ -299,4 +299,24 @@ Services
 		set at least once.
  
 
+pracmln_correlation
+--------
 
+The pracmln_correlation package enhances the MLN training process by finding formulas which
+are likely to fit the data and using only those for training. This will speed up the training process
+to 1/10th of the time usually needed. The inference time gets a speed boost by TODO.
+The drawback is a slight accuracy loss.
+
+The most important methods from this package are:
+
+pracmln_correlation.utils.database_to_dataframe(path=None, mln=None, dbs=None, amount=None, 
+                          replace_clusters=True, mln_name=None, db_name=None)
+
+and 
+
+pracmln_correlation.pracmln_correlation.theils_u(X, y=None)
+
+and 
+
+pracmln_correlation.pracmln_correlation.generate_formulas_from_theils_u(df, positive_threshold=0.8, negative_threshold = 0.2,
+                                    output=str)

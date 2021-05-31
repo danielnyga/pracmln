@@ -49,6 +49,8 @@ from pracmln.utils.config import global_config_filename
 from pracmln.utils.project import MLNProject, PRACMLNConfig
 from pracmln.utils.widgets import *
 import logging #import used in eval, do not remove
+import pracmln.structure.correlation.correlation
+
 
 
 logger = logs.getlogger(__name__)
@@ -104,7 +106,6 @@ class MLNLearn(object):
         The :class:`pracmln.Database` instance to be used for learning.
         '''
         return self._config.get('db')
-
 
     @property
     def output_filename(self):
@@ -418,9 +419,11 @@ class MLNLearn(object):
                 ps.print_stats()
             # reset the debug level
             logger.level = olddebug
-        print()
-        watch.finish()
-        watch.printSteps()
+        
+        if self.verbose:
+            print()
+            watch.finish()
+            watch.printSteps()
         return mlnlearnt
 
 
@@ -561,6 +564,31 @@ class MLNLearnGUI:
         self.cb_shuffle = Checkbutton(frame, text="shuffle databases",
                                       variable=self.shuffle, state='disabled')
         self.cb_shuffle.pack(side=LEFT)
+
+        #enable correlated predicates
+        self.use_correlated_predicates = IntVar()
+        self.cb_use_correlated_predicates = Checkbutton(frame, 
+                                        text="use correlated predicates with lower threshold of",
+                                        variable=self.use_correlated_predicates)
+        self.cb_use_correlated_predicates.pack(side=LEFT)
+    
+        # set threshold for negative correlation
+        self.correlated_predicates_lower_threshold = StringVar(master)
+        self.en_correlated_predicates_lower_threshold = Entry(frame, 
+                                        textvariable=self.correlated_predicates_lower_threshold, 
+                                        width=5)
+
+        self.en_correlated_predicates_lower_threshold.pack(side=LEFT)
+        self.correlated_predicates_lower_threshold.trace('w', self.settings_setdirty)
+        Label(frame, text="and upper threshold of").pack(side=LEFT) 
+
+        # set threshold for positive correlation
+        self.correlated_predicates_upper_threshold = StringVar(master)
+        self.en_correlated_predicates_upper_threshold = Entry(frame, 
+                                        textvariable=self.correlated_predicates_upper_threshold, 
+                                        width=5)
+        self.correlated_predicates_upper_threshold.trace('w', self.settings_setdirty)
+        self.en_correlated_predicates_upper_threshold.pack(side=LEFT)
 
         # discriminative learning settings
         row += 1
@@ -971,6 +999,7 @@ class MLNLearnGUI:
         self.settings_setdirty()
 
 
+
     def isfile(self, f):
         return os.path.exists(os.path.join(self.dir, f))
 
@@ -1020,6 +1049,11 @@ class MLNLearnGUI:
         self.use_prior.set(ifnone(newconf.get('use_prior'), 0))
         self.priorMean.set(ifnone(newconf.get('prior_mean'), 0))
         self.priorStdDev.set(ifnone(newconf.get('prior_stdev'), 5))
+
+        #correlation variables
+        self.correlated_predicates_lower_threshold.set(ifnone(newconf.get('correlated_predicates_lower_threshold'), 0))
+        self.correlated_predicates_upper_threshold.set(ifnone(newconf.get('correlated_predicates_upper_threshold'), 0.5))
+
         self.incremental.set(ifnone(newconf.get('incremental'), 0))
         self.shuffle.set(ifnone(newconf.get('shuffle'), 0))
         self.use_initial_weights.set(ifnone(newconf.get('use_initial_weights'), 0))
@@ -1161,6 +1195,26 @@ class MLNLearnGUI:
                 else:
                     dbobj = parse_db(mlnobj, db_content, projectpath=os.path.join(self.dir, self.project.name), dirs=[self.dir])
 
+            ####
+            # replace the MLN predicates with the correlated ones if wanted
+            ####
+            if self.use_correlated_predicates.get() == 1:
+                df = pracmln.structure.correlation.correlation.database_to_dataframe(mln=mlnobj, 
+                    dbs=dbobj)
+                uc = pracmln.structure.correlation.correlation.theils_u(df)
+                        #calculate the similarity of categories
+
+                #generate formulas from similarities
+                mln_formulas = pracmln.structure.correlation.correlation.generate_formulas_from_theils_u(uc, 
+                positive_threshold=float(self.correlated_predicates_upper_threshold.get()), 
+                negative_threshold=float(self.correlated_predicates_lower_threshold.get()), output=list)
+
+                #clear old formulas, but not predicates
+                mlnobj._rmformulas()
+
+                for formula in mln_formulas:
+                    mlnobj << formula
+
             learning = MLNLearn(config=self.config, mln=mlnobj, db=dbobj)
             result = learning.run()
 
@@ -1178,7 +1232,8 @@ class MLNLearnGUI:
                 self.project.add_mln(self.output_filename.get(), output.getvalue())
                 self.mln_container.update_file_choices()
                 self.project.save(dirpath=self.project_dir)
-                logger.info('saved result to file mln/{} in project {}'.format(self.output_filename.get(), self.project.name))
+                #logger.info('saved result to file mln/{} in project {}'.format(self.output_filename.get(), self.project.name))
+                
             else:
                 logger.debug("No output file given - results have not been saved.")
         except:

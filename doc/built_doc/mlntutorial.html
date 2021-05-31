@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tutorial: Learning and Inference in Markov Logic Networks &#8212; pracmln 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tools for MLN evaluation" href="evaluation.html" />
+    <link rel="prev" title="MLN Syntax and Semantics" href="mln_syntax.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+  
+  <script src="_static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.geom.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.layout.min.js"></script>
+
+    
+    
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/pracmln-brightondark-transp.png"></span>
+          pracmln</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Feature Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools for Statistical Relation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnquerytool.html">MLN Query-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnlearningtool.html">MLN-Learning-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learningmethods.html">Learning Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inferencemethods.html">Inference Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mln_syntax.html">MLN Syntax and Semantics</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial: Learning and Inference in Markov Logic Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API-Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Tutorial: Learning and Inference in Markov Logic Networks</a><ul>
+<li><a class="reference internal" href="#the-smoking-scenario">The Smoking Scenario</a></li>
+<li><a class="reference internal" href="#learning">Learning</a></li>
+<li><a class="reference internal" href="#inference">Inference</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="mln_syntax.html" title="Previous Chapter: MLN Syntax and Semantics"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; MLN Syntax an...</span>
+    </a>
+  </li>
+  <li>
+    <a href="evaluation.html" title="Next Chapter: Tools for MLN evaluation"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Tools for MLN... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/mlntutorial.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="tutorial-learning-and-inference-in-markov-logic-networks">
+<h1>Tutorial: Learning and Inference in Markov Logic Networks<a class="headerlink" href="#tutorial-learning-and-inference-in-markov-logic-networks" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial will explain how to learn the parameters of a Markov
+logic network from a training database and how to use to resulting
+model to answer queries. We will make use of the well-known
+<code class="docutils literal notranslate"><span class="pre">smoking</span> <span class="pre">scenario</span></code> as used by Richardson and Domingos.</p>
+<p>We work in the <code class="docutils literal notranslate"><span class="pre">examples/smokers</span></code> directory.</p>
+<div class="section" id="the-smoking-scenario">
+<h2>The Smoking Scenario<a class="headerlink" href="#the-smoking-scenario" title="Permalink to this headline">¶</a></h2>
+<p>The Smoking scenario models the dependencies between smoking and
+having cancer. Moreover, we consider the social network induced by
+a ‘’friends’’ relation. We thus define the following predicates:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Smokes</span><span class="p">(</span><span class="n">person</span><span class="p">)</span>
+<span class="n">Cancer</span><span class="p">(</span><span class="n">person</span><span class="p">)</span>
+<span class="n">Friends</span><span class="p">(</span><span class="n">person</span><span class="p">,</span><span class="n">person</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and define a rule stating that cancer follows from smoking,:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Smokes</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">Cancer</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and further model the symmetry of the friendship relation and its influence on smoking habits:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Friends</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">)</span> <span class="o">&lt;=&gt;</span> <span class="n">Friends</span> <span class="p">(</span><span class="n">p2</span><span class="p">,</span><span class="n">p2</span><span class="p">)</span>
+<span class="n">Friends</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">Smokes</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span> <span class="o">&lt;=&gt;</span> <span class="n">Smokes</span><span class="p">(</span><span class="n">p2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The last rule states that if two persons are friends, they either
+both smoke or both do not smoke.</p>
+</div>
+<div class="section" id="learning">
+<h2>Learning<a class="headerlink" href="#learning" title="Permalink to this headline">¶</a></h2>
+<p>We use the <a class="reference internal" href="mlnlearningtool.html"><span class="doc">MLN-Learning-Tool</span></a> to learn the weights of the Markov logic network.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">probcog</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">smokers</span>
+<span class="n">mlnlearn</span>
+</pre></div>
+</div>
+<p>We pick the “PRACMLN” engine and the MLN defined above (i.e.
+<code class="docutils literal notranslate"><span class="pre">smoking.mln</span></code>). The MLN is displayed in the editor. To use
+the internal engine one has to add a <code class="docutils literal notranslate"><span class="pre">0.0</span></code>-weight to all formulas
+what are not terminated by a period as a <code class="docutils literal notranslate"><span class="pre">0.0</span></code>-weight is not
+implicitly assumed for formulas without weights when using the
+internal engine.</p>
+<p>Next, we choose the desired training database (e.g.
+<code class="docutils literal notranslate"><span class="pre">smoking-train.db</span></code>) and learning method (e.g.
+‘’pseudo-log-likelihood with blocking’’).</p>
+<p>Having made our selections, we start the learning process by
+clicking the ‘’Learn’’ button at the bottom of the dialog, which
+gives us weights, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">1.126769</span>  <span class="n">Smokes</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">Cancer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="mf">1.577776</span>  <span class="n">Friends</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">Smokes</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;=&gt;</span> <span class="n">Smokes</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The resulting MLN is saved to the filename we entered under ‘’Output filename’’.</p>
+</div>
+<div class="section" id="inference">
+<h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">¶</a></h2>
+<p>We now invoke the <a class="reference internal" href="mlnquerytool.html"><span class="doc">MLN Query-Tool</span></a> from the console.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mlnquery</span>
+</pre></div>
+</div>
+<p>To test the model described and trained above, we consider the following evidence database::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Cancer(Ann)
+!Cancer(Bob)
+!Friends(Ann,Bob)
+</pre></div>
+</div>
+<p>Using this evidence, we want to infer the smoking habits of Ann and
+Bob: Our queries include <code class="docutils literal notranslate"><span class="pre">Smokes</span></code>, <code class="docutils literal notranslate"><span class="pre">Smokes(Ann)</span> <span class="pre">v</span>
+<span class="pre">Smokes(Bob)</span></code>, <code class="docutils literal notranslate"><span class="pre">Smokes(Ann)</span></code> and <code class="docutils literal notranslate"><span class="pre">Smokes(Bob)</span></code>.
+For this small evidence database, we can still use exact inference.
+We got the following results::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.436830</span>  <span class="n">Smokes</span><span class="p">(</span><span class="n">Ann</span><span class="p">)</span>
+<span class="mf">0.152667</span>  <span class="n">Smokes</span><span class="p">(</span><span class="n">Ann</span><span class="p">)</span> <span class="o">^</span> <span class="n">Smokes</span><span class="p">(</span><span class="n">Bob</span><span class="p">)</span>
+<span class="mf">0.528921</span>  <span class="n">Smokes</span><span class="p">(</span><span class="n">Ann</span><span class="p">)</span> <span class="n">v</span> <span class="n">Smokes</span><span class="p">(</span><span class="n">Bob</span><span class="p">)</span>
+<span class="mf">0.244758</span>  <span class="n">Smokes</span><span class="p">(</span><span class="n">Bob</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As expected, it is more likely for Ann to smoke than for Bob.</p>
+<p>Exact inference can also give us the full distribution over possible
+worlds which we obtain by using <code class="docutils literal notranslate"><span class="pre">debug=True</span></code> as an
+additional parameter. The first 3 of 256 possible worlds::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>1   0.81%   Friends(Ann,Ann)  Friends(Ann,Bob)  Friends(Bob,Ann)  Friends(Bob,Bob)
+            Smokes(Ann)  Smokes(Bob)  Cancer(Ann)   Cancer(Bob)
+            5.242963e+03 &lt;- 8.56 &lt;- 1.1 1.1 1.6 1.6 1.6 1.6
+2   0.26%   Friends(Ann,Ann)  Friends(Ann,Bob)  Friends(Bob,Ann)  Friends(Bob,Bob)
+            Smokes(Ann)  Smokes(Bob)  Cancer(Ann)   !Cancer(Bob)
+            1.699132e+03 &lt;- 7.44 &lt;- 1.1 1.6 1.6 1.6 1.6
+3   0.26%   Friends(Ann,Ann)  Friends(Ann,Bob)  Friends(Bob,Ann)  Friends(Bob,Bob)
+            Smokes(Ann)  Smokes(Bob) !Cancer(Ann)   Cancer(Bob)
+            1.699132e+03 &lt;- 7.44 &lt;- 1.1 1.6 1.6 1.6 1.6
+</pre></div>
+</div>
+<p>The end of each line (i.e. each third line in the results table
+above) contains the exponentiated sum of weights, the sum of
+weights and the individual weights that were summed (rounded values).</p>
+<p>We can also use MC-SAT for this model and evidence databse. We set
+the maximum number of steps to 5000, and we set SampleSAT’s p
+parameter to <code class="docutils literal notranslate"><span class="pre">0.6</span></code> and control the intermediate output using the
+additional parameters <code class="docutils literal notranslate"><span class="pre">p=0.6,</span> <span class="pre">infoInterval=500,</span>
+<span class="pre">resultsInterval=1000</span></code>. We obtain::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.449800</span>  <span class="n">Smokes</span><span class="p">(</span><span class="n">Ann</span><span class="p">)</span>
+<span class="mf">0.146000</span>  <span class="n">Smokes</span><span class="p">(</span><span class="n">Ann</span><span class="p">)</span> <span class="o">^</span> <span class="n">Smokes</span><span class="p">(</span><span class="n">Bob</span><span class="p">)</span>
+<span class="mf">0.548800</span>  <span class="n">Smokes</span><span class="p">(</span><span class="n">Ann</span><span class="p">)</span> <span class="n">v</span> <span class="n">Smokes</span><span class="p">(</span><span class="n">Bob</span><span class="p">)</span>
+<span class="mf">0.245000</span>  <span class="n">Smokes</span><span class="p">(</span><span class="n">Bob</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We observe that MC-Sat gives us reasonable approximations results
+(compared to the exact solution calculated above) for this evidence
+database.</p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Daniel Nyga.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

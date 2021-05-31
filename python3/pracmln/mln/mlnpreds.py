@@ -80,7 +80,7 @@ class Predicate(object):
         # remaining variables whose domains are given in domNames
         dom = domains.get(argdoms[0])
         if dom is None or len(dom) == 0:
-            logger.info("Ground Atoms for predicate %s could not be generated, since the domain '%s' is empty" % (str(self), argdoms[0]))
+            #logger.info("Ground Atoms for predicate %s could not be generated, since the domain '%s' is empty" % (str(self), argdoms[0]))
             return
         for value in dom:
             for gndatom in self._groundatoms(mln, domains, values + [value], argdoms[1:]):

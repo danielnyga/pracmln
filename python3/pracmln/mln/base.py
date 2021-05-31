@@ -40,6 +40,7 @@ from .mlnpreds import (Predicate, FuzzyPredicate, SoftFunctionalPredicate,
     FunctionalPredicate)
 from .database import Database
 from .learning.multidb import MultipleDatabaseLearner
+from .learning.weightedmultidb import WeightedMultipleDatabaseLearner
 import sys
 import re
 import traceback
@@ -283,7 +284,7 @@ class MLN(object):
     def __lshift__(self, _input):
         parse_mln(_input, '.', logic=None, grammar=None, mln=self)
 
-    def materialize(self, *dbs):
+    def materialize(self, *dbs, discard_unused_predicates=True):
         '''
         Materializes this MLN with respect to the databases given. This must
         be called before learning or inference can take place.
@@ -294,7 +295,11 @@ class MLN(object):
         are actually used in the data, i.e. if a predicate is not used in any
         of the databases, all formulas that make use of this predicate are ignored.
 
+        Returns the materialized MLN
+
         :param dbs:     list of :class:`database.Database` objects for materialization.
+        :param discard_unused_predicates: discard predicates which are not used in any formula
+                                          in the MLN.
         '''
         logger.debug("materializing formula templates...")
 
@@ -313,6 +318,7 @@ class MLN(object):
         # collect the admissible predicates. a predicate may become inadmissible
         # if either the domain of one of its arguments is empty or there is
         # no formula containing the respective predicate.
+
         predicates_used = set()
         for _, f in mln_.iterformulas():
             predicates_used.update(f.prednames())
@@ -324,7 +330,7 @@ class MLN(object):
             if predicate.name not in predicates_used:
                 logger.debug('Discarding predicate %s, since it is unused.' % predicate.name)
                 remove = True
-            if remove: del mln_._predicates[predicate.name]
+            if remove and discard_unused_predicates: del mln_._predicates[predicate.name]
         # permanently transfer domains of variables that were expanded from templates
         for _, ft in mln_.iterformulas():
             domnames = list(ft.template_variables().values())
@@ -383,15 +389,23 @@ class MLN(object):
         for value in domain[domname]:
             self.constant(domname, value)
 
-    def learn(self, databases, method=BPLL, **params):
+    def learn(self, databases, method=BPLL, db_weights=None, discard_unused_predicates=True, **params):
         '''
         Triggers the learning parameter learning process for a given set of databases.
         Returns a new MLN object with the learned parameters.
         
         :param databases:     list of :class:`mln.database.Database` objects or filenames
+        :param db_weights:    optional, list of floats which are used to weight
+                              the databases and optimize with a weighted loss function
         '''
         verbose = params.get('verbose', False)
         
+        #added by tom to allow multiple return values for boosting
+        if "return_pll" in list(params.keys()):
+            return_pll = params["return_pll"]
+        else:
+            return_pll = False
+
         # get a list of database objects
         if not databases:
             raise Exception('At least one database is needed for learning.')
@@ -404,7 +418,7 @@ class MLN(object):
             elif type(db) is list: dbs.extend(db)
             else: dbs.append(db)
         logger.debug('loaded %s evidence databases for learning' % len(dbs))
-        newmln = self.materialize(*dbs)
+        newmln = self.materialize(*dbs, discard_unused_predicates=discard_unused_predicates)
 
         logger.debug('MLN predicates:')
         for p in newmln.predicates: logger.debug(p)
@@ -419,11 +433,18 @@ class MLN(object):
             mrf = newmln.ground(dbs[0])
             logger.debug('Loading %s-Learner' % method.__name__)
             learner = method(mrf, **params)
+        elif db_weights is not None:
+            learner = WeightedMultipleDatabaseLearner(newmln, dbs, method, db_weights, **params)
         else:
             learner = MultipleDatabaseLearner(newmln, dbs, method, **params)
         if verbose:
             "learner: %s" % learner.name
-        wt = learner.run(**params)
+
+        if return_pll:
+            wt, learners = learner.run(**params)
+        else:
+            wt = learner.run(**params)
+
         newmln.weights = wt
         # fit prior prob. constraints if any available
         if len(self.probreqs) > 0:
@@ -443,7 +464,11 @@ class MLN(object):
             newmln._rmformulas()
             for f, w,fi in zip(formulas, weights, fix):
                 if w != 0: newmln.formula(f, w, fi)
-        return newmln
+        
+        if return_pll:
+            return newmln, learners
+        else:
+            return newmln
 
     def tofile(self, filename):
         '''

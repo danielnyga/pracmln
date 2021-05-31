@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feature Overview &#8212; pracmln 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting Started" href="installation.html" />
+    <link rel="prev" title="About" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+  
+  <script src="_static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.geom.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.layout.min.js"></script>
+
+    
+    
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/pracmln-brightondark-transp.png"></span>
+          pracmln</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Feature Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools for Statistical Relation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnquerytool.html">MLN Query-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnlearningtool.html">MLN-Learning-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learningmethods.html">Learning Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inferencemethods.html">Inference Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mln_syntax.html">MLN Syntax and Semantics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlntutorial.html">Tutorial: Learning and Inference in Markov Logic Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API-Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Feature Overview</a><ul>
+<li><a class="reference internal" href="#markov-logic-networks-in-python">Markov Logic Networks in Python</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="index.html" title="Previous Chapter: About"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; About</span>
+    </a>
+  </li>
+  <li>
+    <a href="installation.html" title="Next Chapter: Getting Started"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Getting Started &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/features.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="feature-overview">
+<h1>Feature Overview<a class="headerlink" href="#feature-overview" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="markov-logic-networks-in-python">
+<h2>Markov Logic Networks in Python<a class="headerlink" href="#markov-logic-networks-in-python" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Inference (posterior marginal probabilties of formulas)</p>
+<ul>
+<li><p>MC-SAT</p></li>
+<li><p>Gibbs Sampling</p></li>
+<li><p>Enumeration-Ask (exact)</p></li>
+</ul>
+</li>
+<li><p>Probabilistic Inference with Uncertain Evidence (Soft Evidential Update)</p>
+<ul>
+<li><p>MC-SAT-PC</p></li>
+<li><p>IPFP-M (iterative proportional fitting)</p></li>
+</ul>
+</li>
+<li><p>Inference (most probable explanation)</p>
+<ul>
+<li><p>MaxWalkSAT (approximate)</p></li>
+<li><p>WCSP (exact)</p></li>
+</ul>
+</li>
+<li><p>Learning</p>
+<ul>
+<li><p>maximum pseudo-likelihood</p></li>
+<li><p>maximum likelihood</p></li>
+</ul>
+</li>
+<li><p>Knowledge Representation</p>
+<ul>
+<li><p>Fuzzy-MLN reasoning</p></li>
+<li><p>Cardinality restrictions (count constraints)</p></li>
+<li><p>Constraints on (prior) marginal probabilities of formulas</p></li>
+<li><p>Constraints on posterior probabilities of ground atoms and formulas (soft evidence)</p></li>
+</ul>
+</li>
+<li><p>Evaluation</p>
+<ul>
+<li><p>Tools for automated <cite>k</cite>-fold crossvalidation</p></li>
+<li><p>Computation of confusion matrices with Latex export</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Daniel Nyga.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tools for Statistical Relation Learning &#8212; pracmln 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MLN Query-Tool" href="mlnquerytool.html" />
+    <link rel="prev" title="Getting Started" href="installation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+  
+  <script src="_static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.geom.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.layout.min.js"></script>
+
+    
+    
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/pracmln-brightondark-transp.png"></span>
+          pracmln</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Feature Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tools for Statistical Relation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnquerytool.html">MLN Query-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnlearningtool.html">MLN-Learning-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learningmethods.html">Learning Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inferencemethods.html">Inference Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mln_syntax.html">MLN Syntax and Semantics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlntutorial.html">Tutorial: Learning and Inference in Markov Logic Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API-Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Tools for Statistical Relation Learning</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a><ul>
+<li><a class="reference internal" href="#markov-logic-networks">Markov Logic Networks</a></li>
+<li><a class="reference internal" href="#evaluation">Evaluation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#graphical-tools-and-editors">Graphical Tools and Editors</a><ul>
+<li><a class="reference internal" href="#general-usage">General Usage</a></li>
+<li><a class="reference internal" href="#mln-project-paths">MLN Project Paths</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#integrated-editors">Integrated Editors</a><ul>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="installation.html" title="Previous Chapter: Getting Started"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Getting Started</span>
+    </a>
+  </li>
+  <li>
+    <a href="mlnquerytool.html" title="Next Chapter: MLN Query-Tool"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">MLN Query-Tool &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/tools.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="tools-for-statistical-relation-learning">
+<h1>Tools for Statistical Relation Learning<a class="headerlink" href="#tools-for-statistical-relation-learning" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>After the installation, all of these tools will be located in the
+<code class="docutils literal notranslate"><span class="pre">/path/to/pracmln/apps</span></code> directory (which, if you’ve set up your
+environment correctly, is within your system <code class="docutils literal notranslate"><span class="pre">PATH</span></code>).</p>
+<div class="section" id="markov-logic-networks">
+<h3>Markov Logic Networks<a class="headerlink" href="#markov-logic-networks" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mlnquery</span></code> - the <a class="reference internal" href="mlnquerytool.html"><span class="doc">MLN Query-Tool</span></a>, a graphical inference tool</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mlnlearn</span></code> - the <a class="reference internal" href="mlnlearningtool.html"><span class="doc">MLN-Learning-Tool</span></a>, a graphical learning tool</p></li>
+</ul>
+</div>
+<div class="section" id="evaluation">
+<h3>Evaluation<a class="headerlink" href="#evaluation" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Command-line tools (invoke for usage instructions):
+* <code class="docutils literal notranslate"><span class="pre">xval</span></code> - tool for conducting automated cross-validation with MLNs.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="graphical-tools-and-editors">
+<h2>Graphical Tools and Editors<a class="headerlink" href="#graphical-tools-and-editors" title="Permalink to this headline">¶</a></h2>
+<p>Two graphical tools, whose usage is hopefully self-explanatory, are
+part of the package: There’s an inference tool (mlnquery.py)
+and a parameter learning tool (mlnlearn.py). Simply invoke
+them using the Python interpreter. (On Windows, do not use
+pythonw.exe to run them because the console output is an integral
+part of these tools.):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mlnquery</span>
+<span class="n">mlnlearn</span>
+</pre></div>
+</div>
+<div class="section" id="general-usage">
+<h3>General Usage<a class="headerlink" href="#general-usage" title="Permalink to this headline">¶</a></h3>
+<p>Both tools work with <code class="docutils literal notranslate"><span class="pre">.mln</span></code> and <code class="docutils literal notranslate"><span class="pre">.db</span></code> files in a <cite>pracmln</cite> project file.
+A project file is a container in the <cite>zip</cite> format that has the file
+extension <code class="docutils literal notranslate"><span class="pre">.pracmln</span></code>. The structure of the container is as follows</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">.</span><span class="n">pracmln</span>
+    <span class="n">query</span><span class="o">.</span><span class="n">conf</span>
+    <span class="n">learn</span><span class="o">.</span><span class="n">conf</span>
+    <span class="n">mlns</span><span class="o">/</span>
+       <span class="o">...</span>
+    <span class="n">dbs</span><span class="o">/</span>
+       <span class="o">...</span>
+</pre></div>
+</div>
+<p>It consists of two <code class="docutils literal notranslate"><span class="pre">.conf</span></code> files that hold the settings of your
+inferences and learning procedures (e.g. which algorithms to use
+with wich parameters). All <code class="docutils literal notranslate"><span class="pre">.mln</span></code> files that can be used within
+the project must go into the <code class="docutils literal notranslate"><span class="pre">mlns</span></code> subdirectory, whereas all
+<code class="docutils literal notranslate"><span class="pre">.db</span></code> files must be located in the <code class="docutils literal notranslate"><span class="pre">dbs</span></code> directory.</p>
+<p>By default, all output files will also be written to the current project container.</p>
+<p>The tools are designed to be invoked from a console. Simply change
+to the directory in which the files you want to work with are
+located and then invoke the tool you want to use, e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mlnquery
+</pre></div>
+</div>
+<p>The tool will remember this directory for the
+next session and will automatically start in that directory. The
+memorized directory from the last session can be overridden by a
+command-line argument, so</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mlnquery .
+</pre></div>
+</div>
+<p>will always start in current working directory regardless of the directory
+of the previous session.</p>
+<p>The general workflow is then as follows: You select the files you
+want to work with, edit them as needed or even create new files
+directly from within the GUI. Then you set the further options
+(e.g. the number of inference steps to take) and click on the
+button at the very bottom to start the procedure.</p>
+<p>Once you start the actual algorithm, the tool window itself will be
+hidden as long as the job is running, while the output of the
+algorithm is written to the console for you to follow. At the
+beginning, the tools list the main input parameters for your
+convenience, and, once the task is completed, the query tool
+additionally outputs the inference results to the console.</p>
+</div>
+<div class="section" id="mln-project-paths">
+<h3>MLN Project Paths<a class="headerlink" href="#mln-project-paths" title="Permalink to this headline">¶</a></h3>
+<p>Files located in a <cite>.pracmln</cite> project can be accessed my means  of
+the <a class="reference internal" href="#pracmln.mlnpath" title="pracmln.mlnpath"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.mlnpath</span></code></a> class. An <cite>MLN Path</cite> has the following form:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">project</span><span class="o">&gt;</span><span class="p">:</span><span class="o">&lt;</span><span class="n">file</span><span class="o">-</span><span class="ow">in</span><span class="o">-</span><span class="n">project</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">&lt;path-to-project&gt;</span></code> is a regular relative or absolute file path
+to a <cite>.pracmln</cite> project file and <code class="docutils literal notranslate"><span class="pre">&lt;file-in-project&gt;</span></code> is the name
+of the file in the project. For example, consider that there is a
+project file <code class="docutils literal notranslate"><span class="pre">my-project.pracmln</span></code> in the user’s home directory and we wish to access the
+file <code class="docutils literal notranslate"><span class="pre">learnt.mln</span></code> within that project. Then, this file can be
+accessed by the line</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pracmln.utils.project</span> <span class="k">import</span> <span class="n">mlnpath</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">mlnpath</span><span class="p">(</span><span class="s1">&#39;/home/nyga/my-project.pracmln:learnt.mln&#39;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">p</span><span class="o">.</span><span class="n">content</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">mlnpath</span></code> returns an object of the type <a class="reference internal" href="#pracmln.mlnpath" title="pracmln.mlnpath"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.mlnpath</span></code></a>,
+which has the following members:</p>
+<dl class="py class">
+<dt id="pracmln.mlnpath">
+<em class="property">class </em><code class="sig-prename descclassname">pracmln.</code><code class="sig-name descname">mlnpath</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.mlnpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the MLN resource content from a location.</p>
+<p>A location can be a regular absolute or relative path to an <cite>.mln</cite> file. It may also refer
+to an MLN inside a <cite>.pracmln</cite> project container. In the latter case, the <cite>.mln</cite> file name
+needs to be separated from the <cite>.pracmln</cite> project location by a colon. Path specification 
+may also contain references to system environment variables, which are referred to of the
+form <code class="docutils literal notranslate"><span class="pre">${var}</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mlnpath</span><span class="p">(</span><span class="s1">&#39;~/mlns/classification.pracmln:model-1.mln&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
+<span class="gp">...</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="pracmln.mlnpath.content">
+<em class="property">property </em><code class="sig-name descname">content</code><a class="headerlink" href="#pracmln.mlnpath.content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the content of the file specified by this <code class="docutils literal notranslate"><span class="pre">mlnpath</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.mlnpath.exists">
+<em class="property">property </em><code class="sig-name descname">exists</code><a class="headerlink" href="#pracmln.mlnpath.exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the file exists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.mlnpath.file">
+<em class="property">property </em><code class="sig-name descname">file</code><a class="headerlink" href="#pracmln.mlnpath.file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the file specified by this <code class="docutils literal notranslate"><span class="pre">mlnpath</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.mlnpath.project">
+<em class="property">property </em><code class="sig-name descname">project</code><a class="headerlink" href="#pracmln.mlnpath.project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the project name specified.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.mlnpath.projectloc">
+<em class="property">property </em><code class="sig-name descname">projectloc</code><a class="headerlink" href="#pracmln.mlnpath.projectloc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the location of the project file, if any is specified.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="integrated-editors">
+<h2>Integrated Editors<a class="headerlink" href="#integrated-editors" title="Permalink to this headline">¶</a></h2>
+<p>For every learning/inference task, you must specify which MLN syntax
+and logic calculus is to be used:</p>
+<div class="figure align-default" id="id1">
+<img alt="_images/logic-grammar-selection.png" src="_images/logic-grammar-selection.png" />
+<p class="caption"><span class="caption-text">Selection of the MLN syntax (grammar) and logic calculus.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>The dropdown menus in the <cite>MLN</cite> and <cite>DB</cite> sections of the GUIs display
+all MLN or DB files in the project. In order to inspect or edit
+a file, just select them from the respective dropdown menu:</p>
+<div class="figure align-default" id="id2">
+<img alt="_images/mln-selection.png" src="_images/mln-selection.png" />
+<p class="caption"><span class="caption-text">File selection in the GUI tools.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<p>If you modify a file, it will be flagged as “dirty”, which is indicated
+by an asterisk in front of its file name. New, empty files can be added
+to the project by hitting the “New” button, existing files can be
+imported from the file system via the “Import…” button. Files
+can also be renamed by editing their file name in the text box and hitting
+the “Save” button or removed from the project with “Delete”.</p>
+<p>The tools feature integrated editors for .db and .mln files. If you
+modify a file in an internal editor, it will automatically be saved
+as soon as you invoke the learning or inference method (i.e. when
+you press the button at the very bottom) or whenever you press the
+save button to the right of the dropdown menu. If you want to save
+to a different filename, you may do so by changing the filename in
+the text input directly below the editor (which is activated as
+soon as the editor content changes) and then clicking on the save
+button. Session Management</p>
+<p>The tools will save all the settings you made and all files when you
+hit the “save project” button. So that you can easily resume a
+session (all the information is saved to a configuration file).
+Moreover, the query tool will save context-specific information:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The query tool remembers the query you last made for each
+evidence database, so when you reselect a database, the query
+you last made with that database is automatically restored. The
+model extension that you selected is also associated with the
+training database (because model extensions typically serve to
+augment the evidence, e.g. the specification of additional
+formulas to specify virtual evidence). The additional
+parameters you specify are saved specific to the inference
+engine.</p>
+</div>
+<div class="section" id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<p>There are a couple parameters that both the query tool and the learning
+tool have in common, which can be set with the respective checkboxes:</p>
+<ul class="simple">
+<li><p><strong>use all CPUs</strong> will pass a parameter instructing all algorithms
+to distribute computation tasks over all CPUs available on the machine
+where possible. This parameter will be mapped to the <code class="docutils literal notranslate"><span class="pre">multicore=True</span></code> argument for
+algorithms.</p></li>
+<li><p><strong>use Profiler</strong> will automatically start the learning or inference
+in the python profiler and display runtime information after the
+algorithms have finished. This is useful for code optimization if
+you intend to implement your own learning or reasoning methods.</p></li>
+<li><p><strong>verbose</strong> will tell the algorithms to display nicely formatted
+progress information during runtime, a summary of all parameters passed
+to the algorithms, the final learnt model or nicely formatted inference results.</p></li>
+<li><p><strong>Add. params</strong> Additional parameters to pass to the inference or learning method.
+For every method, you can specify a comma-separated list
+of assignments of parameters of the infer method you are
+calling. For example, with <code class="docutils literal notranslate"><span class="pre">debug='DEBUG'</span></code> one can set the
+internal log level to <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>.</p></li>
+</ul>
+<p>For a more detailed overview of the parameters, see
+<a class="reference internal" href="inferencemethods.html"><span class="doc">Inference Methods</span></a> and <a class="reference internal" href="learningmethods.html"><span class="doc">Learning Methods</span></a>.</p>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Daniel Nyga.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

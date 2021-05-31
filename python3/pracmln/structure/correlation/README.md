@@ -1,0 +1,1 @@
+This package provides an implementation to calculate correlations in an MLN database and compute fitting formulas for that.

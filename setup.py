@@ -69,7 +69,8 @@ setup(
     name='pracmln',
     packages=['pracmln', 'pracmln._version', 'pracmln.logic', 'pracmln.mln',
         'pracmln.utils', 'pracmln.wcsp', 'pracmln.mln.grounding',
-        'pracmln.mln.inference', 'pracmln.mln.learning'],
+        'pracmln.mln.inference', 'pracmln.mln.learning', 'pracmln.structure.correlation',
+        'pracmln.mlnlearning.xgmln'],
     package_dir={
         'pracmln': basedir('pracmln'),
         'pracmln._version': '_version',

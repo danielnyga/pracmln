@@ -1,0 +1,567 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MLN Syntax and Semantics &#8212; pracmln 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial: Learning and Inference in Markov Logic Networks" href="mlntutorial.html" />
+    <link rel="prev" title="Inference Methods" href="inferencemethods.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+  
+  <script src="_static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.geom.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.layout.min.js"></script>
+
+    
+    
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/pracmln-brightondark-transp.png"></span>
+          pracmln</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Feature Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools for Statistical Relation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnquerytool.html">MLN Query-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnlearningtool.html">MLN-Learning-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learningmethods.html">Learning Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inferencemethods.html">Inference Methods</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MLN Syntax and Semantics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlntutorial.html">Tutorial: Learning and Inference in Markov Logic Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API-Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">MLN Syntax and Semantics</a><ul>
+<li><a class="reference internal" href="#file-formats">File Formats</a></li>
+<li><a class="reference internal" href="#mln-files">MLN Files</a></li>
+<li><a class="reference internal" href="#predicate-declarations">Predicate declarations</a><ul>
+<li><a class="reference internal" href="#fuzzy-predicates">Fuzzy Predicates</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rules-for-mutual-exclusiveness-and-exhaustiveness">Rules for mutual exclusiveness and exhaustiveness</a><ul>
+<li><a class="reference internal" href="#fixed-weight-formulas">Fixed-Weight Formulas</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#formula-templates">Formula templates</a><ul>
+<li><a class="reference internal" href="#prefix">Prefix: <code class="docutils literal notranslate"><span class="pre">*</span></code></a></li>
+<li><a class="reference internal" href="#id1">Prefix: <code class="docutils literal notranslate"><span class="pre">+</span></code></a></li>
+<li><a class="reference internal" href="#grouping-literals">Grouping Literals</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#probability-constraints-on-formulas">Probability constraints on formulas</a></li>
+<li><a class="reference internal" href="#inlcuding-external-files">Inlcuding External Files</a></li>
+<li><a class="reference internal" href="#database-evidence-files">Database/Evidence files</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="inferencemethods.html" title="Previous Chapter: Inference Methods"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Inference Methods</span>
+    </a>
+  </li>
+  <li>
+    <a href="mlntutorial.html" title="Next Chapter: Tutorial: Learning and Inference in Markov Logic Networks"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Tutorial: Lea... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/mln_syntax.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="mln-syntax-and-semantics">
+<h1>MLN Syntax and Semantics<a class="headerlink" href="#mln-syntax-and-semantics" title="Permalink to this headline">¶</a></h1>
+<p>In principle, PRACMLN provides implementations of two syntaxes/grammars and two semantics of
+Markov Logic Networks:</p>
+<ul class="simple">
+<li><p>Grammars:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">StandardGrammar</span></code> - this is the standard syntax for MLNs, which is mainly
+compatible with the Alchemy system. All constant symbols that aren’t integers must begin with an upper-case letter.
+Domain symbols must begin with a lower-case letter
+Identifiers may contain only alphanumeric characters, <code class="docutils literal notranslate"><span class="pre">-</span></code>, <code class="docutils literal notranslate"><span class="pre">_</span></code> and <code class="docutils literal notranslate"><span class="pre">'</span></code>.
+All lower-case symbols are interpreted as variables.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PRACGrammar</span></code> - a slightly modified grammar, which eases practical
+knowledge engineering of MLNs in some cases. In the <code class="docutils literal notranslate"><span class="pre">PRACGrammar</span></code> definitions,
+all variables in an MLN must be prefixed by <code class="docutils literal notranslate"><span class="pre">?</span></code>, any different
+symbol is considered a constant (upper- or lower-case).</p></li>
+</ul>
+</li>
+<li><p>Semantics:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">FirstOrderLogic</span></code> - semantics of the logical formulas in the MLN
+have the meaning of classical first-order logic. They evaluate
+to either <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">1</span></code>, depending on their truth value being <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code>,
+respectively.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FuzzyLogic</span></code> - applies a fuzzy logic semantics to the logical
+formulas, i.e. the truth values of the formulas lie in the range <code class="docutils literal notranslate"><span class="pre">[0,1]</span></code>.
+Evidence ground atoms may also take a real-valued degree of truth in <code class="docutils literal notranslate"><span class="pre">[0,1]</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+<div class="section" id="file-formats">
+<h2>File Formats<a class="headerlink" href="#file-formats" title="Permalink to this headline">¶</a></h2>
+<p>The file formats for MLN and database files that our Python
+implementation of MLNs processes are for the most part compatible
+with the ones used by the Alchemy system.</p>
+</div>
+<div class="section" id="mln-files">
+<h2>MLN Files<a class="headerlink" href="#mln-files" title="Permalink to this headline">¶</a></h2>
+<p>An MLN file may contain:</p>
+<ul class="simple">
+<li><p>C++-style comments i.e. <code class="docutils literal notranslate"><span class="pre">//</span></code> and <code class="docutils literal notranslate"><span class="pre">/*</span> <span class="pre">...</span> <span class="pre">*/</span></code></p></li>
+<li><p>Domain declarations to assign a set of constants to a particular type/domain
+e.g. <code class="docutils literal notranslate"><span class="pre">domFoo</span> <span class="pre">=</span> <span class="pre">{A,</span> <span class="pre">B,</span> <span class="pre">C}</span></code></p></li>
+<li><p>Predicate declarations to declare a predicate and the types/domains that apply to each of its arguments
+e.g. <code class="docutils literal notranslate"><span class="pre">myPredicate(domFoo,</span> <span class="pre">domBar)</span></code>.
+A predicate declaration may coincide with a rule for mutual exclusiveness and exhaustiveness (see below).</p></li>
+</ul>
+</div>
+<div class="section" id="predicate-declarations">
+<h2>Predicate declarations<a class="headerlink" href="#predicate-declarations" title="Permalink to this headline">¶</a></h2>
+<p>Every predicate that is used in the MLN needs to be declared once in
+the MLN file. A predicate declaration consists of the predicate name
+followed by a comma-separated list of domain names of its arguments
+in round brackets. For example,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">person</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">gender</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>declares a predicate <code class="docutils literal notranslate"><span class="pre">person</span></code>, which has two arguments of the domains
+<code class="docutils literal notranslate"><span class="pre">name</span></code> and <code class="docutils literal notranslate"><span class="pre">gender</span></code>.</p>
+<p>Predicate arguments in MLNs are <em>typed</em>. This means that all predicates having
+an argument of the same domain are sharing all values of that domain.
+A another predicate declaration, such as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">friends</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>is defined over the same set of <code class="docutils literal notranslate"><span class="pre">name</span></code> s. Normally the values of the
+domains are automatically filled with the respective values that the MLN
+engine finds in formulas or databases. But it is also possible to
+explicitly define a domain range, for instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gender</span> <span class="o">=</span> <span class="p">{</span><span class="n">male</span><span class="p">,</span> <span class="n">female</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>specifies that there are two possible values <code class="docutils literal notranslate"><span class="pre">male</span></code> and <code class="docutils literal notranslate"><span class="pre">female</span></code>
+for any predicate argument of the type <code class="docutils literal notranslate"><span class="pre">gender</span></code>.</p>
+<p>Sometimes it is reasonable to specify that <em>exactly</em> one out of several
+atoms must always be true and all others in turn must be false. Such
+constraints are called <em>functional</em> constraints since the value
+of one argument is <em>functionally</em> determined by the values of the
+other arguments. In PRACMLNs, this can be specified by appending an
+exclamation mark <code class="docutils literal notranslate"><span class="pre">!</span></code> to the functionally determined argument:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>person(name, gender!)
+</pre></div>
+</div>
+<p>for example specifies that for every person <code class="docutils literal notranslate"><span class="pre">p</span></code> in the domain of discourse,
+<em>exactly</em> one out of the ground atoms <code class="docutils literal notranslate"><span class="pre">person(p,</span> <span class="pre">male)</span></code> and <code class="docutils literal notranslate"><span class="pre">person(p,</span> <span class="pre">female)</span></code>
+must always be true. Any possible world that violates this constraint
+is automatically assigned 0 probability. Apart from that it is reasonable
+to use functional constraints from a modelling point of view in many
+cases, it is typically also computationally beneficial since functional
+constraints result in a partial linearization of the computational
+problem. In PRACMLNs, there is a second type of functional constraints,
+so-called <em>soft functional-constraints</em>, that require <em>maximally</em> one
+ground atom out of the set of mutually exclusive ground atoms to be true
+instead of exactly one. This is very convenient for classification
+problems, for instance, in order to let the probabilistic model
+decline to make a decision in case of insufficient confidence, but still
+exploit the computational appeal of functional constraints. Soft-functional
+constraints are specified by appending a question mark <code class="docutils literal notranslate"><span class="pre">?</span></code> to the respective
+predicate argument:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>class(object, class?)
+</pre></div>
+</div>
+<p>assigns exactly one class label to an object, or none.</p>
+<div class="section" id="fuzzy-predicates">
+<h3>Fuzzy Predicates<a class="headerlink" href="#fuzzy-predicates" title="Permalink to this headline">¶</a></h3>
+<p>If the <code class="docutils literal notranslate"><span class="pre">FuzzyLogic</span></code> calculus is chosen for an MLN, predicates may be
+declared as <cite>fuzzy</cite> predicates, which allows them to also take real-valued
+degrees of truth in [0,1] instead of strictly boolean predicates. To
+declare a predicate being fuzzy, its declaration must be preceded by the
+<code class="docutils literal notranslate"><span class="pre">#fuzzy</span></code> statement, e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#fuzzy</span>
+<span class="ow">is</span><span class="o">-</span><span class="n">a</span><span class="p">(</span><span class="n">sense</span><span class="p">,</span> <span class="n">concept</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Fuzzy predicates may exclusively occur as evidence during inference.
+This means that all truth values of fuzzy predicates must be known
+and asserted in a database beforehand, otherwise <cite>pracmln</cite> will
+raise a <code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.mln.errors.MRFValueException</span></code>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="rules-for-mutual-exclusiveness-and-exhaustiveness">
+<h2>Rules for mutual exclusiveness and exhaustiveness<a class="headerlink" href="#rules-for-mutual-exclusiveness-and-exhaustiveness" title="Permalink to this headline">¶</a></h2>
+<p>To declare that for a particular binding of some of the parameters
+of a predicate, the value assignments of the remaining parameters
+are mutually exclusive and exhaustive, i.e. that the remaining
+parameters are functionally determined by the others. For example,
+you can add the rule <code class="docutils literal notranslate"><span class="pre">myPredicate(domFoo,</span> <span class="pre">domBar!)</span></code> to declare that
+the second parameter of <code class="docutils literal notranslate"><span class="pre">myPredicate</span></code> is functionally determined by
+the first (i.e. that for each binding of f there is exactly one
+binding of <code class="docutils literal notranslate"><span class="pre">b</span></code> for which the atom is true). Formulas with attached
+weights as constraints on the set of possible worlds that is
+implicitly defined by an MLN’s set of predicates and a set of
+(typed) constants with which it is combined. A formula must always
+be specified either along with a weight preceding it or, in case of
+a hard constraint, a period (<code class="docutils literal notranslate"><span class="pre">.</span></code>) succeeding it. Usually, a weight
+will be specified as a numeric constant, but when using the
+PRACMLN engine, weights can also be specified as arithmetic
+expressions, which may contain calls to functions of the Python
+math module (and the special function <code class="docutils literal notranslate"><span class="pre">logx</span></code> which returns -100 when
+passed 0). Note, however, that the expression must not contain any
+spaces. For example, you could specify an expression such as
+<code class="docutils literal notranslate"><span class="pre">log(4)/2</span></code> instead of <code class="docutils literal notranslate"><span class="pre">0.69314718055994529</span></code>. The formulas themselves
+may make use of the following operators/syntactic elements
+(operators in order of precedence): existential quantification,
+e.g. <code class="docutils literal notranslate"><span class="pre">EXIST</span> <span class="pre">x</span> <span class="pre">myPred(x,MyConstant)</span></code> or <code class="docutils literal notranslate"><span class="pre">EXIST</span> <span class="pre">x,y</span> <span class="pre">(...)</span></code>. Quantification
+applies only to the formula that follows immediately after the list
+of quantified variables, so if it is a complex formula, enclose it
+in parentheses.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Logical connector</p></th>
+<th class="head"><p>Example</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Equality</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">x=y</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Inequality</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">x=/=y</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Negation</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">!myPred(x,y)</span></code> or <code class="docutils literal notranslate"><span class="pre">!(x=y)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Disjunction</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">myPred(x,y)</span> <span class="pre">v</span> <span class="pre">myPred(y,x)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Conjunction</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">myPred(x,y)</span> <span class="pre">^</span> <span class="pre">myPred(y,x)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Implication</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">myPred(x,y)</span> <span class="pre">^</span> <span class="pre">myPred(y,z)</span> <span class="pre">=&gt;</span> <span class="pre">myPred(x,z)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Biimplication</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">myPred(x,y)</span> <span class="pre">&lt;=&gt;</span> <span class="pre">myPred(y,x)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>When a formula that contains free variables is grounded, there will
+be a separate instance of the formula for each grounding of the
+free variables in the ground Markov network (each having the same
+weight). While the internal engine may perform a CNF conversion of
+the formulas, it does not not decompose the CNF formulas if they
+are made up of more than one conjunct in order to obtain individual
+clauses. With the internal engine, all formulas are indivisible.</p>
+<div class="section" id="fixed-weight-formulas">
+<h3>Fixed-Weight Formulas<a class="headerlink" href="#fixed-weight-formulas" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes one might want to pre-specify the weight of a formula
+and fix that weight during learning, so the learning algorithm
+does not overwrite it. In <cite>pracmln</cite>, such a formula weight can be
+specified by a <code class="docutils literal notranslate"><span class="pre">#fixweight</span></code> statement preceding the formula:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#fixweight
+logx(.75/.25)   foo(?x) ^ bar(?z)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="formula-templates">
+<h2>Formula templates<a class="headerlink" href="#formula-templates" title="Permalink to this headline">¶</a></h2>
+<p>MLN formulas are generated from templates which offer a number of convenient
+syntax notations to abstract repetitive formulas.</p>
+<div class="section" id="prefix">
+<h3>Prefix: <code class="docutils literal notranslate"><span class="pre">*</span></code><a class="headerlink" href="#prefix" title="Permalink to this headline">¶</a></h3>
+<p>An atom in a formula can be prefixed with an asterisk (<code class="docutils literal notranslate"><span class="pre">*</span></code>) to define
+a template that stands for two variants of the formula, one with
+the positive literal and one with the negative literal. (e.g.
+<code class="docutils literal notranslate"><span class="pre">*myPred(x,y)</span></code>)</p>
+</div>
+<div class="section" id="id1">
+<h3>Prefix: <code class="docutils literal notranslate"><span class="pre">+</span></code><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Moreover, you can prefix a variable that is an
+argument of an atom with a <code class="docutils literal notranslate"><span class="pre">+</span></code> character to define a template that
+will generate one formula for each possible binding of that
+variable to one of the domain elements applicable to that argument.
+(e.g. <code class="docutils literal notranslate"><span class="pre">myPred(+x,y)</span></code>)</p>
+<p>If there are formulas that represent co-occurrences of atoms
+(meaning that it represents a symmetric relation of entities) a
+template formula might produce unnecessarily many formulas. For instance,
+suppose we want to model co-occurrences of the attributes of the predicate
+<code class="docutils literal notranslate"><span class="pre">foo(p,x)</span></code>, given by the domain <code class="docutils literal notranslate"><span class="pre">x={X1,X2,X3}</span></code>, e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>0.0 foo(?p1, +?x1) ^ foo(?p2, +?x2)
+</pre></div>
+</div>
+<p>the ordinary formula template would produce 9 formulas:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>0.0 foo(?p1, X1) ^ foo(?p2, X1)
+0.0 foo(?p1, X1) ^ foo(?p2, X2)
+0.0 foo(?p1, X1) ^ foo(?p2, X3)
+0.0 foo(?p1, X2) ^ foo(?p2, X1) *
+0.0 foo(?p1, X2) ^ foo(?p2, X2)
+0.0 foo(?p1, X2) ^ foo(?p2, X3)
+0.0 foo(?p1, X3) ^ foo(?p2, X1) *
+0.0 foo(?p1, X3) ^ foo(?p2, X2) *
+0.0 foo(?p1, X3) ^ foo(?p2, X3)
+</pre></div>
+</div>
+<p>where 3 of them (marked with the asterisk) are superfluous because
+there is a semantically  equivalent formula in the MLN already. Since
+this may cause unecessary computational effort during learning and
+inference, pracmln provides a statement <code class="docutils literal notranslate"><span class="pre">#unique</span></code>, which only produces
+unique expansions of the given variables wrt a formula template, e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#unique{+?x1, +?x2}
+0.0 foo(?p1, +?x1) ^ foo(?p2, +?x2)
+</pre></div>
+</div>
+<p>produces only unique combinations of the variables <code class="docutils literal notranslate"><span class="pre">+?x1</span></code> and <code class="docutils literal notranslate"><span class="pre">+?x2</span></code>.</p>
+</div>
+<div class="section" id="grouping-literals">
+<span id="sec-litgroups"></span><h3>Grouping Literals<a class="headerlink" href="#grouping-literals" title="Permalink to this headline">¶</a></h3>
+<p>Repetitve formulas that only differ in the name of the predicate can be
+generated using literal groups which are denoted by writing multiple
+predicates separated with a pipe (<code class="docutils literal notranslate"><span class="pre">|</span></code>). Each formula containing such a
+literal group will then be expanded to all combinations of each predicate of
+that group with the rest of the formula, e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>0.0 foo|bar(?p1, +?x1) ^ foo|baz(?p2, +?x2)
+</pre></div>
+</div>
+<p>will be expanded to</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>0.0 foo(?p1, +?x1) ^ foo(?p2, +?x2)
+0.0 foo(?p1, +?x1) ^ baz(?p2, +?x2)
+0.0 bar(?p1, +?x1) ^ foo(?p2, +?x2)
+0.0 bar(?p1, +?x1) ^ baz(?p2, +?x2)
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The number of arguments has to be the same for each predicate of the
+respective group. Also, keep in mind that if you use the same variable
+names in different literal groups, you have to make sure that all predicates
+share the same domains for the respective arguments. Otherwise you will
+get an error, that your variable is bound to more than one domain.</p>
+<p><strong>Example</strong></p>
+<p>The first argument of <code class="docutils literal notranslate"><span class="pre">bar</span></code> has to be in the same domain as the first
+argument of each <code class="docutils literal notranslate"><span class="pre">foo</span></code> and <code class="docutils literal notranslate"><span class="pre">baz</span></code> in the following formula, so that the
+domain of the variable <code class="docutils literal notranslate"><span class="pre">?p1</span></code> is well-defined here:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>0.0 bar(?p1, +?x1) ^ foo|baz(?p1, +?x2)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="probability-constraints-on-formulas">
+<h2>Probability constraints on formulas<a class="headerlink" href="#probability-constraints-on-formulas" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This feature is currently unsupported.</p>
+</div>
+<p>You may want to require that certain formulas have a fixed prior
+marginal probability regardless of the size of the domain with
+which a model is instantiated. This is accomplished by dynamically
+adjusting the weight of the formula when instantiating a ground
+Markov network. e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">P</span><span class="p">(</span><span class="n">myPred</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span> <span class="o">=</span> <span class="mf">0.75</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">P</span><span class="p">(</span><span class="n">myPred</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="o">^</span> <span class="n">myPred</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">))</span> <span class="o">=</span> <span class="mf">0.9</span>
+</pre></div>
+</div>
+<p>Similarly, you may want to require that the
+posterior marginal probability of a ground formula be fixed. This
+essentially corresponds to a specification of soft evidence. e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">R</span><span class="p">(</span><span class="n">myPred</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span> <span class="n">v</span> <span class="n">myPred</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">X</span><span class="p">))</span> <span class="o">=</span> <span class="mf">0.8</span>
+</pre></div>
+</div>
+<p>Any formulas for which a constraint is specified must also be part
+of the MLN (i.e. you must add them to the MLN, with some weight).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Probability constraints are extensions of the original MLN formalism.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Limitations:
+no support for functions, numbers/numeric operators or anything that is related to it
+formulas must always be preceded by a weight or be terminated by a period, even if they are only to be used in an input MLN for parameter learning
+no definition can span multiple lines</p>
+</div>
+</div>
+<div class="section" id="inlcuding-external-files">
+<h2>Inlcuding External Files<a class="headerlink" href="#inlcuding-external-files" title="Permalink to this headline">¶</a></h2>
+<p>In an MLN file, other files can be imported by means of the <code class="docutils literal notranslate"><span class="pre">#nclude</span></code>
+directive followed by an <code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.mln.mlnpath</span></code> specification.
+There are two different types of <code class="docutils literal notranslate"><span class="pre">#include</span></code> statements:</p>
+<ul>
+<li><p><em>including a file within the same project</em>: If the current <cite>.mln</cite> file
+is located in a <cite>.pracmln</cite> project and the <code class="docutils literal notranslate"><span class="pre">#include</span></code> statement is
+to refer to a file within the same project, the name of the file can
+be put in angular brackets, e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &lt;predicate-decl.mln&gt;</span>
+</pre></div>
+</div>
+<p>imports the file <code class="docutils literal notranslate"><span class="pre">predicate-decl.mln</span></code> from within the same project
+into thecurrent mln.</p>
+</li>
+<li><p><em>including a file from the file system</em>: files outside the current
+project (of if the MLN is not part of a project) can be referenced by
+putting the path to file in double quotes, e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &quot;${HOME}/mlns/my-project:predicates.mln&quot;</span>
+</pre></div>
+</div>
+<p>imports the specified MLN relative to the user’s home directory. Note that
+relative paths are always relative to the referring project/file.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="database-evidence-files">
+<h2>Database/Evidence files<a class="headerlink" href="#database-evidence-files" title="Permalink to this headline">¶</a></h2>
+<p>A database file may contain:</p>
+<ul>
+<li><p>C++-style comments i.e. <code class="docutils literal notranslate"><span class="pre">//</span></code> and <code class="docutils literal notranslate"><span class="pre">/*</span> <span class="pre">...</span> <span class="pre">*/</span></code></p></li>
+<li><p>Positive and negative ground literals e.g. <code class="docutils literal notranslate"><span class="pre">myPred(A,B)</span></code> or <code class="docutils literal notranslate"><span class="pre">!myPred(A,B)</span></code>, one per line.</p></li>
+<li><p>Soft/fuzzy evidence on ground atoms e.g. <code class="docutils literal notranslate"><span class="pre">0.6</span> <span class="pre">myPred(A,B)</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Note that soft evidence is supported only the internal engine and only
+when using the inference algorithms MC-SAT (which corresponds to
+MC-SAT-PC when using soft evidence) and IPFP-M. Note that soft
+evidence on non-atomic formulas can be handled using posterior
+probability constraints (see above).</p>
+</div>
+</li>
+<li><p>Domain extensions like domain declarations (see above); useful if you want to define constants without making any statements about them.</p></li>
+</ul>
+<p>Databases stored in different <code class="docutils literal notranslate"><span class="pre">.db</span></code> files are considered <em>independent</em> of
+each others by default (independent in its probabilistic meaning). Different
+databases that should be treated independent can also be stored in one
+single file by separating their contents by three dashes <code class="docutils literal notranslate"><span class="pre">---</span></code> in a single line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">foo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="n">bar</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+<span class="o">---</span>
+<span class="n">foo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="n">bar</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>represents two independent databases.</p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Daniel Nyga.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

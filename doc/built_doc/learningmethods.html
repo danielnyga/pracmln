@@ -1,0 +1,584 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Methods &#8212; pracmln 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Inference Methods" href="inferencemethods.html" />
+    <link rel="prev" title="MLN-Learning-Tool" href="mlnlearningtool.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+  
+  <script src="_static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.geom.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.layout.min.js"></script>
+
+    
+    
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/pracmln-brightondark-transp.png"></span>
+          pracmln</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Feature Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools for Statistical Relation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnquerytool.html">MLN Query-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnlearningtool.html">MLN-Learning-Tool</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Learning Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inferencemethods.html">Inference Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mln_syntax.html">MLN Syntax and Semantics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlntutorial.html">Tutorial: Learning and Inference in Markov Logic Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API-Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Learning Methods</a><ul>
+<li><a class="reference internal" href="#general-parameters">General Parameters</a></li>
+<li><a class="reference internal" href="#generative-learning-methods">Generative Learning Methods</a><ul>
+<li><a class="reference internal" href="#log-likelihood-learning">Log-likelihood Learning</a></li>
+<li><a class="reference internal" href="#pseudo-likelihood-learning">Pseudo-likelihood Learning</a></li>
+<li><a class="reference internal" href="#pseudo-likelihood-learning-with-custom-grounding">Pseudo-likelihood Learning (with Custom Grounding)</a></li>
+<li><a class="reference internal" href="#composite-likelihood-learning">Composite-likelihood Learning</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#discriminative-learning-methods">Discriminative Learning Methods</a><ul>
+<li><a class="reference internal" href="#discriminative-log-likelihood-learning">Discriminative log-likelihood Learning</a></li>
+<li><a class="reference internal" href="#discriminative-pseudo-likelihood-learning">Discriminative Pseudo-likelihood Learning</a></li>
+<li><a class="reference internal" href="#discriminative-pseudo-likelihood-learning-with-custom-grounding">Discriminative Pseudo-likelihood Learning (with Custom Grounding)</a></li>
+<li><a class="reference internal" href="#discriminative-composite-likelihood-learning">Discriminative Composite-likelihood Learning</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#optimization-techniques">Optimization Techniques</a><ul>
+<li><a class="reference internal" href="#bfgs-broydenfletchergoldfarbshanno-algorithm">BFGS (Broyden–Fletcher–Goldfarb–Shanno algorithm)</a></li>
+<li><a class="reference internal" href="#conjugate-gradient">Conjugate Gradient</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="mlnlearningtool.html" title="Previous Chapter: MLN-Learning-Tool"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; MLN-Learning-Tool</span>
+    </a>
+  </li>
+  <li>
+    <a href="inferencemethods.html" title="Next Chapter: Inference Methods"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Inference Methods &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/learningmethods.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="learning-methods">
+<h1>Learning Methods<a class="headerlink" href="#learning-methods" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="pracmln.MLNLearn">
+<em class="property">class </em><code class="sig-prename descclassname">pracmln.</code><code class="sig-name descname">MLNLearn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLNLearn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper class for learning using a PRACMLN configuration.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> – Instance of a <code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.PRACMLNConfig</span></code> class
+representing a serialized configuration. Any parameter
+in the config object can be overwritten by a respective
+entry in the <code class="docutils literal notranslate"><span class="pre">params</span></code> dict.</p>
+</dd>
+<dt class="field-even">Example</dt>
+<dd class="field-even"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">conf</span> <span class="o">=</span> <span class="n">PRACMLNConfig</span><span class="p">(</span><span class="s1">&#39;path/to/config/file&#39;</span><span class="p">)</span>
+<span class="go"># overrides the MLN and database to be used.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">learn</span> <span class="o">=</span> <span class="n">MLNLearn</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">mln</span><span class="o">=</span><span class="n">newmln</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">newdb</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.PRACMLNConfig</span></code></p>
+</div>
+<dl class="py method">
+<dt id="pracmln.MLNLearn.db">
+<em class="property">property </em><code class="sig-name descname">db</code><a class="headerlink" href="#pracmln.MLNLearn.db" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="apidoc.html#id0" title="pracmln.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.Database</span></code></a> instance to be used for learning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.discr_preds">
+<em class="property">property </em><code class="sig-name descname">discr_preds</code><a class="headerlink" href="#pracmln.MLNLearn.discr_preds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies whether the query predicates or the evidence predicates
+shall be used. In either case, the respective other case will be
+automatically determined, i.e. if a list of query predicates is
+specified and <code class="docutils literal notranslate"><span class="pre">disc_preds</span></code> is <code class="docutils literal notranslate"><span class="pre">pracmln.QUERY_PREDS</span></code>, then all
+other predicates will represent the evidence predicates and vice
+versa. Possible values are <code class="docutils literal notranslate"><span class="pre">pracmln.QUERY_PREDS</span></code> and
+<code class="docutils literal notranslate"><span class="pre">pracmln.EVIDENCE_PREDS</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.epreds">
+<em class="property">property </em><code class="sig-name descname">epreds</code><a class="headerlink" href="#pracmln.MLNLearn.epreds" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of predicate names specifying the evidence predicates in
+discriminative learning.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameters only affects discriminative learning methods and
+is mutually exclusive with the <a class="reference internal" href="#pracmln.MLNLearn.qpreds" title="pracmln.MLNLearn.qpreds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pracmln.MLNLearn.qpreds</span></code></a>
+parameter.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.grammar">
+<em class="property">property </em><code class="sig-name descname">grammar</code><a class="headerlink" href="#pracmln.MLNLearn.grammar" title="Permalink to this definition">¶</a></dt>
+<dd><p>String identifying the MLN syntax to be used. Allowed values are
+<code class="docutils literal notranslate"><span class="pre">'StandardGrammar'</span></code> and <code class="docutils literal notranslate"><span class="pre">'PRACGrammar'</span></code>. Default is
+<code class="docutils literal notranslate"><span class="pre">'PRACGrammar'</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.ignore_unknown_preds">
+<em class="property">property </em><code class="sig-name descname">ignore_unknown_preds</code><a class="headerlink" href="#pracmln.MLNLearn.ignore_unknown_preds" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, if an atom occurs in a database that is not declared in
+the attached MLN, <cite>pracmln</cite> will raise a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">NoSuchPredicateException</span></code>. If <code class="docutils literal notranslate"><span class="pre">ignore_unknown_preds</span></code> is
+<code class="docutils literal notranslate"><span class="pre">True</span></code>, undeclared predicates will just be ignored.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.ignore_zero_weight_formulas">
+<em class="property">property </em><code class="sig-name descname">ignore_zero_weight_formulas</code><a class="headerlink" href="#pracmln.MLNLearn.ignore_zero_weight_formulas" title="Permalink to this definition">¶</a></dt>
+<dd><p>When formulas in MLNs get more complex, there might be the chance that
+some of the formulas retain a weight of zero (because of strong
+independence assumptions in the Learner, for instance). Since such
+formulas have no effect on the semantics of an MLN but on the runtime
+of inference, they can be omitted in the final learnt MLN by settings
+<code class="docutils literal notranslate"><span class="pre">ignore_zero_weight_formulas</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.incremental">
+<em class="property">property </em><code class="sig-name descname">incremental</code><a class="headerlink" href="#pracmln.MLNLearn.incremental" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies whether or incremental learning shall be enabled.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter is currently unused.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.logic">
+<em class="property">property </em><code class="sig-name descname">logic</code><a class="headerlink" href="#pracmln.MLNLearn.logic" title="Permalink to this definition">¶</a></dt>
+<dd><p>String identifying the logical calculus to be used in the MLN. Must be
+either <code class="docutils literal notranslate"><span class="pre">'FirstOrderLogic'</span></code>
+or <code class="docutils literal notranslate"><span class="pre">'FuzzyLogic'</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is discouraged to use the <code class="docutils literal notranslate"><span class="pre">FuzzyLogic</span></code> calculus for learning
+MLNs. Default is <code class="docutils literal notranslate"><span class="pre">'FirstOrderLogic'</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.method">
+<em class="property">property </em><code class="sig-name descname">method</code><a class="headerlink" href="#pracmln.MLNLearn.method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The string identifier of the learning method to use. Defaults to
+<code class="docutils literal notranslate"><span class="pre">'BPLL'</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.mln">
+<em class="property">property </em><code class="sig-name descname">mln</code><a class="headerlink" href="#pracmln.MLNLearn.mln" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="apidoc.html#id3" title="pracmln.MLN"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.MLN</span></code></a> instance to be used for learning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.multicore">
+<em class="property">property </em><code class="sig-name descname">multicore</code><a class="headerlink" href="#pracmln.MLNLearn.multicore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies if all cores of the CPU are to be used for learning.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.output_filename">
+<em class="property">property </em><code class="sig-name descname">output_filename</code><a class="headerlink" href="#pracmln.MLNLearn.output_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the file the learnt MLN is to be saved to.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.params">
+<em class="property">property </em><code class="sig-name descname">params</code><a class="headerlink" href="#pracmln.MLNLearn.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary of additional parameters that are specific to a
+particular learning algorithm.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.pattern">
+<em class="property">property </em><code class="sig-name descname">pattern</code><a class="headerlink" href="#pracmln.MLNLearn.pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Unix file pattern determining the database files for learning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.prior_mean">
+<em class="property">property </em><code class="sig-name descname">prior_mean</code><a class="headerlink" href="#pracmln.MLNLearn.prior_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>The mean of the gaussian prior on the weights. Defaults to <code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.prior_stdev">
+<em class="property">property </em><code class="sig-name descname">prior_stdev</code><a class="headerlink" href="#pracmln.MLNLearn.prior_stdev" title="Permalink to this definition">¶</a></dt>
+<dd><p>The standard deviation of the prior on the weights. Defaults to
+<code class="docutils literal notranslate"><span class="pre">5.0</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.profile">
+<em class="property">property </em><code class="sig-name descname">profile</code><a class="headerlink" href="#pracmln.MLNLearn.profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies whether or not the Python profiler shall be used. This is
+convenient for debugging and optimizing your code in case you have
+developed own algorithms. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.qpreds">
+<em class="property">property </em><code class="sig-name descname">qpreds</code><a class="headerlink" href="#pracmln.MLNLearn.qpreds" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of predicate names specifying the query predicates in
+discriminative learning.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameters only affects discriminative learning methods and
+is mutually exclusive with the <a class="reference internal" href="#pracmln.MLNLearn.epreds" title="pracmln.MLNLearn.epreds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pracmln.MLNLearn.epreds</span></code></a>
+parameter.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.save">
+<em class="property">property </em><code class="sig-name descname">save</code><a class="headerlink" href="#pracmln.MLNLearn.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies whether or not the learnt MLN shall be saved to a file.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pracmln.MLNLearn.output_filename" title="pracmln.MLNLearn.output_filename"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pracmln.MLNLearn.output_filename</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.shuffle">
+<em class="property">property </em><code class="sig-name descname">shuffle</code><a class="headerlink" href="#pracmln.MLNLearn.shuffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies whether or not learning databases shall be shuffled before
+learning.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter is currently unused.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.use_initial_weights">
+<em class="property">property </em><code class="sig-name descname">use_initial_weights</code><a class="headerlink" href="#pracmln.MLNLearn.use_initial_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies whether or not the weights of the formulas prior to learning
+shall be used as an initial guess for the optimizer. Default is
+<code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.use_prior">
+<em class="property">property </em><code class="sig-name descname">use_prior</code><a class="headerlink" href="#pracmln.MLNLearn.use_prior" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean specifying whether or not to use a prio distribution for
+parameter learning. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLNLearn.verbose">
+<em class="property">property </em><code class="sig-name descname">verbose</code><a class="headerlink" href="#pracmln.MLNLearn.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, prints some useful output, status and progress
+information to the console. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p>The above parameters are common for all learning algorithms. In
+addition, specific parameters can be handed over to specific
+algorithms, which will be introduced in the following.</p>
+<div class="section" id="general-parameters">
+<h2>General Parameters<a class="headerlink" href="#general-parameters" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><dl>
+<dt>Gaussian prior on the formula weights:</dt><dd><p>This parameter enables <cite>MAP-learning</cite> (maximum-a-posteriori) with a Gaussian regularization
+term punishing large weights during learing, which can be controlled
+via the mean and the standard deviation of the Gaussian:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">prior_stdev=&lt;sigma&gt;</span></code>: the standard deviation <img class="math" src="_images/math/b52df27bfb0b1e3af0c2c68a7b9da459178c2a7d.png" alt="\sigma"/> of the prior</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">prior_mean=&lt;mu&gt;</span></code>: the mean <img class="math" src="_images/math/4a3598141469c2555591e66606a1b86d4ec6dca9.png" alt="\mu"/> of the prior.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">use_prior=True/False</span></code>: whether or not the prior should be used.</p></li>
+</ul>
+<p>Typical values of a suitable prior are for example <img class="math" src="_images/math/9449e194b1f6c88a9dbc730854fe7fab9126e9a8.png" alt="\mathcal{N}(0.0, 10.0)"/></p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="generative-learning-methods">
+<h2>Generative Learning Methods<a class="headerlink" href="#generative-learning-methods" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="log-likelihood-learning">
+<h3>Log-likelihood Learning<a class="headerlink" href="#log-likelihood-learning" title="Permalink to this headline">¶</a></h3>
+<p>The standard learning method using maximum likelihood.</p>
+<p>Additional parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">optimizer</span></code>: the optimization routine to be used.</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Log-likelihood learning is intractable for most but the smallest
+examples. If you deal with realistic problems you should consider
+using a more efficient learning method.</p>
+</div>
+</div>
+<div class="section" id="pseudo-likelihood-learning">
+<h3>Pseudo-likelihood Learning<a class="headerlink" href="#pseudo-likelihood-learning" title="Permalink to this headline">¶</a></h3>
+<p>Learner for the pseudo-log-likelihood learning algorithm.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">optimizer</span></code>: the optimization routine to be used.</p></li>
+</ul>
+</div>
+<div class="section" id="pseudo-likelihood-learning-with-custom-grounding">
+<h3>Pseudo-likelihood Learning (with Custom Grounding)<a class="headerlink" href="#pseudo-likelihood-learning-with-custom-grounding" title="Permalink to this headline">¶</a></h3>
+<p>If the formulas in your model are prevalently conjunctions of
+literals, this method should be preferred over the previous
+methods, since it processes such conjunctions in approximately linear
+time instead of exponential time.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">optimizer</span></code>: the optimization routine to be used.</p></li>
+</ul>
+</div>
+<div class="section" id="composite-likelihood-learning">
+<h3>Composite-likelihood Learning<a class="headerlink" href="#composite-likelihood-learning" title="Permalink to this headline">¶</a></h3>
+<p>Composite-likelihood Learning is a generalization of both log-likelihood
+and pseudo-log-likelihood learning, in that it partitions the set
+of variables in an MRF in subsets of sizes larger than 1, which leads
+to better accuracy of the learnt model. However, in the current
+implementation of <cite>pracmln</cite>, only partitions of size 1 are supported,
+in which case this method is equivalent to pseudo-log-likelihood
+learning, but comes with a slightly more efficient implementation.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">optimizer</span></code>: the optimization routine to be used.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="discriminative-learning-methods">
+<h2>Discriminative Learning Methods<a class="headerlink" href="#discriminative-learning-methods" title="Permalink to this headline">¶</a></h2>
+<p>For most of the likelihood-based learning methods, <cite>pracmln</cite> provides
+discriminative variants, which are preferable if the reasoning
+problem at hand exhibits dedicated input and output variables. Using
+discriminative learning, one can learn conditional distributions
+<img class="math" src="_images/math/1389884e0ad38b6c5feefacf11c967bd5ba51f45.png" alt="P(X|Y)"/> instead of the join <img class="math" src="_images/math/ac3cef26367c49f35b304bfc7573b3af77d49684.png" alt="P(X,Y)"/>, which is favorable
+with respect to model accuracy and computational performance. For all
+discriminative algorithms, either a set of dedicated query or evidence
+predicate needs to be specified, i.e. <img class="math" src="_images/math/ed38fa24f1c94891bd312012aab3f6673be3eb83.png" alt="X"/> or <img class="math" src="_images/math/7daf0d4815e763eb90f0d5f1dc406f668c1e21db.png" alt="Y"/> in the
+above distribution, depending on whether the predicates occur as
+evidence or query variables. In addition to the parameters of their
+generative variants, they have as additional parameters:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">qpreds</span></code>: a list of predicate names that should be treated</dt><dd><p>as query variables during discriminative learning.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">epreds</span></code>: a list of predicate names that should be treated</dt><dd><p>as evidence variables during discriminative learning</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">discr_preds</span></code>: One of the values <code class="docutils literal notranslate"><span class="pre">pracmln.EVIDENCE_PREDS</span></code> or</dt><dd><p><code class="docutils literal notranslate"><span class="pre">pracmln.QUERY_PREDS</span></code>, specifying whether <code class="docutils literal notranslate"><span class="pre">qpreds</span></code>
+or the <code class="docutils literal notranslate"><span class="pre">epreds</span></code> parameters should be used.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="section" id="discriminative-log-likelihood-learning">
+<h3>Discriminative log-likelihood Learning<a class="headerlink" href="#discriminative-log-likelihood-learning" title="Permalink to this headline">¶</a></h3>
+<p>Discriminative variant of log-likelihood learning.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">optimizer</span></code>: the optimization routine to be used.</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Log-likelihood learning is intractable for most but the smallest
+examples. If you deal with realistic problems you should consider
+using a more efficient learning method.</p>
+</div>
+</div>
+<div class="section" id="discriminative-pseudo-likelihood-learning">
+<h3>Discriminative Pseudo-likelihood Learning<a class="headerlink" href="#discriminative-pseudo-likelihood-learning" title="Permalink to this headline">¶</a></h3>
+<p>Discriminative learner for the pseudo-log-likelihood learning algorithm.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">optimizer</span></code>: the optimization routine to be used.</p></li>
+</ul>
+</div>
+<div class="section" id="discriminative-pseudo-likelihood-learning-with-custom-grounding">
+<h3>Discriminative Pseudo-likelihood Learning (with Custom Grounding)<a class="headerlink" href="#discriminative-pseudo-likelihood-learning-with-custom-grounding" title="Permalink to this headline">¶</a></h3>
+<p>Discriminative learner for the pseudo-log-likelihood learning with custom grounding.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">optimizer</span></code>: the optimization routine to be used.</p></li>
+</ul>
+</div>
+<div class="section" id="discriminative-composite-likelihood-learning">
+<h3>Discriminative Composite-likelihood Learning<a class="headerlink" href="#discriminative-composite-likelihood-learning" title="Permalink to this headline">¶</a></h3>
+<p>Discriminative variant of composite likelihood learning.</p>
+</div>
+</div>
+<div class="section" id="optimization-techniques">
+<h2>Optimization Techniques<a class="headerlink" href="#optimization-techniques" title="Permalink to this headline">¶</a></h2>
+<p>In addition to the learning method, different optimization techniques
+can be specified in <cite>pracmln</cite>. The type of the optimizer and their
+parameters can be specified in the additional parameters text field
+in the <a class="reference internal" href="mlnlearningtool.html"><span class="doc">MLN-Learning-Tool</span></a> by specifying a parameter <code class="docutils literal notranslate"><span class="pre">optimizer=&lt;algo&gt;</span></code>.
+Currently, the following optimization techniques are supported.</p>
+<div class="section" id="bfgs-broydenfletchergoldfarbshanno-algorithm">
+<h3>BFGS (Broyden–Fletcher–Goldfarb–Shanno algorithm)<a class="headerlink" href="#bfgs-broydenfletchergoldfarbshanno-algorithm" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Command: <code class="docutils literal notranslate"><span class="pre">optimizer='bfgs'</span></code></p></li>
+<li><dl class="simple">
+<dt>Additional Parameters:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">maxiter=&lt;int&gt;</span></code>: Specifies the maximal number of gradient ascent steps.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is the standard SciPy implementation</p>
+</div>
+</div>
+<div class="section" id="conjugate-gradient">
+<h3>Conjugate Gradient<a class="headerlink" href="#conjugate-gradient" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Command: <code class="docutils literal notranslate"><span class="pre">optimizer='cg'</span></code></p></li>
+<li><dl class="simple">
+<dt>Additional Parameters:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">maxiter=&lt;int&gt;</span></code>: Specifies the maximal number of gradient ascent steps.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is the standard SciPy implementation</p>
+</div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Daniel Nyga.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

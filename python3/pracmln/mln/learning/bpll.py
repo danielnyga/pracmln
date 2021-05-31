@@ -86,15 +86,21 @@ class BPLL(AbstractLearner):
                 elif sums[validx] is not None:
                     # don't set it if this value has already been assigned marked as inadmissible.
                     sums[validx] += n * w[fidx]
-        expsums = [numpy.exp(s) if s is not None else 0 for s in sums]#numpy.exp(numpy.array(sums))
+        
+
+        # wahrscheinlich den datentyp zu mpmath ändern <- werte cappen auf float.max
+        expsums = [numpy.exp(s) if s is not None and not numpy.isnan(s) else 0 for s in sums]
+        expsums = [es if es < numpy.finfo(float).max else numpy.finfo(float).max for es in expsums]
+
         z = sum(expsums)
         if z == 0: raise SatisfiabilityException('MLN is unsatisfiable: all probability masses of variable %s are zero.' % str(var))
+
         return [w_ / z for w_ in expsums]
-#         sum_max = numpy.max(sums)
-#         sums -= sum_max
-#         expsums = numpy.sum(numpy.exp(sums))
-#         s = numpy.log(expsums)    
-#         return numpy.exp(sums - s)
+        # sum_max = numpy.max(sums)
+        # sums -= sum_max
+        # expsums = numpy.sum(numpy.exp(sums))
+        # s = numpy.log(expsums)
+        # return numpy.exp(sums - s)
 
     def write_pls(self):
         for var in self.mrf.variables:
@@ -115,7 +121,12 @@ class BPLL(AbstractLearner):
             p = self._pls[var.idx][var.evidence_value_index()]
             if p == 0: p = 1e-10 # prevent 0 probabilities
             probs.append(p)
-        return fsum(list(map(log, probs)))
+
+
+        # here tom added something, if anything breaks undo this
+        result = fsum(list(map(log, probs)))
+        self._pseudo_log_likelihood = result
+        return result
 
     def _grad(self, w):
         self._compute_pls(w)
@@ -170,7 +181,11 @@ class DPLL(BPLL, DiscriminativeLearner):
             p = self._pls[var.idx][var.evidence_value_index()]
             if p == 0: p = 1e-10 # prevent 0 probabilities
             probs.append(p)
-        return fsum(list(map(log, probs)))
+
+        # here tom added something, if anything breaks undo this
+        result = fsum(list(map(log, probs)))
+        self._pseudo_log_likelihood = result
+        return result
 
     def _grad(self, w, **params):        
         self._compute_pls(w)

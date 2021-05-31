@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MLN Query-Tool &#8212; pracmln 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MLN-Learning-Tool" href="mlnlearningtool.html" />
+    <link rel="prev" title="Tools for Statistical Relation Learning" href="tools.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+  
+  <script src="_static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.geom.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.layout.min.js"></script>
+
+    
+    
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/pracmln-brightondark-transp.png"></span>
+          pracmln</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Feature Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools for Statistical Relation Learning</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MLN Query-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnlearningtool.html">MLN-Learning-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learningmethods.html">Learning Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inferencemethods.html">Inference Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mln_syntax.html">MLN Syntax and Semantics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlntutorial.html">Tutorial: Learning and Inference in Markov Logic Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API-Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">MLN Query-Tool</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="tools.html" title="Previous Chapter: Tools for Statistical Relation Learning"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Tools for Sta...</span>
+    </a>
+  </li>
+  <li>
+    <a href="mlnlearningtool.html" title="Next Chapter: MLN-Learning-Tool"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">MLN-Learning-Tool &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/mlnquerytool.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="mln-query-tool">
+<h1>MLN Query-Tool<a class="headerlink" href="#mln-query-tool" title="Permalink to this headline">¶</a></h1>
+<p>Start the tool from the command line with <code class="docutils literal notranslate"><span class="pre">mlnquery</span></code>.</p>
+<div class="figure align-default" id="id1">
+<img alt="_images/mlnquerytool.png" src="_images/mlnquerytool.png" />
+<p class="caption"><span class="caption-text">The MLN Query-Tool GUI.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>The MLN query tool is an interface to make inferences in a Markov
+logic network. The tool allows you to invoke the actual MLN
+inference algorithms of the MLN engine. Once you start the
+actual algorithm, the tool window itself will be hidden as long as
+the job is running, while the output of the algorithm is written to
+the console for you to follow. At the beginning, the tools list the
+main input parameters for your convenience, and, at the end, the
+query tool additionally outputs the inference results to the
+console.</p>
+<p>The tool features integrated editors for <code class="docutils literal notranslate"><span class="pre">.db</span></code> and <code class="docutils literal notranslate"><span class="pre">.mln</span></code> files. If you
+modify a file in the internal editor, it will automatically be
+saved as soon as you invoke the learning or inference method. The
+new content can either be saved to the same file (overwriting the
+old content) or a new file, which you can choose to name as
+desired. Furthermore, the tool will save all the settings you made
+whenever the inference method is invoked, so that you can easily
+resume a session. When performing inference, one typically
+associates a particular query with each evidence database, so the
+query tool specifically remembers the query you made for each
+evidence database and restores it whenever you change back to the
+evidence database.</p>
+<p>Given these inputs one can choose one of the <a class="reference internal" href="inferencemethods.html"><span class="doc">Inference Methods</span></a>
+and infer the values of the variables stated a
+comma-separated list of queries, where a query can be any one of
+the following:</p>
+<ul class="simple">
+<li><p>a ground atom, e.g. <code class="docutils literal notranslate"><span class="pre">foobar(X,Y)</span></code></p></li>
+<li><p>the name of a predicate, e.g. <code class="docutils literal notranslate"><span class="pre">foobar</span></code></p></li>
+<li><p>a ground formula, e.g. <code class="docutils literal notranslate"><span class="pre">foobar(X,Y)</span> <span class="pre">^</span> <span class="pre">foobar(Y,X)</span></code> (internal engine only)</p></li>
+</ul>
+<p>The additional parameters include:</p>
+<ul>
+<li><p><strong>Closed-world assumption</strong></p>
+<p>There are two parameters one can specify to control predicates whose variable values are to be set to false if the evidence given does not state something different:</p>
+<ul class="simple">
+<li><p><strong>CW Preds</strong>: A comma-separated list of predicate names, whose atom values are automatically set to false if evidence does not state something different.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Fore functionally determined perdicates, this settings will raise an exception, because there must always be exactly one true ground atom.</p>
+</div>
+<ul class="simple">
+<li><p><strong>CW assumption</strong>: Will apply the closed-world assumption to all predicates that do not appear in the list of queries.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This setting will have no effect on functional predicates and will  print a warning for soft-functional predicates.</p>
+</div>
+</li>
+<li><p>the option to show additional debug outputs during the execution when using the internal system (additional parameter: <code class="docutils literal notranslate"><span class="pre">debug='INFO'</span></code>). This field can also be used to pass additional, method-specific parameters to the algorithm, which are documented in <a class="reference internal" href="inferencemethods.html"><span class="doc">Inference Methods</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">debug='&lt;level&gt;'</span></code> This will temporarily set the debug level to the one specified. Admissible values are (with decreasing level of verbosity): <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>, <code class="docutils literal notranslate"><span class="pre">INFO</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, <code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code>.</p></li>
+</ul>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Daniel Nyga.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

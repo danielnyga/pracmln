@@ -105,3 +105,10 @@ ENV/
 
 # pracmln configuration file(s)
 .pracmln.conf
+
+# saved mlns
+*.mln
+
+# vscode files
+.vscode/
+.vscode

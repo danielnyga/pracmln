@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Getting Started &#8212; pracmln 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tools for Statistical Relation Learning" href="tools.html" />
+    <link rel="prev" title="Feature Overview" href="features.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+  
+  <script src="_static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.geom.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.layout.min.js"></script>
+
+    
+    
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/pracmln-brightondark-transp.png"></span>
+          pracmln</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Feature Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools for Statistical Relation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnquerytool.html">MLN Query-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnlearningtool.html">MLN-Learning-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learningmethods.html">Learning Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inferencemethods.html">Inference Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mln_syntax.html">MLN Syntax and Semantics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlntutorial.html">Tutorial: Learning and Inference in Markov Logic Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API-Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Getting Started</a><ul>
+<li><a class="reference internal" href="#compatibility">Compatibility</a></li>
+<li><a class="reference internal" href="#source-code">Source Code</a></li>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li><a class="reference internal" href="#linux">Linux</a></li>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#c-bindings">C++ bindings</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="features.html" title="Previous Chapter: Feature Overview"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Feature Overview</span>
+    </a>
+  </li>
+  <li>
+    <a href="tools.html" title="Next Chapter: Tools for Statistical Relation Learning"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Tools for Sta... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/installation.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="compatibility">
+<h2>Compatibility<a class="headerlink" href="#compatibility" title="Permalink to this headline">¶</a></h2>
+<p>This software suite works out-of-the-box on Linux and Windows 64-bit machines.</p>
+</div>
+<div class="section" id="source-code">
+<h2>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
+<p>The source code is publicly available under BSD License:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">danielnyga</span><span class="o">/</span><span class="n">pracmln</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p>Python 2.7/3 (tested with 3.5) with Tkinter installed.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On Linux, the following packages should be installed (tested for Ubuntu).:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">tk</span>
+</pre></div>
+</div>
+</div>
+</div></blockquote>
+</li>
+<li><p><cite>pracmln</cite> is shipped with the open source WCSP solver <cite>toulbar2</cite> for Linux and Windows 64-bit versions.
+For other architectures, it can be obtained from:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">mulcyber</span><span class="o">.</span><span class="n">toulouse</span><span class="o">.</span><span class="n">inra</span><span class="o">.</span><span class="n">fr</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">toulbar2</span>
+</pre></div>
+</div>
+<p>Its executable <code class="docutils literal notranslate"><span class="pre">toulbar2</span></code> should then be included in the <code class="docutils literal notranslate"><span class="pre">$PATH</span></code> variable.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p>Python 2.7 with Tkinter installed.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On Windows, Tkinter is usually shipped with Python.</p>
+</div>
+</div></blockquote>
+<p>You will also need the following python packages: <cite>pyparsing</cite>, <cite>tabulate</cite>, <cite>psutil</cite> and <cite>networkx</cite>. You can install them via</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install pyparsing tabulate psutil==0.4.1 networkx
+</pre></div>
+</div>
+<p>You will also need the python packages <cite>scipy</cite> and <cite>numpy+mkl</cite>. Installing with pip will probably not work, but you can obtain prebuilt versions (e.g. scipy‑0.XX.Y‑cp27‑cp27m‑win32.whl and numpy‑1.11.3+mkl‑cp27‑cp27m‑win32.wh) online from:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">lfd</span><span class="o">.</span><span class="n">uci</span><span class="o">.</span><span class="n">edu</span><span class="o">/~</span><span class="n">gohlke</span><span class="o">/</span><span class="n">pythonlibs</span><span class="o">/</span><span class="c1">#scipy</span>
+</pre></div>
+</div>
+<p>and:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">lfd</span><span class="o">.</span><span class="n">uci</span><span class="o">.</span><span class="n">edu</span><span class="o">/~</span><span class="n">gohlke</span><span class="o">/</span><span class="n">pythonlibs</span><span class="o">/</span><span class="c1">#numpy</span>
+</pre></div>
+</div>
+<p>You can install the files with pip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install &lt;filename&gt;.whl
+</pre></div>
+</div>
+</li>
+<li><p><cite>pracmln</cite> is shipped with the open source WCSP solver <cite>toulbar2</cite> for Linux and Windows (Intel) 64-bit versions.</p>
+<blockquote>
+<div><p>Install the <code class="docutils literal notranslate"><span class="pre">toulbar2.exe</span></code> in <code class="docutils literal notranslate"><span class="pre">./3rdparty/toulbar2-0.9.7.0/x86_64/Windows</span></code> and make sure the path to the installed executable (most likely <code class="docutils literal notranslate"><span class="pre">C:\Program</span> <span class="pre">Files</span> <span class="pre">(x86)\toulbar2.0.9.7.0-Release</span></code>)
+is added to your <code class="docutils literal notranslate"><span class="pre">PATH</span></code> variable. For other architectures, <cite>toulbar2</cite> can be obtained from:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">mulcyber</span><span class="o">.</span><span class="n">toulouse</span><span class="o">.</span><span class="n">inra</span><span class="o">.</span><span class="n">fr</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">toulbar2</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>As of Version 0.2.0, <cite>pracmln</cite> is shipped as a <code class="docutils literal notranslate"><span class="pre">pip</span></code>-compliant package. For installing it, just checkout the code from:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$&gt; git clone https://github.com/danielnyga/pracmln.git
+</pre></div>
+</div>
+<p>and install it with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$&gt; python setup.py install
+</pre></div>
+</div>
+</div>
+<div class="section" id="c-bindings">
+<span id="sec-cppbindings"></span><h2>C++ bindings<a class="headerlink" href="#c-bindings" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Requirements:</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>Linux OS (tested on Ubuntu 14.04, 16.04 with Python 2.7 and Python 3.5)</p></li>
+<li><p>libboost-python</p></li>
+<li><p>libpython-dev</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Installation:</p></li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p>After the installation of <cite>pracmln</cite>, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">libpracmln</span><span class="o">-</span><span class="n">build</span>
+</pre></div>
+</div>
+<p>It will compile the C++ sources in the current working directory, creating a folder <code class="docutils literal notranslate"><span class="pre">libpracmln</span></code>.</p>
+</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Usage:</p></li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p>Include the header <code class="docutils literal notranslate"><span class="pre">pracmln/mln.h</span></code> and link against <code class="docutils literal notranslate"><span class="pre">libpracmln</span></code></p></li>
+<li><p>A simple example program</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#include &lt;pracmln/mln.h&gt;
+
+int main(int argc, char **argv)
+{
+  // create a mln object
+  MLN mln;
+
+  // initialize the object (loading python packages, etc.)
+  if(!mln.initialize()){
+    // error
+  }
+
+  std::vector&lt;std::string&gt; query;
+  query.push_back(&quot;some query&quot;);
+
+  // change settings, give input files, etc.
+  mln.setQuery(query);
+  mln.setMLN(&quot;path to mln file&quot;);
+  mln.setDB(&quot;path to db file&quot;);
+
+  std::vector&lt;std::string&gt; results;
+  std::vector&lt;double&gt; probabilities;
+
+  // execute inference
+  if(mln.infer(results, probabilities)){
+    // error
+  }
+
+  // do something with the results
+
+  return 0;
+}
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>There are example models in the <code class="docutils literal notranslate"><span class="pre">./examples/</span></code> directory.</p>
+<p>Simply run the <code class="docutils literal notranslate"><span class="pre">mlnquery</span></code> applications in one of the subdirectories
+to try out some inference tasks.</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">./examples/meals/</span></code> directory, you can also try out learning.
+To train a MLN model run <code class="docutils literal notranslate"><span class="pre">mlnlearn</span></code>.</p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Daniel Nyga.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

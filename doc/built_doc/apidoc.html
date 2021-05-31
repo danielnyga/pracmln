@@ -1,0 +1,1104 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API-Specification &#8212; pracmln 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ROS Service interface" href="tutorial.html" />
+    <link rel="prev" title="Tools for MLN evaluation" href="evaluation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+  
+  <script src="_static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.geom.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.layout.min.js"></script>
+
+    
+    
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/pracmln-brightondark-transp.png"></span>
+          pracmln</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Feature Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools for Statistical Relation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnquerytool.html">MLN Query-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnlearningtool.html">MLN-Learning-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learningmethods.html">Learning Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inferencemethods.html">Inference Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mln_syntax.html">MLN Syntax and Semantics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlntutorial.html">Tutorial: Learning and Inference in Markov Logic Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API-Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">API-Specification</a><ul>
+<li><a class="reference internal" href="#mlns">MLNs</a></li>
+<li><a class="reference internal" href="#databases">Databases</a></li>
+<li><a class="reference internal" href="#reasoning">Reasoning</a></li>
+<li><a class="reference internal" href="#api-reference">API Reference</a><ul>
+<li><a class="reference internal" href="#module-pracmln"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.MLN</span></code></a></li>
+<li><a class="reference internal" href="#ros-service-interface">ROS Service interface</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#server-methods">Server methods</a></li>
+<li><a class="reference internal" href="#example-client">Example client</a></li>
+<li><a class="reference internal" href="#messages">Messages</a></li>
+<li><a class="reference internal" href="#services">Services</a></li>
+<li><a class="reference internal" href="#pracmln-correlation">pracmln_correlation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="evaluation.html" title="Previous Chapter: Tools for MLN evaluation"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Tools for MLN...</span>
+    </a>
+  </li>
+  <li>
+    <a href="tutorial.html" title="Next Chapter: ROS Service interface"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">ROS Service interface &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/apidoc.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="api-specification">
+<h1>API-Specification<a class="headerlink" href="#api-specification" title="Permalink to this headline">¶</a></h1>
+<p><cite>pracmln</cite> comes with an easy-to-use API, which lets you use the
+learning and reasoning methods provided by <cite>pracmln</cite> convently
+in your own applications.</p>
+<div class="section" id="mlns">
+<h2>MLNs<a class="headerlink" href="#mlns" title="Permalink to this headline">¶</a></h2>
+<p>An MLN is represented by an instance of the class <a class="reference internal" href="#id3" title="pracmln.MLN"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.MLN</span></code></a>.
+An existing MLN can be loaded using its static <code class="xref py py-attr docutils literal notranslate"><span class="pre">load</span></code> method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mln</span> <span class="o">=</span> <span class="n">MLN</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="s1">&#39;path/to/file&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="pracmln.MLN.load">
+<em class="property">static </em><code class="sig-prename descclassname">MLN.</code><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">files</span></em>, <em class="sig-param"><span class="n">logic</span><span class="o">=</span><span class="default_value">'FirstOrderLogic'</span></em>, <em class="sig-param"><span class="n">grammar</span><span class="o">=</span><span class="default_value">'PRACGrammar'</span></em>, <em class="sig-param"><span class="n">mln</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads an MLN object from a file or a set of files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> – one or more <a class="reference internal" href="tools.html#pracmln.mlnpath" title="pracmln.mlnpath"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.mlnpath</span></code></a> strings. If multiple file names are given,
+the contents of all files will be concatenated.</p></li>
+<li><p><strong>logic</strong> – (string) the type of logic to be used. Either <cite>FirstOrderLogic</cite> or <cite>FuzzyLogic</cite>.</p></li>
+<li><p><strong>grammar</strong> – (string) the syntax to be used for parsing the MLN file. Either <cite>PRACGrammar</cite> or <cite>StandardGrammar</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Alternatively, the constructor can be used to load the MLN::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mln</span> <span class="o">=</span> <span class="n">MLN</span><span class="p">(</span><span class="n">mlnfile</span><span class="o">=</span><span class="s1">&#39;path/to/mlnfile&#39;</span><span class="p">,</span> <span class="n">grammar</span><span class="o">=</span><span class="s1">&#39;PRACGrammar&#39;</span><span class="p">,</span> <span class="n">logic</span><span class="o">=</span><span class="s1">&#39;FirstOrderLogic&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt id="pracmln.MLN">
+<em class="property">class </em><code class="sig-prename descclassname">pracmln.</code><code class="sig-name descname">MLN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logic</span><span class="o">=</span><span class="default_value">'FirstOrderLogic'</span></em>, <em class="sig-param"><span class="n">grammar</span><span class="o">=</span><span class="default_value">'PRACGrammar'</span></em>, <em class="sig-param"><span class="n">mlnfile</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a Markov logic network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Member formulas</dt>
+<dd class="field-odd"><p>a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">logic.common.Formula</span></code> objects representing the formulas of the MLN.</p>
+</dd>
+<dt class="field-even">Member predicates</dt>
+<dd class="field-even"><p>a dict mapping predicate names to <code class="xref py py-class docutils literal notranslate"><span class="pre">mlnpreds.Predicate</span></code> objects.</p>
+</dd>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logic</strong> – (string) the type of logic to be used in this MLN. Possible values
+are <cite>FirstOrderLogic</cite> and <cite>FuzzyLogic</cite>.</p></li>
+<li><p><strong>grammar</strong> – (string) the syntax to be used. Possible grammars are
+<cite>PRACGrammar</cite> and <cite>StandardGrammar</cite>.</p></li>
+<li><p><strong>mlnfile</strong> – can be a path to an MLN file or a file object.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>If no <code class="docutils literal notranslate"><span class="pre">mlnfile</span></code> is specified, the constructor creates an empty <code class="docutils literal notranslate"><span class="pre">MLN</span></code>
+object. Using the <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> operator, one can feed content into the MLN:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pracmln</span> <span class="k">import</span> <span class="n">MLN</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mln</span> <span class="o">=</span> <span class="n">MLN</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mln</span> <span class="o">&lt;&lt;</span> <span class="s1">&#39;foo(x)&#39;</span> <span class="c1"># predicate declaration</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mln</span> <span class="o">&lt;&lt;</span> <span class="s1">&#39;bar(y)&#39;</span> <span class="c1"># another pred declaration</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mln</span> <span class="o">&lt;&lt;</span> <span class="s1">&#39;bar(?x) =&gt; bar(?y).&#39;</span> <span class="c1"># hard logical constraint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mln</span> <span class="o">&lt;&lt;</span> <span class="s1">&#39;logx(.75)/log(.25) foo(?x)&#39;</span> <span class="c1"># weighted formula</span>
+</pre></div>
+</div>
+<p>We can dump the MLN into the regular MLN file format by using the <code class="xref py py-attr docutils literal notranslate"><span class="pre">write</span></code>
+method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mln</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+
+
+<span class="go">// predicate declarations</span>
+<span class="go">bar(y)</span>
+<span class="go">foo(x)</span>
+
+<span class="go">// formulas</span>
+<span class="go">bar(?x) =&gt; bar(?y).</span>
+<span class="go">logx(.75)/log(.25)  foo(?x)</span>
+</pre></div>
+</div>
+<p>If your terminal supports ASCII escape sequences, the syntax of the result
+will be highlighted. By specifying a <code class="docutils literal notranslate"><span class="pre">stream</span></code>, one can dump the MLN into a file.</p>
+<dl class="py method">
+<dt id="pracmln.MLN.write">
+<code class="sig-prename descclassname">MLN.</code><code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">stream=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em>, <em class="sig-param">color=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the MLN to the given stream.</p>
+<p>The default stream is <cite>sys.stdout</cite>. In order to print the MLN to the console, a simple
+call of <cite>mln.write()</cite> is sufficient. If color is not specified (is None), then the
+output to the console will be colored and uncolored for every other stream.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> – the stream to write the MLN to.</p></li>
+<li><p><strong>color</strong> – whether or not output should be colorized.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>We can access the predicates of the MLN using the <code class="xref py py-attr docutils literal notranslate"><span class="pre">predicates</span></code> attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">mln</span><span class="o">.</span><span class="n">predicates</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">&lt;Predicate: bar(y)&gt;</span>
+<span class="go">&lt;Predicate: foo(x)&gt;</span>
+</pre></div>
+</div>
+<p>Formulas are instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.logic.Formula</span></code> and stored in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">formulas</span></code> attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">mln</span><span class="o">.</span><span class="n">formulas</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span> <span class="n">f</span>
+<span class="gp">... </span>    <span class="n">f</span><span class="o">.</span><span class="n">print_structure</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="go">bar(?x) =&gt; bar(?y)</span>
+<span class="go">&lt;Implication: bar(?x) =&gt; bar(?y)&gt;: [idx=0, weight=inf] bar(?x) =&gt; bar(?y) = ?</span>
+<span class="go">    &lt;Lit: bar(?x)&gt;: [idx=?, weight=?] bar(?x) = ?</span>
+<span class="go">    &lt;Lit: bar(?y)&gt;: [idx=?, weight=?] bar(?y) = ?</span>
+<span class="go">foo(?x)</span>
+<span class="go">&lt;Lit: foo(?x)&gt;: [idx=1, weight=logx(.75)/log(.25)] foo(?x) = ?</span>
+</pre></div>
+</div>
+<p>The method <code class="xref py py-attr docutils literal notranslate"><span class="pre">print_structure</span></code> prints the logical structure of a
+formula as well as a couple of properties, such as its index in the
+MLN and its weight. As you can see, hard formula constraints are
+internally represented by assiging them a weight of
+<code class="docutils literal notranslate"><span class="pre">float('inf')</span></code>. In presence of evidence, <code class="xref py py-attr docutils literal notranslate"><span class="pre">print_structure</span></code> also
+prints the truth value of each constituent of a formula, which is a
+<code class="docutils literal notranslate"><span class="pre">float</span></code> value in {0,1} for formulas with FOL semantics, and in [0,1] in
+case of fuzzy logics semantics. If the truth value cannot be
+determined (as in our example here for we don’t have evidence yet),
+this is indicated by a question mark <code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">?</span></code>.</p>
+</div>
+<div class="section" id="databases">
+<h2>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h2>
+<p>The central datastructures for representing relational data is
+the <a class="reference internal" href="#id0" title="pracmln.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.Database</span></code></a> class. It stores atomic facts about
+the relational domain of discourse by maintaining a mapping of ground
+atoms to their respective truth value.</p>
+<p>A serialized <code class="docutils literal notranslate"><span class="pre">.db</span></code> database file can be loaded using the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Database.load</span></code>
+method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pracmln</span> <span class="k">import</span> <span class="n">Database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dbs</span> <span class="o">=</span> <span class="n">Database</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">mln</span><span class="p">,</span> <span class="s1">&#39;path/to/dbfile&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Since there may be multiple independent databases stored in a single
+<cite>.db</cite> file (separated by <code class="docutils literal notranslate"><span class="pre">---</span></code>) <code class="xref py py-attr docutils literal notranslate"><span class="pre">load</span></code> always returns a list
+of <a class="reference internal" href="#id0" title="pracmln.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.Database</span></code></a> objects.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">mln</span></code> parameter of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">load</span></code> method must point to an
+instantated <a class="reference internal" href="#id3" title="pracmln.MLN"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.MLN</span></code></a> object containing all the predicate
+declarations of atoms occuring in the database. The default
+constructor creates an empty database:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span><span class="n">mln</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt id="pracmln.Database">
+<em class="property">class </em><code class="sig-prename descclassname">pracmln.</code><code class="sig-name descname">Database</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mln</span></em>, <em class="sig-param"><span class="n">evidence</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dbfile</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore_unknown_preds</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an MLN Database, which consists of a set of ground atoms, each assigned a truth value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Member mln</dt>
+<dd class="field-odd"><p>the respective <code class="xref py py-class docutils literal notranslate"><span class="pre">mln.base.MLN</span></code> object that this Database is associated with</p>
+</dd>
+<dt class="field-even">Member domains</dt>
+<dd class="field-even"><p>dict mapping the variable domains specific to this data base (i.e. without
+values from the MLN domains which are not present in the DB) to the set possible values.</p>
+</dd>
+<dt class="field-odd">Member evidence</dt>
+<dd class="field-odd"><p>dictionary mapping ground atom strings to truth values.</p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>mln</strong> – the <code class="xref py py-class docutils literal notranslate"><span class="pre">mln.base.MLN</span></code> instance that the database shall be associated with.</p></li>
+<li><p><strong>evidence</strong> – a dictionary mapping ground atoms to their truth values.</p></li>
+<li><p><strong>dbfile</strong> – if specified, a database is loaded from the given file path.</p></li>
+<li><p><strong>ignore_unknown_preds</strong> – see <code class="xref py py-func docutils literal notranslate"><span class="pre">mln.database.parse_db()</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Loading a database from a static serialized file is fine, but if you
+consider integrating SRL techniques seamlessly in your application,
+you rather want to create databases representing the evidences for
+your reasoning tasks at runtime. <cite>pracmln</cite> has been designed to
+support convenient dynamic generation of relational data. Once a
+database has been loaded or created, new facts can be added using
+the <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> operator</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">&lt;&lt;</span> <span class="s1">&#39;foo(X)&#39;</span>
+</pre></div>
+</div>
+<p>or by directly setting the truth value of an atom:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;bar(Y)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">.</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>Similarly to the <a class="reference internal" href="#id3" title="pracmln.MLN"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.MLN</span></code></a>, databases have a <code class="xref py py-attr docutils literal notranslate"><span class="pre">write</span></code>
+method that prints them to the console:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+<span class="go">[                              ]   0.000 %  bar(Y)</span>
+<span class="go">[■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■] 100.000 %  foo(X)</span>
+</pre></div>
+</div>
+<p>The bars in front of the atom names indicate the truth
+values/probabilities of the respective atom. When writing them to a
+file, they can be switched off.</p>
+<dl class="py method">
+<dt id="pracmln.Database.write">
+<code class="sig-prename descclassname">Database.</code><code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">stream=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em>, <em class="sig-param">color=None</em>, <em class="sig-param">bars=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes this database into the stream in the MLN Database format.
+The stream must provide a <cite>write()</cite> method as file objects do.</p>
+</dd></dl>
+
+<p>Truth values of atoms that have been asserted once can be retracted
+from a database using the <code class="docutils literal notranslate"><span class="pre">del</span></code> operator:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;bar(Y)&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+<span class="go">[■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■] 100.000 %  foo(X)</span>
+</pre></div>
+</div>
+<p>A convenient method is <code class="xref py py-attr docutils literal notranslate"><span class="pre">Database.query</span></code>, which lets you make
+a PROLOG-like query to the database for an arbitrary formula in FOL.</p>
+<dl class="py method">
+<dt id="pracmln.Database.query">
+<code class="sig-prename descclassname">Database.</code><code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">formula</span></em>, <em class="sig-param"><span class="n">thr</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes to the database a ‘prolog-like’ query given by the specified formula.</p>
+<p>Returns a generator of dictionaries with variable-value assignments for which the formula has
+a truth value of at least <cite>thr</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>formula</strong> – the formula the database shall be queried with.</p></li>
+<li><p><strong>thr</strong> – the threshold for truth values.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is <em>very</em> inefficient, since all groundings will be instantiated; so keep the queries short.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;foo(?x, ?y)&#39;</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">print</span> <span class="n">r</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="go">{&#39;?x&#39;: &#39;X1&#39;, &#39;?y&#39;: &#39;Y1&#39;}</span>
+<span class="go">{&#39;?x&#39;: &#39;X2&#39;, &#39;?y&#39;: &#39;Y2&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="reasoning">
+<h2>Reasoning<a class="headerlink" href="#reasoning" title="Permalink to this headline">¶</a></h2>
+<p>Once an MLN and a database have been loaded or created, we can perform
+inference using the <code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.MLNQuery</span></code> class, which wraps
+around all inference algorithms provided by <cite>pracmln</cite>. It takes
+the MLN object subject to reasoning as a parameter as well as any
+of the parameters for the inference algorithms described in <a class="reference internal" href="inferencemethods.html"><span class="doc">Inference Methods</span></a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pracmln</span> <span class="k">import</span> <span class="n">MLNQuery</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">MLNQuery</span><span class="p">(</span><span class="n">mln</span><span class="o">=</span><span class="n">mln</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+<span class="go">[■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■] 100.000 % bar(X)</span>
+<span class="go">[■■■■■■■■■■■■■■■■■■■■■■■       ]  75.660 % foo(K)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pracmln">
+<span id="pracmln-mln"></span><h3><a class="reference internal" href="#id3" title="pracmln.MLN"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.MLN</span></code></a><a class="headerlink" href="#module-pracmln" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="id0">
+<em class="property">class </em><code class="sig-prename descclassname">pracmln.</code><code class="sig-name descname">Database</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mln</span></em>, <em class="sig-param"><span class="n">evidence</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dbfile</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore_unknown_preds</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an MLN Database, which consists of a set of ground atoms, each assigned a truth value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Member mln</dt>
+<dd class="field-odd"><p>the respective <code class="xref py py-class docutils literal notranslate"><span class="pre">mln.base.MLN</span></code> object that this Database is associated with</p>
+</dd>
+<dt class="field-even">Member domains</dt>
+<dd class="field-even"><p>dict mapping the variable domains specific to this data base (i.e. without
+values from the MLN domains which are not present in the DB) to the set possible values.</p>
+</dd>
+<dt class="field-odd">Member evidence</dt>
+<dd class="field-odd"><p>dictionary mapping ground atom strings to truth values.</p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>mln</strong> – the <code class="xref py py-class docutils literal notranslate"><span class="pre">mln.base.MLN</span></code> instance that the database shall be associated with.</p></li>
+<li><p><strong>evidence</strong> – a dictionary mapping ground atoms to their truth values.</p></li>
+<li><p><strong>dbfile</strong> – if specified, a database is loaded from the given file path.</p></li>
+<li><p><strong>ignore_unknown_preds</strong> – see <code class="xref py py-func docutils literal notranslate"><span class="pre">mln.database.parse_db()</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt id="pracmln.Database.PseudoMRF">
+<em class="property">class </em><code class="sig-name descname">PseudoMRF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.PseudoMRF" title="Permalink to this definition">¶</a></dt>
+<dd><p>can be used in order to use only a Database object to ground formulas
+(without instantiating an MRF) and determine the truth of these ground
+formulas by partly replicating the interface of an MRF object</p>
+<dl class="py class">
+<dt id="pracmln.Database.PseudoMRF.GroundAtomGen">
+<em class="property">class </em><code class="sig-name descname">GroundAtomGen</code><a class="headerlink" href="#pracmln.Database.PseudoMRF.GroundAtomGen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="pracmln.Database.PseudoMRF.TextGroundAtom">
+<em class="property">class </em><code class="sig-name descname">TextGroundAtom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.PseudoMRF.TextGroundAtom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="pracmln.Database.PseudoMRF.WorldValues">
+<em class="property">class </em><code class="sig-name descname">WorldValues</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.PseudoMRF.WorldValues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.PseudoMRF.count_true_groundings">
+<code class="sig-name descname">count_true_groundings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">formula</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.PseudoMRF.count_true_groundings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.PseudoMRF.gndatom">
+<code class="sig-name descname">gndatom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.PseudoMRF.gndatom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.PseudoMRF.iter_groundings">
+<code class="sig-name descname">iter_groundings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">formula</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.PseudoMRF.iter_groundings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.PseudoMRF.iter_true_var_assignments">
+<code class="sig-name descname">iter_true_var_assignments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">formula</span></em>, <em class="sig-param"><span class="n">truth_thr</span><span class="o">=</span><span class="default_value">1.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.PseudoMRF.iter_true_var_assignments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates over all groundings of formula that evaluate to true
+given this Pseudo-MRF.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.PseudoMRF.truth">
+<code class="sig-name descname">truth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gndformula</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.PseudoMRF.truth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gndlit</span></em>, <em class="sig-param"><span class="n">truth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the fact represented by the ground atom, which might be
+a GroundLit object or a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gndlit</strong> – the ground literal to be added to the database.
+Can be either a string or a <code class="xref py py-class docutils literal notranslate"><span class="pre">logic.common.Logic.GroundLit</span></code> instance.</p></li>
+<li><p><strong>truth</strong> – the truth value of this ground literal. 0 stands for false, 1 for true.
+In case of soft or fuzzy evidence, any truth value in [0,1] is allowed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mln</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy this Database. If mln is specified, asserts
+this database for the given MLN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mln</strong> – if <cite>mln</cite> is specified, the new MLN will be associated with <cite>mln</cite>,
+if not, it will be associated with <cite>self.mln</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.domain">
+<code class="sig-name descname">domain</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">domain</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of domain values of the given domain, or None if no domain
+with the given name exists. If domain is dict, the domain values will be
+updated and the domain will be created, if necessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>domain</strong> – the name of the domain to be returned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.gndatoms">
+<code class="sig-name descname">gndatoms</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prednames</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.gndatoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates over all ground atoms in this database that match any of
+the given predicate names. If no predicate name is specified, it
+yields all ground atoms in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prednames</strong> – a list of predicate names that this iteration should be filtered by.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a generator of (atom, truth) tuples.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.isempty">
+<code class="sig-name descname">isempty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.isempty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True iff there is an assertion for any ground atom in this
+database and False if the truth values all ground atoms are None
+AND all domains are empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.ishard">
+<code class="sig-name descname">ishard</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.ishard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether or not this database contains exclusively
+hard evidences.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.load">
+<em class="property">static </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mln</span></em>, <em class="sig-param"><span class="n">dbfiles</span></em>, <em class="sig-param"><span class="n">ignore_unknown_preds</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">db</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads one or multiple database files containing literals and/or domains.
+Returns one or multiple databases where domains is dictionary mapping 
+domain names to lists of constants defined in the database
+and evidence is a dictionary mapping ground atom strings to truth values</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dbfile</strong> – a single one or a list of paths to database file.</p></li>
+<li><p><strong>mln</strong> – the MLN object which should be used to load the database.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>either one single or a list of database objects.</p>
+</dd>
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mln</span> <span class="o">=</span> <span class="n">MLN</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">mln</span><span class="p">,</span> <span class="s1">&#39;./example.db&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id1">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">formula</span></em>, <em class="sig-param"><span class="n">thr</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes to the database a ‘prolog-like’ query given by the specified formula.</p>
+<p>Returns a generator of dictionaries with variable-value assignments for which the formula has
+a truth value of at least <cite>thr</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>formula</strong> – the formula the database shall be queried with.</p></li>
+<li><p><strong>thr</strong> – the threshold for truth values.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is <em>very</em> inefficient, since all groundings will be instantiated; so keep the queries short.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;foo(?x, ?y)&#39;</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">print</span> <span class="n">r</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="go">{&#39;?x&#39;: &#39;X1&#39;, &#39;?y&#39;: &#39;Y1&#39;}</span>
+<span class="go">{&#39;?x&#39;: &#39;X2&#39;, &#39;?y&#39;: &#39;Y2&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.retract">
+<code class="sig-name descname">retract</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gndatom</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.retract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the evidence of the given ground atom in this database.</p>
+<p>Also cleans up the domains if an atom is removed that makes use of 
+a domain value that is not used by any other evidence atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gndatom</strong> – a string representation of the ground atom to be
+removed from the database or a <code class="xref py py-class docutils literal notranslate"><span class="pre">logic.common.Logic.GroundAtom</span></code> instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.retractall">
+<code class="sig-name descname">retractall</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">predname</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.retractall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retracts all evidence atoms of the given predicate name in this database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.rmval">
+<code class="sig-name descname">rmval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">domain</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.rmval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the value <code class="docutils literal notranslate"><span class="pre">value</span></code> from the domain <code class="docutils literal notranslate"><span class="pre">domain</span></code> of this database.</p>
+<p>This removal is complete, i.e. it also retracts all atoms in this database
+that the respective value is participating in as an argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> – (str) the domain from which the value is to be removed.</p></li>
+<li><p><strong>value</strong> – (str) the value to be removed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.tofile">
+<code class="sig-name descname">tofile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.tofile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes this database into the file with the given filename.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.truth">
+<code class="sig-name descname">truth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gndatom</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.truth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the evidence truth value of the given ground atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gndatom</strong> – a ground atom string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the truth value of the ground atom, or None if it is not specified.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.Database.union">
+<code class="sig-name descname">union</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dbs</span></em>, <em class="sig-param"><span class="n">mln</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.Database.union" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new database consisting of the union of all databases
+given in the arguments. If mln is specified, the new database will
+be attached to that one, otherwise the mln of this database will
+be used.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id2">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">stream=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em>, <em class="sig-param">color=None</em>, <em class="sig-param">bars=True</em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes this database into the stream in the MLN Database format.
+The stream must provide a <cite>write()</cite> method as file objects do.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="id3">
+<em class="property">class </em><code class="sig-prename descclassname">pracmln.</code><code class="sig-name descname">MLN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logic</span><span class="o">=</span><span class="default_value">'FirstOrderLogic'</span></em>, <em class="sig-param"><span class="n">grammar</span><span class="o">=</span><span class="default_value">'PRACGrammar'</span></em>, <em class="sig-param"><span class="n">mlnfile</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a Markov logic network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Member formulas</dt>
+<dd class="field-odd"><p>a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">logic.common.Formula</span></code> objects representing the formulas of the MLN.</p>
+</dd>
+<dt class="field-even">Member predicates</dt>
+<dd class="field-even"><p>a dict mapping predicate names to <code class="xref py py-class docutils literal notranslate"><span class="pre">mlnpreds.Predicate</span></code> objects.</p>
+</dd>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logic</strong> – (string) the type of logic to be used in this MLN. Possible values
+are <cite>FirstOrderLogic</cite> and <cite>FuzzyLogic</cite>.</p></li>
+<li><p><strong>grammar</strong> – (string) the syntax to be used. Possible grammars are
+<cite>PRACGrammar</cite> and <cite>StandardGrammar</cite>.</p></li>
+<li><p><strong>mlnfile</strong> – can be a path to an MLN file or a file object.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="pracmln.MLN.constant">
+<code class="sig-name descname">constant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">domain</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.constant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds to the MLN a constant domain value to the domain specified.</p>
+<p>If the domain doesn’t exist, it is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> – (string) the name of the domain the given value shall be added to.</p></li>
+<li><p><strong>values</strong> – (string) the values to be added.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a deep copy of this MLN, which is not yet materialized.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.declare_predicate">
+<code class="sig-name descname">declare_predicate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">predicate</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.declare_predicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a predicate declaration to the MLN:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>predicate</strong> – an instance of a Predicate or one of its subclasses 
+specifying a predicate declaration.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.formula">
+<code class="sig-name descname">formula</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">formula</span></em>, <em class="sig-param"><span class="n">weight</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">fixweight</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">unique_templvars</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.formula" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a formula to this MLN. The respective domains of constants
+are updated, if necessary. If <cite>formula</cite> is an integer, returns the formula
+with the respective index or the formula object that has been created from
+formula. The formula will be automatically tied to this MLN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>formula</strong> – a <cite>Logic.Formula</cite> object or a formula string</p></li>
+<li><p><strong>weight</strong> – an optional weight. May be a mathematical expression
+as a string (e.g. log(0.1)), real-valued number
+or <cite>mln.infty</cite> to indicate a hard formula.</p></li>
+<li><p><strong>fixweight</strong> – indicates whether or not the weight of this
+formula should be fixed during learning.</p></li>
+<li><p><strong>unique_templvars</strong> – specifies a list of template variables that will create
+only unique combinations of expanded formulas</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.ground">
+<code class="sig-name descname">ground</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.ground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates and returns a ground Markov Random Field for the given database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – database filename (string) or Database object</p></li>
+<li><p><strong>cw</strong> – if the closed-world assumption shall be applied (to all predicates)</p></li>
+<li><p><strong>cwpreds</strong> – a list of predicate names the closed-world assumption shall be applied.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.iter_formulas_printable">
+<code class="sig-name descname">iter_formulas_printable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.iter_formulas_printable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over all formulas, yield nicely formatted strings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.iterformulas">
+<code class="sig-name descname">iterformulas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.iterformulas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator yielding (idx, formula) tuples.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.iterpreds">
+<code class="sig-name descname">iterpreds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.iterpreds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields the predicates defined in this MLN alphabetically ordered.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.learn">
+<code class="sig-name descname">learn</code><span class="sig-paren">(</span><em class="sig-param">databases</em>, <em class="sig-param">method=&lt;class 'pracmln.mln.learning.bpll.BPLL'&gt;</em>, <em class="sig-param">**params</em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.learn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triggers the learning parameter learning process for a given set of databases.
+Returns a new MLN object with the learned parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>databases</strong> – list of <code class="xref py py-class docutils literal notranslate"><span class="pre">mln.database.Database</span></code> objects or filenames</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id4">
+<em class="property">static </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">files</span></em>, <em class="sig-param"><span class="n">logic</span><span class="o">=</span><span class="default_value">'FirstOrderLogic'</span></em>, <em class="sig-param"><span class="n">grammar</span><span class="o">=</span><span class="default_value">'PRACGrammar'</span></em>, <em class="sig-param"><span class="n">mln</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads an MLN object from a file or a set of files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> – one or more <a class="reference internal" href="tools.html#pracmln.mlnpath" title="pracmln.mlnpath"><code class="xref py py-class docutils literal notranslate"><span class="pre">pracmln.mlnpath</span></code></a> strings. If multiple file names are given,
+the contents of all files will be concatenated.</p></li>
+<li><p><strong>logic</strong> – (string) the type of logic to be used. Either <cite>FirstOrderLogic</cite> or <cite>FuzzyLogic</cite>.</p></li>
+<li><p><strong>grammar</strong> – (string) the syntax to be used for parsing the MLN file. Either <cite>PRACGrammar</cite> or <cite>StandardGrammar</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.materialize">
+<code class="sig-name descname">materialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">dbs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.materialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Materializes this MLN with respect to the databases given. This must
+be called before learning or inference can take place.</p>
+<p>Returns a new MLN instance containing expanded formula templates and
+materialized weights. Normally, this method should not be called from the outside. 
+Also takes into account whether or not particular domain values or predictaes
+are actually used in the data, i.e. if a predicate is not used in any
+of the databases, all formulas that make use of this predicate are ignored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dbs</strong> – list of <code class="xref py py-class docutils literal notranslate"><span class="pre">database.Database</span></code> objects for materialization.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.predicate">
+<code class="sig-name descname">predicate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">predicate</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.predicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the predicate object with the given predicate name, or declares a new predicate.</p>
+<p>If predicate is a string, this method returns the predicate object 
+assiciated to the given predicate name. If it is a predicate instance, it declares the
+new predicate in this MLN and returns the MLN instance. In the latter case, this is 
+equivalent to <cite>MLN.declare_predicate()</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>predicate</strong> – name of the predicate to be returned or a <cite>Predicate</cite> instance
+specifying the predicate to be declared.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the Predicate object or None if there is no predicate with this name.
+If a new predicate is declared, returns this MLN instance.</p>
+</dd>
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mln</span> <span class="o">=</span> <span class="n">MLN</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mln</span><span class="o">.</span><span class="n">predicate</span><span class="p">(</span><span class="n">Predicate</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="p">[</span><span class="n">arg0</span><span class="p">,</span> <span class="n">arg1</span><span class="p">]))</span>
+<span class="go">       .predicate(Predicate(bar, [arg1, arg2])) # this declares predicates foo and bar</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mln</span><span class="o">.</span><span class="n">predicate</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span>
+<span class="go">&lt;Predicate: foo(arg0,arg1)&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.print_formulas">
+<code class="sig-name descname">print_formulas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.print_formulas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nicely prints the formulas and their weights.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.tofile">
+<code class="sig-name descname">tofile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.tofile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the file with the given filename and writes this MLN into it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.update_domain">
+<code class="sig-name descname">update_domain</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">domain</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.update_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combines the existing domain (if any) with the given one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>domain</strong> – a dictionary with domain Name to list of string constants to add</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.update_predicates">
+<code class="sig-name descname">update_predicates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mln</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.update_predicates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merges the predicate definitions of this MLN with the definitions
+of the given one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mln</strong> – an instance of an MLN object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pracmln.MLN.weight">
+<code class="sig-name descname">weight</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">idx</span></em>, <em class="sig-param"><span class="n">weight</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pracmln.MLN.weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns or sets the weight of the formula with index <cite>idx</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id5">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">stream=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='utf-8'&gt;</em>, <em class="sig-param">color=None</em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the MLN to the given stream.</p>
+<p>The default stream is <cite>sys.stdout</cite>. In order to print the MLN to the console, a simple
+call of <cite>mln.write()</cite> is sufficient. If color is not specified (is None), then the
+output to the console will be colored and uncolored for every other stream.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> – the stream to write the MLN to.</p></li>
+<li><p><strong>color</strong> – whether or not output should be colorized.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p>In this section, we will introduce the basic interface for using
+the reasoning methods for MLNs provided by <cite>pracmln</cite>.</p>
+<p>The easiest way</p>
+</div>
+<div class="section" id="ros-service-interface">
+<h3>ROS Service interface<a class="headerlink" href="#ros-service-interface" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="introduction">
+<h4>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h4>
+<p>This is a tutorial for the ROS service that can be used
+to query an MLN. We will describe the implemantation
+of the server together with the ROS messages that are
+associated with this project. We will also present an
+example client program that can be used as a template.</p>
+</div>
+<div class="section" id="server-methods">
+<h4>Server methods<a class="headerlink" href="#server-methods" title="Permalink to this headline">¶</a></h4>
+<dl class="py function">
+<dt id="scripts.mln_server.handle_mln_query">
+<code class="sig-prename descclassname">scripts.mln_server.</code><code class="sig-name descname">handle_mln_query</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">req</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.mln_server.handle_mln_query" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Handles the query from the client. It expects
+<em>req</em> to have two fields, <em>req.query</em> and an optional
+<em>req.config</em>. <em>req.query</em> should be of type <em>MLNQuery</em> while
+<em>req.config</em> should be of type <em>MLNConfig</em>.</p>
+<p>It returns a list of <em>AtomProbPair</em> objects. Each element of the
+list is an atom with it’s corresponding degree of truth.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="scripts.mln_server.mln_interface_server">
+<code class="sig-prename descclassname">scripts.mln_server.</code><code class="sig-name descname">mln_interface_server</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scripts.mln_server.mln_interface_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Keeps an infinite loop while waiting
+for clients to ask for the service.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="scripts.mln_server.Storage.getInstance">
+<code class="sig-prename descclassname">scripts.mln_server.Storage.</code><code class="sig-name descname">getInstance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scripts.mln_server.Storage.getInstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Storage is a singleton class that keeps
+track of an MLNInfer object together with
+the settings for the inference proceedure.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="example-client">
+<h4>Example client<a class="headerlink" href="#example-client" title="Permalink to this headline">¶</a></h4>
+<dl class="py function">
+<dt id="scripts.mln_mln.mln_interface_client">
+<code class="sig-prename descclassname">scripts.mln_mln.</code><code class="sig-name descname">mln_interface_client</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.mln_mln.mln_interface_client" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>This is an example of the client quering the service.
+The important thing to note is that you have the option
+to set the configuration parameters only once and use the
+the same settings in further calls.</p>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="messages">
+<h4>Messages<a class="headerlink" href="#messages" title="Permalink to this headline">¶</a></h4>
+<dl>
+<dt><strong>MLNQuery.msg</strong></dt><dd><p>This ROS message contains the following fields:</p>
+<dl class="simple">
+<dt><strong>queries</strong> - This message is an ecoding of the queries that will</dt><dd><p>sent to the service.</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>MLNResponse.msg</strong></dt><dd><p>This ROS message contains the follwing fields:</p>
+<dl class="simple">
+<dt><strong>results</strong> - This is what is returned by the service. results</dt><dd><p>is a list of <em>AtomProbPair</em> objects. Each atom is associated
+with a probability value.</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>MLNConfig.msg</strong></dt><dd><p>This is a message that is used to initialize the
+configuration parameters for quering the service.
+You have an option to pass this argument only once
+and reuse the same configurations over and over.
+It contains the following fields:</p>
+<p><strong>mlnFiles</strong> - a *.mln file that describes the MLN</p>
+<p><strong>db</strong> - the evidence database</p>
+<p><strong>method</strong> - the inference method to be used</p>
+<p><strong>engine</strong> - the inference engine to be used</p>
+<p><strong>output_filename</strong> - the name of the output filename</p>
+<p><strong>saveResults</strong> - this field should be set to true if you wish to save the results</p>
+<p><strong>logic</strong> - specifies the logic to be used for inference</p>
+<p><strong>grammar</strong> - specifies the grammar to be used</p>
+</dd>
+<dt><strong>AtomProbPair.msg</strong></dt><dd><p>This message is a pair of an Atom and a Probabality.
+It contains the following fields:</p>
+<p><strong>atom</strong> - string describing the atom</p>
+<p><strong>prob</strong> - a probability value for the atom’s degree of truth</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="services">
+<h4>Services<a class="headerlink" href="#services" title="Permalink to this headline">¶</a></h4>
+<dl>
+<dt><strong>MLNInterface.srv</strong></dt><dd><p>This is the main service. It contains two fields:</p>
+<p><strong>MLNQuery</strong> - This is the query string</p>
+<dl class="simple">
+<dt><strong>MLNConfig</strong> - This specifies which engine, inference method</dt><dd><p>etc is going to be used for inference. This should be
+set at least once.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+<div class="section" id="pracmln-correlation">
+<h4>pracmln_correlation<a class="headerlink" href="#pracmln-correlation" title="Permalink to this headline">¶</a></h4>
+<p>The pracmln_correlation package enhances the MLN training process by finding formulas which
+are likely to fit the data and using only those for training. This will speed up the training process
+to 1/10th of the time usually needed. The inference time gets a speed boost by TODO.
+The drawback is a slight accuracy loss.</p>
+<p>The most important methods from this package are:</p>
+<dl class="simple">
+<dt>pracmln_correlation.utils.database_to_dataframe(path=None, mln=None, dbs=None, amount=None,</dt><dd><p>replace_clusters=True, mln_name=None, db_name=None)</p>
+</dd>
+</dl>
+<p>and</p>
+<p>theils_u(X, y=None)</p>
+<p>and</p>
+<dl class="simple">
+<dt>generate_formulas_from_theils_u(df, positive_threshold=0.8, negative_threshold = 0.2,</dt><dd><p>output=str)</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Daniel Nyga.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

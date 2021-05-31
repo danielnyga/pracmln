@@ -285,7 +285,15 @@ class Database(object):
             _, predname, args = self.mln.logic.parse_literal(gndatom)
             atom_str = str(self.mln.logic.gnd_atom(predname, args, self.mln))
         elif isinstance(gndatom, Logic.GroundAtom):
-            atom_str = str(gndatom.gndatom)
+            # eventueller bug, falls nix mehr geht das hier zurück ändern
+            # original:
+            #atom_str = str(gndatom.gndatom)
+            
+            # gefixt?:
+            atom_str = str(gndatom)
+            predname = gndatom.predname
+            #gefixt? ende
+
             args = gndatom.args
         else:
             raise Exception('gndatom has an illegal type: %s' % str(type(gndatom)))

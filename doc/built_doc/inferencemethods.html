@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inference Methods &#8212; pracmln 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MLN Syntax and Semantics" href="mln_syntax.html" />
+    <link rel="prev" title="Learning Methods" href="learningmethods.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+  
+  <script src="_static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.geom.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.layout.min.js"></script>
+
+    
+    
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/pracmln-brightondark-transp.png"></span>
+          pracmln</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Feature Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools for Statistical Relation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnquerytool.html">MLN Query-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnlearningtool.html">MLN-Learning-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learningmethods.html">Learning Methods</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Inference Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mln_syntax.html">MLN Syntax and Semantics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlntutorial.html">Tutorial: Learning and Inference in Markov Logic Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API-Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Inference Methods</a><ul>
+<li><a class="reference internal" href="#full-posterior-distributions">Full posterior distributions</a><ul>
+<li><a class="reference internal" href="#enumeration-ask">Enumeration-Ask</a></li>
+<li><a class="reference internal" href="#mc-sat">MC-SAT</a></li>
+<li><a class="reference internal" href="#gibbs-sampling">Gibbs Sampling</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#most-probable-explanation-mpe">Most Probable Explanation (MPE)</a><ul>
+<li><a class="reference internal" href="#maxwalk-sat">MaxWalk-SAT</a></li>
+<li><a class="reference internal" href="#wcsp">WCSP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="learningmethods.html" title="Previous Chapter: Learning Methods"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Learning Methods</span>
+    </a>
+  </li>
+  <li>
+    <a href="mln_syntax.html" title="Next Chapter: MLN Syntax and Semantics"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">MLN Syntax an... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/inferencemethods.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="inference-methods">
+<h1>Inference Methods<a class="headerlink" href="#inference-methods" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="full-posterior-distributions">
+<h2>Full posterior distributions<a class="headerlink" href="#full-posterior-distributions" title="Permalink to this headline">¶</a></h2>
+<p>The following algorithms compute the full posterior distribution
+over a set of variables <img class="math" src="_images/math/90cab5ae70bdb6e45756490226ba488f522c4c4e.png" alt="Q"/> given the evidence <img class="math" src="_images/math/930f7f95216cffb3c11648e0219f7f6983c7e482.png" alt="E, P(Q|E)"/>.</p>
+<div class="section" id="enumeration-ask">
+<h3>Enumeration-Ask<a class="headerlink" href="#enumeration-ask" title="Permalink to this headline">¶</a></h3>
+<p>Performs exact inference by enumerating all possible worlds <img class="math" src="_images/math/73672f0dea51a86da07c9008b88a6f2bfb52ad79.png" alt="x\in\mathcal{X}"/> that
+are consistent with the evidence <img class="math" src="_images/math/1815f600df7845409443aed470eac2d449e4ddb0.png" alt="E"/>, i.e.</p>
+<div class="math">
+<p><img src="_images/math/a73a0ded7f8a71e3e4f72a50a352594fa9b44d36.png" alt="P(Q|E) = \frac{\sum_{x \models E\land Q}^{} \phi(x)}{\sum_{x'\models E}{\phi(x')}}"/></p>
+</div><div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is intractable for all but the smallest reasoning problems.</p>
+</div>
+</div>
+<div class="section" id="mc-sat">
+<h3>MC-SAT<a class="headerlink" href="#mc-sat" title="Permalink to this headline">¶</a></h3>
+<p>Performs approximate inference using the <cite>MC-SAT</cite> algorithm.</p>
+</div>
+<div class="section" id="gibbs-sampling">
+<h3>Gibbs Sampling<a class="headerlink" href="#gibbs-sampling" title="Permalink to this headline">¶</a></h3>
+<p>Performs Gibbs sampling on the ground MRF.</p>
+</div>
+</div>
+<div class="section" id="most-probable-explanation-mpe">
+<h2>Most Probable Explanation (MPE)<a class="headerlink" href="#most-probable-explanation-mpe" title="Permalink to this headline">¶</a></h2>
+<p>In some cases, one is not interested in the full posterior distribution
+<img class="math" src="_images/math/af5227c5e7e504fee9fa2c2840bcc417834e5274.png" alt="P(Q|E)"/> over query variables <img class="math" src="_images/math/90cab5ae70bdb6e45756490226ba488f522c4c4e.png" alt="Q"/> given evidence <img class="math" src="_images/math/1815f600df7845409443aed470eac2d449e4ddb0.png" alt="E"/>,
+but only in the most probable variable assignment of <img class="math" src="_images/math/45bdb102241937e13d01c64cbd966891343637e7.png" alt="Q, \text{arg max}_QP(Q|E)"/>
+<cite>pracmln</cite> provides two algorithms to perform this kind of <cite>MPE</cite> inference
+(which is sometimes also referred to as <cite>maximum a-posteriori (MAP)</cite>
+inference.</p>
+<div class="section" id="maxwalk-sat">
+<h3>MaxWalk-SAT<a class="headerlink" href="#maxwalk-sat" title="Permalink to this headline">¶</a></h3>
+<p>A randomized weighted satisfiability solver that performs simulated
+annealing.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">maxsteps</span></code>: the maximum number simulated annealing steps</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thr</span></code>: the threshold for the sum of unsatisfied weighted formulas that needs be undercut for the algorithm to terminate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hardw</span></code>: a constant weight that will temporarily be attached to hard logical formulas.</p></li>
+</ul>
+</div>
+<div class="section" id="wcsp">
+<h3>WCSP<a class="headerlink" href="#wcsp" title="Permalink to this headline">¶</a></h3>
+<p>Performs exact MPE inference by converting the ground MRF into an
+equivalent weighted constraint satisfaction problem (WCSP) and
+solving it using the <cite>toulbar2</cite> <a class="bibtex reference internal" href="#allouche2010toulbar2" id="id1">[AdGS10]</a> solver. For more details, see <a class="bibtex reference internal" href="#jain09modref" id="id2">[JMW09]</a>.</p>
+<p id="bibtex-bibliography-inferencemethods-0"><dl class="citation">
+<dt class="bibtex label" id="allouche2010toulbar2"><span class="brackets"><a class="fn-backref" href="#id1">AdGS10</a></span></dt>
+<dd><p>D Allouche, S de Givry, and T Schiex. Toulbar2, an open source exact cost function network solver. Technical Report, Technical report, INRIA, 2010.</p>
+</dd>
+<dt class="bibtex label" id="jain09modref"><span class="brackets"><a class="fn-backref" href="#id2">JMW09</a></span></dt>
+<dd><p>Dominik Jain, Paul Maier, and Gregor Wylezich. Markov Logic as a Modelling Language for Weighted Constraint Satisfaction Problems. In <em>Eighth International Workshop on Constraint Modelling and Reformulation, in conjunction with CP2009</em>. 2009.</p>
+</dd>
+</dl>
+</p>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Daniel Nyga.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MLN-Learning-Tool &#8212; pracmln 1.2.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Learning Methods" href="learningmethods.html" />
+    <link rel="prev" title="MLN Query-Tool" href="mlnquerytool.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+  
+  <script src="_static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.geom.min.js"></script>
+  <script type="text/javascript" src="_static/js/d3.layout.min.js"></script>
+
+    
+    
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/pracmln-brightondark-transp.png"></span>
+          pracmln</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Feature Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools for Statistical Relation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlnquerytool.html">MLN Query-Tool</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MLN-Learning-Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learningmethods.html">Learning Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inferencemethods.html">Inference Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mln_syntax.html">MLN Syntax and Semantics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlntutorial.html">Tutorial: Learning and Inference in Markov Logic Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation.html">Tools for MLN evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API-Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">ROS Service interface</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">MLN-Learning-Tool</a><ul>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="mlnquerytool.html" title="Previous Chapter: MLN Query-Tool"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; MLN Query-Tool</span>
+    </a>
+  </li>
+  <li>
+    <a href="learningmethods.html" title="Next Chapter: Learning Methods"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Learning Methods &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/mlnlearningtool.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="mln-learning-tool">
+<h1>MLN-Learning-Tool<a class="headerlink" href="#mln-learning-tool" title="Permalink to this headline">¶</a></h1>
+<p>Start the tool from the command line with <code class="docutils literal notranslate"><span class="pre">mlnlearn</span></code>.</p>
+<div class="figure align-default" id="id1">
+<img alt="_images/mlnlearningtool.png" src="_images/mlnlearningtool.png" />
+<p class="caption"><span class="caption-text">The MLN-Learning-Tool GUI.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>The MLN learning tool learns the weights of a MLN file given a
+training database and a template MLN. The tool allows you to invoke
+the actual MLN learning algorithms of the Python-based MLN
+engine. Once you start the actual algorithm,
+the tool window itself will be hidden as long as the job is
+running, while the output of the algorithm is written to the
+console for you to follow. At the beginning, the tools list the
+main input parameters for your convenience, and, at the end, the
+query tool additionally outputs the inference results to the
+console.</p>
+<p>The tool features an integrated editor for <code class="docutils literal notranslate"><span class="pre">*.db</span></code> and <code class="docutils literal notranslate"><span class="pre">*.mln</span></code> files. If
+you modify a file in the internal editor, it will automatically be
+saved as soon as you invoke the learning method. The new content
+can either be saved to the same file (overwriting the old content)
+or a new file, which you can choose to name as desired.
+Furthermore, the tool will save all the settings you made whenever
+the learning method is invoked, so that you can easily resume a
+session.</p>
+<div class="section" id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<p>For the learning methods, there are a couple of parameters that can
+be handed over to the respective algorithm:</p>
+<div class="figure align-default" id="id2">
+<img alt="_images/learning-parameters.png" src="_images/learning-parameters.png" />
+<p class="caption"><span class="caption-text">Parameters in the GUI Tool.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<ul class="simple">
+<li><p>Evidence and query predicates for the discriminative learning algorithms
+(see also: <a class="reference internal" href="learningmethods.html"><span class="doc">Learning Methods</span></a>)</p></li>
+<li><p>A Gaussian prior distribution over the formula weights.
+(see also: <a class="reference internal" href="learningmethods.html"><span class="doc">Learning Methods</span></a>)</p></li>
+</ul>
+<p>In the text field ‘Add. Params’, you have the opportunity to pass additional
+parameters to the tool and the learning algorithms, respectively.
+The parameters need to be specified in the Python dictionary syntax
+as they will be transformed into and passed to the algorithms as
+python dictionaries.</p>
+<p>Currently, the following parameters are supported:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">debug='&lt;level&gt;'</span></code> This will temporarily set the debug level to the
+one specified. Admissible values are (with decreasing level of verbosity):
+<code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>, <code class="docutils literal notranslate"><span class="pre">INFO</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, <code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">optimizer='&lt;name&gt;'</span></code> Specifies which optimization routine to be used. See also
+<a class="reference internal" href="learningmethods.html"><span class="doc">Learning Methods</span></a> for more information.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">profile=True/False</span></code> Launches the learner via the python profiler.</p></li>
+</ul>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Daniel Nyga.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>
