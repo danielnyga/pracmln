@@ -39,7 +39,7 @@ from importlib import util as imputil
 
 # math functions
 
-USE_MPMATH = True
+USE_MPMATH = False
 
 try:
     if not USE_MPMATH:
