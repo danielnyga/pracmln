@@ -80,6 +80,9 @@ def test_learning_taxonomies():
                   discr_preds=EVIDENCE_PREDS).run()
 
 
+def test_torch_mln():
+    pass
+
 def runall():
     start = time.time()
     test_inference_smokers()
@@ -90,7 +93,8 @@ def runall():
     print('all test finished after', time.time() - start, 'secs')
 
 def main():
-    runall()
+    #runall()
+    test_torch_mln()
 
 if __name__ == '__main__':
     main()
